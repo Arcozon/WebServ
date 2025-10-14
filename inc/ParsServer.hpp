@@ -1,42 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Server.hpp                                         :+:      :+:    :+:   */
+/*   ParsServer.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/14 12:03:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/14 17:25:45 by gaeudes          ###   ########.fr       */
+/*   Created: 2025/10/14 17:25:55 by gaeudes           #+#    #+#             */
+/*   Updated: 2025/10/14 17:26:45 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SERVER_HPP
-# define SERVER_HPP
+#ifndef PARSSERVER_HPP
+# define PARSSERVER_HPP
 
-#include <string>
-#include <vector>
+# include "Server.hpp"
 
-#include "Location.hpp"
-
-class Server
+class Server::ParsServer
 {
 	private:
-		class ParsServer;
-
-	private:
-		std::vector<std::string>	_serverNames;
-		std::string _ip;
-		std::string _port;
-		std::string _url;
-		std::map<std::string, std::string>	_errPages;
-
-		unsigned long	_maxBodySize;
-		bool			_maxBodySizeDefined;
-
-		std::vector<Location>	_locations;
-
-	public:
-		// other things	
+	
+	public:	
 };
 
 #endif

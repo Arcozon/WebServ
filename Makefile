@@ -1,6 +1,10 @@
 NAME =  webserv
 
-S_WEBSERV	=  WebServ.cpp  WebServInit.cpp
+S_PARSCONFIG	=  init.cpp  parsConfig.cpp  ParsLocation.cpp  ParsServer.cpp
+D_PARSCONFIG	=  parsing_config/
+SRC_PARSCONFIG = $(addprefix $(D_PARSCONFIG), $(S_PARSCONFIG))
+
+S_WEBSERV	=  $(SRC_PARSCONFIG)  WebServ.cpp
 D_WEBSERV	=  webserv/
 SRC_WEBSERV = $(addprefix $(D_WEBSERV), $(S_WEBSERV))
 

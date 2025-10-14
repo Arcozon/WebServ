@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 10:44:46 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/14 13:24:44 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/14 13:32:43 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 
 # include <string>
 # include <vector>
+
+# include <unistd.h>
 
 # include "MyException.hpp"
 # include "Server.hpp"

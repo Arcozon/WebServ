@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 10:51:19 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/14 13:22:20 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/14 13:37:08 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	main(int ac, char **av, char **env)
 	catch (const MyException &e)
 	{
 		std::cerr << e;
+		return (1);
 	}
 	return (0);
-	(void)ac, (void)av, (void)env; 
 }

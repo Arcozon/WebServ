@@ -1,42 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   WebServ.hpp                                        :+:      :+:    :+:   */
+/*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/14 10:44:46 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/14 12:16:44 by gaeudes          ###   ########.fr       */
+/*   Created: 2025/10/14 12:03:09 by gaeudes           #+#    #+#             */
+/*   Updated: 2025/10/14 12:04:40 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef WEBSERV_HPP
-# define WEBSERV_HPP
+#ifndef SERVER_HPP
+# define SERVER_HPP
 
-# include <iostream>
-# include <fstream>
-
-# include <string>
-# include <vector>
-
-# include "MyException.hpp"
-# include "Server.hpp"
-
-# define DOT_CONFIG ".config"
-
-class WebServ
+class Server
 {
 	private:
-		std::vector<Server>	_servers;
-		std::string			_pname;
-		bool				_init;
-
-	private:
-		std::ifstream	_openConfigFile(const int ac, const char *av[]);
-
+		// things
 	public:
-		WebServ(int ac, const char *av[], char *env[]);
-		~WebServ(void);
+		// other things	
 };
 
 #endif

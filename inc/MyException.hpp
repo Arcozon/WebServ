@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 11:39:47 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/14 16:06:46 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/14 18:12:54 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ class MyException : public std::exception
 {
 	public:
 		enum eLevel {
-			ELVL_WARNING = 1,
+			ELVL_WARNING,
 			ELVL_ERROR,
 			ELVL_FATAL,
 			ELVL_MAX = 3

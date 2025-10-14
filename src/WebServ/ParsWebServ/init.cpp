@@ -1,28 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ParsServer.hpp                                     :+:      :+:    :+:   */
+/*   init.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/14 17:25:55 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/14 18:11:40 by gaeudes          ###   ########.fr       */
+/*   Created: 2025/10/14 12:09:45 by gaeudes           #+#    #+#             */
+/*   Updated: 2025/10/14 18:10:03 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PARSSERVER_HPP
-# define PARSSERVER_HPP
+#include "WebServ.hpp"
+#include "ParsWebServ.hpp"
 
-# include "Server.hpp"
-# include "MyException.hpp"
-
-class Server::ParsServer
+WebServ::WebServ(const int ac, char *av[], char *env[])
+:	_env(env), _init(false)
 {
-	private:
-		
-	public:
-		ParsServer(void);
-		~ParsServer(void);
-};
-
-#endif
+	ParsWebServ	pars(ac, av);
+	
+	_init = true;
+}

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 12:03:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/14 17:25:45 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/14 18:03:52 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,8 @@ class Server
 		std::vector<Location>	_locations;
 
 	public:
-		// other things	
+		Server(void);
+		~Server(void);
 };
 
 #endif

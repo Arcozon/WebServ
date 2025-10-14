@@ -1,15 +1,32 @@
 NAME =  webserv
 
-S_PARSCONFIG	=  init.cpp  parsConfig.cpp  ParsLocation.cpp  ParsServer.cpp
-D_PARSCONFIG	=  parsing_config/
-SRC_PARSCONFIG = $(addprefix $(D_PARSCONFIG), $(S_PARSCONFIG))
+S_PARSLOCATION	 =  ParsLocation.cpp
+D_PARSLOCATION	 =  ParsLocation/
+SRC_PARSLOCATION =  $(addprefix $(D_PARSLOCATION), $(S_PARSLOCATION))
 
-S_WEBSERV	=  $(SRC_PARSCONFIG)  WebServ.cpp
-D_WEBSERV	=  webserv/
-SRC_WEBSERV = $(addprefix $(D_WEBSERV), $(S_WEBSERV))
+S_LOCATION	 =  $(SRC_PARSLOCATION)  Location.cpp
+D_LOCATION	 =  Location/
+SRC_LOCATION =  $(addprefix $(D_LOCATION), $(S_LOCATION))
 
-SRC   = $(SRC_WEBSERV)  main.cpp  MyException.cpp
-D_SRC = src/
+S_PARSSERVER   =  ParsServer.cpp
+D_PARSSERVER   =  ParsServer/
+SRC_PARSSERVER =  $(addprefix $(D_PARSSERVER), $(S_PARSSERVER))
+
+S_SERVER   =  $(SRC_PARSSERVER)  Server.cpp
+D_SERVER   =  Server/
+SRC_SERVER =  $(addprefix $(D_SERVER), $(S_SERVER))
+
+S_PARSWEBSERV	=  init.cpp  ParsWebServ.cpp
+D_PARSWEBSERV	=  ParsWebServ/
+SRC_PARSWEBSERV =  $(addprefix $(D_PARSWEBSERV), $(S_PARSWEBSERV))
+
+S_WEBSERV	=  $(SRC_PARSWEBSERV)  WebServ.cpp
+D_WEBSERV	=  WebServ/
+SRC_WEBSERV =  $(addprefix $(D_WEBSERV), $(S_WEBSERV))
+
+SRC   =  $(SRC_WEBSERV)  $(SRC_SERVER)  $(SRC_LOCATION)
+SRC  +=  main.cpp  MyException.cpp
+D_SRC =  src/
 
 D_BUILD = .build/
 OBJ =  $(addprefix $(D_BUILD), $(SRC:.cpp=.o))

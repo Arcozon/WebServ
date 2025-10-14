@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:03:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/14 17:31:49 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/14 18:11:43 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define PARSLOCATION_HPP
 
 # include "Location.hpp"
+# include "MyException.hpp"
 
 # define GET_MASK(SHIFT)	(1 << SHIFT)
 

@@ -1,28 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ParsServer.hpp                                     :+:      :+:    :+:   */
+/*   Location.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/14 17:25:55 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/14 18:11:40 by gaeudes          ###   ########.fr       */
+/*   Created: 2025/10/14 17:37:11 by gaeudes           #+#    #+#             */
+/*   Updated: 2025/10/14 18:02:47 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PARSSERVER_HPP
-# define PARSSERVER_HPP
+#include "Location.hpp"
 
-# include "Server.hpp"
-# include "MyException.hpp"
+Location::Location(void)
+{}
 
-class Server::ParsServer
-{
-	private:
-		
-	public:
-		ParsServer(void);
-		~ParsServer(void);
-};
-
-#endif
+Location::~Location(void)
+{}

@@ -1,28 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ParsServer.hpp                                     :+:      :+:    :+:   */
+/*   WebServ.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/14 17:25:55 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/14 18:11:40 by gaeudes          ###   ########.fr       */
+/*   Created: 2025/10/14 12:01:27 by gaeudes           #+#    #+#             */
+/*   Updated: 2025/10/14 18:06:11 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PARSSERVER_HPP
-# define PARSSERVER_HPP
+#include "WebServ.hpp"
 
-# include "Server.hpp"
-# include "MyException.hpp"
-
-class Server::ParsServer
-{
-	private:
-		
-	public:
-		ParsServer(void);
-		~ParsServer(void);
-};
-
-#endif
+WebServ::~WebServ(void)
+{}

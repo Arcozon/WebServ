@@ -1,6 +1,10 @@
 NAME =  webserv
 
-SRC   = main.cpp  error.cpp
+S_WEBSERV	=  WebServ.cpp  WebServInit.cpp
+D_WEBSERV	=  webserv/
+SRC_WEBSERV = $(addprefix $(D_WEBSERV), $(S_WEBSERV))
+
+SRC   = $(SRC_WEBSERV)  main.cpp  MyException.cpp
 D_SRC = src/
 
 D_BUILD = .build/

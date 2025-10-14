@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 10:44:46 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/14 12:16:44 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/14 13:24:44 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,13 @@ class WebServ
 		std::vector<Server>	_servers;
 		std::string			_pname;
 		bool				_init;
+		std::ifstream		_configFile;
 
 	private:
-		std::ifstream	_openConfigFile(const int ac, const char *av[]);
+		inline void	_openConfigFile(const int ac, char *av[]);
 
 	public:
-		WebServ(int ac, const char *av[], char *env[]);
+		WebServ(const int ac, char *av[], char *env[]);
 		~WebServ(void);
 };
 

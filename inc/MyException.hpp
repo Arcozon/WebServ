@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 11:39:47 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/14 12:38:18 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/14 13:18:46 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,11 @@ class MyException : public std::exception
 		const std::string	_err;
 		const std::string	_context;
 		const eLevel		_level;
+		const std::string	_err_msg;
 
 	public:
-		MyException(const std::string &err, const std::string &_context = "",
-			const enum eLevel level = ELVL_ERROR);
+		MyException(const std::string &err, const enum eLevel level = ELVL_ERROR,
+			const std::string &_context = "");
 		virtual ~MyException(void) throw();	
 
 		virtual const char	*what(void) const throw();

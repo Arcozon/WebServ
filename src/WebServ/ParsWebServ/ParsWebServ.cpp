@@ -6,11 +6,13 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:08:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/14 18:10:33 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/15 16:03:42 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ParsWebServ.hpp"
+
+const std::string	WebServ::ParsWebServ::_keyServer("server");
 
 static inline bool	_is_dot_config(const std::string fname)
 {
@@ -44,9 +46,21 @@ inline void	WebServ::ParsWebServ::_openConfigFile(const int ac, char *av[])
 		throw (MyException("Can't open config file", MyException::ELVL_FATAL, av[1]));
 }
 
+void	WebServ::ParsWebServ::_readConfigFile(void)
+{
+	std::string	line;
+	while (std::getline(_configFile, line))
+	{
+		if (line.empty())
+			continue ;
+		std::cout << line << std::endl;
+	}
+}
+
 WebServ::ParsWebServ::ParsWebServ(const int ac, char *av[])
 {
 	_openConfigFile(ac, av);
+	_readConfigFile();
 }
 
 WebServ::ParsWebServ::~ParsWebServ(void)

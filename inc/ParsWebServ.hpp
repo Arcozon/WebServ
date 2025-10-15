@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:31 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/15 13:06:43 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/15 16:02:54 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,9 @@
 class WebServ::ParsWebServ
 {
 	private:
+		static const std::string	_keyServer;
+	
+	private:
 		std::ifstream		_configFile;
 
 		std::string			_pname;
@@ -31,6 +34,7 @@ class WebServ::ParsWebServ
 
 	private:
 		void	_openConfigFile(const int ac, char *av[]);
+		void	_readConfigFile(void);
 
 	public:
 		ParsWebServ(const int ac, char *av[]);

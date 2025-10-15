@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 15:24:56 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/15 15:52:17 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/15 16:12:22 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,11 @@ static inline std::vector<std::string>	_split(const std::string &str,
 	const bool skipTabs)
 {
 	return (_split(str, ' ', skipTabs));
+}
+
+static inline bool	_isLineEmpty(const std::string &str)
+{
+	return (str.empty() || _getTabDepth(str) == std::string::npos);
 }
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:08:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/15 16:03:42 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/15 16:12:38 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	WebServ::ParsWebServ::_readConfigFile(void)
 	std::string	line;
 	while (std::getline(_configFile, line))
 	{
-		if (line.empty())
+		if (_isLineEmpty(line))
 			continue ;
 		std::cout << line << std::endl;
 	}

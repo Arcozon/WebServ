@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 11:44:19 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/14 15:55:20 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/15 15:12:08 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ const MyException::eLevel	MyException::_lvlThrowDown = MyException::ELVL_FATAL;
 
 MyException::MyException(const std::string &err, const eLevel level,
 		const std::string &context)
-:	_err(err), _context(context.empty() ? "" : context + ": "), _level(level),
+:	_err(err), _context(context.empty() ? "" : "[" + context + "]: "), _level(level),
 	_err_msg(_colorLvl[_level] + _context + _errLvl[_level] + _err + CRESET)
 {}
 

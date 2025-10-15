@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:25:55 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/15 14:24:26 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/15 14:51:20 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ class Server::ParsServer
 			S_client_body_size,
 			S_return
 		};
-	
 	private:
 		std::string	_host;
 		std::string	_port;

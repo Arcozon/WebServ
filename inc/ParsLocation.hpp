@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:03:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/14 18:11:43 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/15 15:35:23 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include "Location.hpp"
 # include "MyException.hpp"
 
-# define GET_MASK(SHIFT)	(1 << SHIFT)
+# include "utils.hpp"
 
 class Location::ParsLocation
 {
@@ -28,8 +28,7 @@ class Location::ParsLocation
 			S_autoindex,
 			S_upload_store,
 			S_upload,
-			S_return,
-			S_cookie_enable // ?
+			S_return
 		};
 		enum allowedMethods
 		{
@@ -37,6 +36,10 @@ class Location::ParsLocation
 			S_POST,
 			S_DELETE
 		};
+
+		static bool	_isOnOff(const std::string &str);
+
+		static const unsigned int	_nTabLocation = 2;
 
 	private:
 		unsigned long	_defined;
@@ -54,6 +57,8 @@ class Location::ParsLocation
 		~ParsLocation(void);
 
 		bool	_isParsLocationValid(void) const;
+
+		bool	_addLine(const std::string &line);
 };
 
 #endif

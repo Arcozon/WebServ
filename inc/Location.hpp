@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:18:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/15 14:25:04 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/15 14:58:23 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,10 @@ class Location
 	public:
 		Location(void);
 		~Location(void);
+
+		bool	_isGET(void) const;
+		bool	_isPOST(void) const;
+		bool	_isDELETE(void) const;
 };
 
 #endif

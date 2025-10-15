@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 14:25:40 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/15 14:49:29 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/15 15:37:21 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,6 @@ Return::Return(void)
 
 Return::~Return(void)
 {}
-
-// Valid HTTP ErrCode are in range [100, 600[
-static inline bool	_isHTTPErrorCode(const std::string &str)
-{
-	return ( (str.size() == 3)
-		&& (str.find_first_not_of("0123456798") == std::string::npos)
-		&& (str[0] >= '1' && str[0] <= '5') );
-}
 
 Return::Return(const std::string &code, const std::string &url)
 :	_type(Return::RET_ERR_URL)

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:18:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/14 18:11:55 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/15 14:25:04 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <map>
 
 # include "MyException.hpp"
+# include "Return.hpp"
 
 class Location
 {
@@ -31,6 +32,7 @@ class Location
 		bool			_autoindex;
 		std::map<std::string, std::string>	_cgiHandler;
 		std::map<std::string, std::string>	_errPages;
+		Return								_return;
 
 	public:
 		Location(void);

@@ -1,5 +1,9 @@
 NAME =  webserv
 
+S_RETURN	=  Return.cpp
+D_RETURN	=  Return/
+SRC_RETURN	=  $(addprefix $(D_RETURN), $(S_RETURN))
+
 S_PARSLOCATION	 =  ParsLocation.cpp
 D_PARSLOCATION	 =  ParsLocation/
 SRC_PARSLOCATION =  $(addprefix $(D_PARSLOCATION), $(S_PARSLOCATION))
@@ -24,7 +28,7 @@ S_WEBSERV	=  $(SRC_PARSWEBSERV)  WebServ.cpp
 D_WEBSERV	=  WebServ/
 SRC_WEBSERV =  $(addprefix $(D_WEBSERV), $(S_WEBSERV))
 
-SRC   =  $(SRC_WEBSERV)  $(SRC_SERVER)  $(SRC_LOCATION)
+SRC   =  $(SRC_WEBSERV)  $(SRC_SERVER)  $(SRC_LOCATION)  $(SRC_RETURN)
 SRC  +=  main.cpp  MyException.cpp
 D_SRC =  src/
 

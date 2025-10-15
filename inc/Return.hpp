@@ -1,44 +1,44 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Server.hpp                                         :+:      :+:    :+:   */
+/*   Return.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/14 12:03:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/15 14:24:31 by gaeudes          ###   ########.fr       */
+/*   Created: 2025/10/15 14:20:21 by gaeudes           #+#    #+#             */
+/*   Updated: 2025/10/15 14:49:22 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SERVER_HPP
-# define SERVER_HPP
+#ifndef RETURN_HPP
+# define RETURN_HPP
 
-#include <string>
-#include <vector>
+# include <string>
+# include <algorithm>
 
-#include "Location.hpp"
-#include "Return.hpp"
+# include "MyException.hpp"
+# include "MyException.hpp"
 
-class Server
+class	Return
 {
 	private:
-		class ParsServer;
+		enum typeReturn
+		{
+			RET_TEXT,
+			RET_ERR_URL
+		};
 
 	private:
-		std::vector<std::string>	_serverNames;
-		std::string _ip;
-		std::string _port;
-		std::string _url;
-		std::map<std::string, std::string>	_errPages;
-
-		unsigned long	_maxBodySize;
-		bool			_maxBodySizeDefined;
-
-		std::vector<Location>	_locations;
-
+		typeReturn	_type;
+		std::string	_argOne;
+		std::string	_argTwo;
+	
 	public:
-		Server(void);
-		~Server(void);
+		Return(const std::string &code, const std::string &url);
+		Return(const std::string &text);
+		Return(void);
+		~Return(void);
+
 };
 
 #endif

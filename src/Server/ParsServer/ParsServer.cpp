@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:24 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/15 18:16:01 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/15 18:34:33 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,9 @@ void	Server::ParsServer::_addDefined(alreadyDefined toTest)
 }
 
 Server::ParsServer::~ParsServer(void)
-{}
+{
+	printParsServ();
+}
 
 Server::ParsServer::ParsServer(std::ifstream &configFile, std::string &line)
 :	_configFile(configFile),
@@ -109,12 +111,12 @@ void	Server::ParsServer::_addServerName(void)
 
 void	Server::ParsServer::_addClientBodySize(void)
 {
-	if (_isDefined(S_clientDodySize))
+	if (_isDefined(S_clientBodySize))
 		throw (MyException("Already defined", MyException::ELVL_ERROR, _splitLine.front()));
 	else if (_splitLine.size() != 2)
 		throw (MyException("Needs one argument", MyException::ELVL_ERROR, _splitLine.front()));
 	_clientMaxBodySize = _splitLine[1];	// TODO: Check val, convert to int
-	_addDefined(S_clientDodySize);
+	_addDefined(S_clientBodySize);
 }
 
 void	Server::ParsServer::_addErrorPage(void)
@@ -148,4 +150,36 @@ void	Server::ParsServer::_addReturn(void)
 bool	Server::ParsServer::_isServValid(void) const
 {
 	return (true);
+}
+
+void	Server::ParsServer::printParsServ(void) const
+{
+	std::cout << "Host: " << _host << '\n';
+	std::cout << "Port: " << _port << '\n';
+	std::cout << "ServerNames: ";
+	{
+		for (std::vector<std::string>::const_iterator it = _serverNames.begin(); it != _serverNames.end(); ++it)
+			std::cout << *it << "  ";
+		if (_serverNames.size() == 0)
+			std::cout << "	" << "None";
+		std::cout << '\n';
+	}
+	std::cout << "ClientMaxSizeBody: " << (_isDefined(S_clientBodySize) ? _clientMaxBodySize : "Not defined") << '\n';
+	std::cout << "ErrorPages: " << '\n';
+	{
+		for (std::map<std::string, std::string>::const_iterator it = _errorPages.begin();
+				it != _errorPages.end(); ++it)
+			std::cout << "	" << it->first << ": " << it->second << '\n';
+		if (_errorPages.size() == 0)
+			std::cout << "	" << "Empty" << '\n';
+	}
+	std::cout << "Locations: " << '\n';
+	{
+		for (std::vector<Location>::const_iterator it = _locations.begin(); it != _locations.end(); ++it)
+			std::cout << "	" << "not added" << '\n';
+		if (_locations.size() == 0)
+			std::cout << "	" << "Empty" << '\n';
+	}
+	std::cout << "Return: " << "none yet" << '\n';
+	std::cout << std::endl;
 }

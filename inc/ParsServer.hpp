@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:25:55 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/15 18:12:30 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/15 18:29:48 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <utility>
 
 # include "Server.hpp"
+# include "Location.hpp"
 # include "MyException.hpp"
 
 # include "utils.hpp"
@@ -31,7 +32,7 @@ class Server::ParsServer
 		{
 			S_host,
 			S_port,
-			S_clientDodySize,
+			S_clientBodySize,
 			S_return
 		};
 

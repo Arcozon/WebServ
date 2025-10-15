@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 15:24:56 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/15 15:38:48 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/15 15:52:17 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,23 +31,25 @@ static inline std::size_t	_getTabDepth(const std::string &str)
 {
 	return (str.find_first_not_of('\t'));
 }
-
+#include <iostream>
 // Splits a string into a vector of substrings separated by sep(' ')
 static inline std::vector<std::string>	_split(const std::string &str,
 	const char sep = ' ', const bool skipTabs = true)
 {
 	std::vector<std::string>	split;
 	
-	std::size_t	nextSpace = 0;
+	std::size_t	nextSpace = std::string::npos;
 	std::size_t	start = 0;
 	if (skipTabs)
 		start = _getTabDepth(str);
-	for ( ;start != std::string::npos ; )
+	while (start != std::string::npos)
 	{
 		nextSpace = str.find_first_of(sep, start);
 		split.push_back(str.substr(start, nextSpace - start));
 		start = str.find_first_not_of(sep, nextSpace);
 	}
+	if (nextSpace != std::string::npos)
+		split.push_back("");
 	return (split);
 }
 

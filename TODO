@@ -17,3 +17,6 @@ Location:
 	`return`				| 0–1
 	`cgi_handler`			| 0–N
 	`error_page`			| 0–N
+
+
+Check if server Direcctive are valid (HTTP error, name already set, location existing ...)

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:25:55 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/15 17:28:54 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/15 18:12:30 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <string>
 # include <vector>
 # include <map>
+# include <utility>
 
 # include "Server.hpp"
 # include "MyException.hpp"
@@ -30,11 +31,11 @@ class Server::ParsServer
 		{
 			S_host,
 			S_port,
-			S_client_body_size,
+			S_clientDodySize,
 			S_return
 		};
 
-		static const std::size_t	_nTabServer = 2;
+		static const std::size_t	_nTabServer = 1;
 
 		static const std::string	_keyHost;
 		static const std::string	_keyPort;
@@ -49,11 +50,13 @@ class Server::ParsServer
 		std::string					&_line;
 		std::vector<std::string>	_splitLine;
 
-		std::string	_host;
-		std::string	_port;
-		std::vector<std::string>			server_names;
-		std::string							_client_max_body_size;
-		std::map<std::string, std::string>	_error_pages;
+		unsigned long	_fDefined;
+
+		std::string							_host;
+		std::string							_port;
+		std::vector<std::string>			_serverNames;
+		std::string							_clientMaxBodySize;
+		std::map<std::string, std::string>	_errorPages;
 		std::vector<Location>				_locations;
 		Return								_return;
 
@@ -66,6 +69,11 @@ class Server::ParsServer
 		void	_addErrorPage(void);
 		void	_addLocation(void);
 		void	_addReturn(void);
+
+		void	_addDefined(alreadyDefined toTest);
+		bool	_isDefined(alreadyDefined toTest) const;
+
+		void	printParsServ(void) const;
 
 	public:
 		ParsServer(std::ifstream &_configFile, std::string &line);

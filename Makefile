@@ -37,13 +37,16 @@ INC = $(D_INC)
 CPP =  c++
 FLAGS = -Wall -Wextra -Werror -MMD -g -std=c++98
 IFLAGS = $(addprefix "-I", $(INC)) 
+
 RM =  rm -rf
 
+VAL = valgrind --leak-check=full --show-leak-kinds=all -q
 MAKE += --no-print-directory
 .DEFAULT_GOAL := test
 
 test:
-	@clear && $(MAKE) all && clear && ./$(NAME) test.config
+	@clear && $(MAKE) all && clear && $(VAL) ./$(NAME) test.config
+	@echo ./$(NAME) test.config
 
 all:	$(NAME)
 

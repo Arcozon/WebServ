@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:18:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/15 14:58:23 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/15 16:05:54 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ class Location
 
 	private:
 		unsigned long	_flags;
+
+		std::string		_location;
 		std::string		_root;
 		std::string		_index;
 		std::string		_guard;

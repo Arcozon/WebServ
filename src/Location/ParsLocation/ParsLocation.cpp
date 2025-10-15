@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/15 15:34:47 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/15 16:06:28 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ bool	Location::ParsLocation::_isOnOff(const std::string &str)
 
 Location::ParsLocation::ParsLocation(void)
 :	_defined(0),
-	_allowed(GET_MASK(S_GET) | GET_MASK(S_POST) | GET_MASK(S_DELETE)),
+	_allow(GET_MASK(S_GET) | GET_MASK(S_POST) | GET_MASK(S_DELETE)),
 	_autoindex(false)
 {}
 

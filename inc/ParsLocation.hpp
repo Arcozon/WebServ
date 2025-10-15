@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:03:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/15 15:35:23 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/15 16:06:11 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ class Location::ParsLocation
 			S_upload,
 			S_return
 		};
-		enum allowedMethods
+		enum allowMethods
 		{
 			S_GET,
 			S_POST,
@@ -44,7 +44,8 @@ class Location::ParsLocation
 	private:
 		unsigned long	_defined;
 
-		unsigned char	_allowed;
+		unsigned char	_allow;
+		std::string		_location;
 		std::string		_root;
 		std::string		_index;
 		std::string		_guard;

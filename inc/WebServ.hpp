@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 10:44:46 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/14 18:08:34 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/15 18:49:03 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,13 @@ class WebServ
 
 	private:
 		std::vector<Server>	_servers;
-		
+
 		std::string			_pname;
 		char				**_env;
 		bool				_init;
 
 	private:
-
+		
 	public:
 		WebServ(const int ac, char *av[], char *env[]);
 		~WebServ(void);

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 10:45:12 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/14 11:01:20 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/15 18:19:15 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,5 +24,7 @@
 # define CYELLOW	"\e[33m"
 # define CMAGENTA	"\e[34m"
 # define CCYAN		"\e[35m"
+
+# define CBRIGHTRED "\e[38;5;196m"
 
 #endif

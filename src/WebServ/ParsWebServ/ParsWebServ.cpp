@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:08:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/15 16:12:38 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/15 17:04:25 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,26 @@ inline void	WebServ::ParsWebServ::_openConfigFile(const int ac, char *av[])
 
 void	WebServ::ParsWebServ::_readConfigFile(void)
 {
-	std::string	line;
-	while (std::getline(_configFile, line))
+	while (std::getline(_configFile, _line))
 	{
-		if (_isLineEmpty(line))
+		if (_isLineEmpty(_line))
 			continue ;
-		std::cout << line << std::endl;
+		if (_line == _keyServer)
+			_addServer();
+		std::cout << _line << std::endl;
+	}
+}
+
+void	WebServ::ParsWebServ::_addServer(void)
+{
+	try
+	{
+		_servers.push_back(Server(_configFile, _line));
+	}
+	catch (const MyException &e)
+	{
+		e.throwDown();
+		std::cerr << e;
 	}
 }
 

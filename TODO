@@ -8,14 +8,12 @@ Server:
 	`error_page`			| 0–N
 	`location`				| 0–N
 	`return`				| 0–1
-	`set_cookie`			| 0–N
 Location:
 	`root`					| 0–1
 	`index`					| 0–N
-	`allow`					| 0–1  
+	`allow`					| 0–1
 	`autoindex`				| 0–1
-	`upload_store`			| 0–1  
+	`upload_store`			| 0–1
 	`return`				| 0–1
 	`cgi_handler`			| 0–N
 	`error_page`			| 0–N
-	`set_cookie`			| 0–N

@@ -6,12 +6,17 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:03:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/15 16:06:11 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/15 17:07:18 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSLOCATION_HPP
 # define PARSLOCATION_HPP
+
+# include <fstream>
+
+# include <string>
+# include <vector>
 
 # include "Location.hpp"
 # include "MyException.hpp"
@@ -39,7 +44,7 @@ class Location::ParsLocation
 
 		static bool	_isOnOff(const std::string &str);
 
-		static const unsigned int	_nTabLocation = 2;
+		static const std::size_t	_nTabLocation = 2;
 
 	private:
 		unsigned long	_defined;

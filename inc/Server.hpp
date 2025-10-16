@@ -15,29 +15,28 @@
 
 #include <string>
 #include <vector>
-
-#include "Location.hpp"
+#include <stdexcept>
+#include <sys/epoll.h>
+#include <fcntl.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <iostream>
+#include <unistd.h>
 
 class Server
 {
 	private:
-		class ParsServer;
+		std::vector<unsigned short> _ports; 
+		std::vector<int> _epoll_fds; 
+		int	_epoll_instance;
 
-	private:
-		std::vector<std::string>	_serverNames;
-		std::string _ip;
-		std::string _port;
-		std::string _url;
-		std::map<std::string, std::string>	_errPages;
-
-		unsigned long	_maxBodySize;
-		bool			_maxBodySizeDefined;
-
-		std::vector<Location>	_locations;
-
+		void initSockets();
+		void initEpoll();
 	public:
 		Server(void);
 		~Server(void);
+		void start(); // démarre l'event loop du serveur
+		void stop(); // arrête l'event loop du serveur
 };
 
 #endif

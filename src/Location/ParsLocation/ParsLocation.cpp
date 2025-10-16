@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 16:40:09 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 16:53:06 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,10 @@ const std::string	Location::ParsLocation::_keyUploadLocation("upload_store");
 const std::string	Location::ParsLocation::_keyReturn("return");
 const std::string	Location::ParsLocation::_keyCGIHandler("cgi_handler");
 const std::string	Location::ParsLocation::_keyErrorPage("error_page");
+
+const std::string	Location::ParsLocation::_keyAllowGet("GET");
+const std::string	Location::ParsLocation::_keyAllowPost("POST");
+const std::string	Location::ParsLocation::_keyAllowDelete("DELETE");
 
 bool	Location::ParsLocation::_isOnOff(const std::string &str)
 {
@@ -42,7 +46,9 @@ void	Location::ParsLocation::_addDefined(alreadyDefined toTest)
 }
 
 Location::ParsLocation::~ParsLocation(void)
-{}
+{
+	printfLocation();
+}
 
 void	Location::ParsLocation::_addLocationLine(void)
 {
@@ -116,7 +122,23 @@ void	Location::ParsLocation::_addAllow(void)
 	else if (splitLine.size() == 1)
 		throw (MyException("Needs arguments", MyException::ELVL_WARNING, splitLine.front()));
 	_allow = 0;
-	// add allow
+	enum allowMethods	toAllow;
+	for (std::size_t i = 1; i < splitLine.size() ; ++i)
+	{
+		toAllow = S_METHODS_MAX;
+		if (splitLine.at(i) == _keyAllowGet)
+			toAllow = S_GET;
+		else if (splitLine.at(i) == _keyAllowPost)
+			toAllow = S_POST;
+		else if (splitLine.at(i) == _keyAllowDelete)
+			toAllow = S_DELETE;
+		if (toAllow == S_METHODS_MAX)
+			std::cerr << MyException("Unknown method", MyException::ELVL_WARNING, splitLine.at(i));
+		else if (_isAllowed(toAllow))
+			std::cerr << MyException("Already allowed", MyException::ELVL_WARNING, splitLine.at(i));
+		else
+			_allow |= GET_MASK(toAllow);
+	}
 	_addDefined(S_allow);
 }
 

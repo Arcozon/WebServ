@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:03:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 16:35:22 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 16:50:25 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,10 @@ class Location::ParsLocation
 		static const std::string	_keyReturn;
 		static const std::string	_keyCGIHandler;
 		static const std::string	_keyErrorPage;
+
+		static const std::string	_keyAllowGet;
+		static const std::string	_keyAllowPost;
+		static const std::string	_keyAllowDelete;
 
 	private:
 		ParsLine	&_parsLine;	

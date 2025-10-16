@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:24 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/15 18:34:33 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 12:19:15 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,10 +48,12 @@ Server::ParsServer::ParsServer(std::ifstream &configFile, std::string &line)
 			break ;
 		try
 		{
-			_addServerLine();
+			_addServerLine())
+				
 		}
 		catch(const MyException& e)
 		{
+			e.throwDown();
 			std::cerr << e;
 		}			
 	}
@@ -78,7 +80,8 @@ void	Server::ParsServer::_addServerLine(void)
 	else if (_splitLine.front() == _keyReturn)
 		_addReturn();
 	else
-		throw (MyException("Unknow key", MyException::ELVL_ERROR, _splitLine.front()));
+		throw (MyException("Unknown key in server",
+			MyException::ELVL_ERROR, _splitLine.front()));
 }
 
 void	Server::ParsServer::_addHost(void)
@@ -87,7 +90,7 @@ void	Server::ParsServer::_addHost(void)
 		throw (MyException("Already defined", MyException::ELVL_ERROR, _splitLine.front()));
 	else if (_splitLine.size() != 2)
 		throw (MyException("Needs one argument", MyException::ELVL_ERROR, _splitLine.front()));
-	_host = _splitLine[1]; // TODO: check empty
+	_host = _splitLine.at(1); // TODO: check empty
 	_addDefined(S_host);
 }
 
@@ -97,7 +100,7 @@ void	Server::ParsServer::_addPort(void)
 		throw (MyException("Already defined", MyException::ELVL_ERROR, _splitLine.front()));
 	else if (_splitLine.size() != 2)
 		throw (MyException("Needs one argument", MyException::ELVL_ERROR, _splitLine.front()));
-	_port = _splitLine[1];	// TODO: check value of port
+	_port = _splitLine.at(1);	// TODO: check value of port
 	_addDefined(S_port);
 }
 
@@ -105,8 +108,8 @@ void	Server::ParsServer::_addServerName(void)
 {
 	if (_splitLine.size() <= 1)
 		throw (MyException("Needs one or more arguments", MyException::ELVL_ERROR, _splitLine.front()));
-	for (std::size_t i = 1; i < _splitLine.size(); ++i)
-		_serverNames.push_back(_splitLine[i]);			// TODO: check duplicates ?
+	for (std::vector<std::string>::size_type i = 1; i < _splitLine.size(); ++i)
+		_serverNames.push_back(_splitLine.at(i));			// TODO: check duplicates ?
 }
 
 void	Server::ParsServer::_addClientBodySize(void)
@@ -115,7 +118,7 @@ void	Server::ParsServer::_addClientBodySize(void)
 		throw (MyException("Already defined", MyException::ELVL_ERROR, _splitLine.front()));
 	else if (_splitLine.size() != 2)
 		throw (MyException("Needs one argument", MyException::ELVL_ERROR, _splitLine.front()));
-	_clientMaxBodySize = _splitLine[1];	// TODO: Check val, convert to int
+	_clientMaxBodySize = _splitLine.at(1);	// TODO: Check val, convert to int
 	_addDefined(S_clientBodySize);
 }
 
@@ -123,19 +126,18 @@ void	Server::ParsServer::_addErrorPage(void)
 {
 	if (_splitLine.size() != 3)
 		throw (MyException("Needs two arguments", MyException::ELVL_ERROR, _splitLine.front()));
-	else if (!_isHTTPErrorCode(_splitLine[1]))
-		throw (MyException("Not a valid HTTP error code", MyException::ELVL_ERROR, _splitLine[1]));
-	else if (_errorPages.find(_splitLine[1]) != _errorPages.end())
-		throw (MyException("Error page is already defined", MyException::ELVL_ERROR, _splitLine[1]));
-	_errorPages.insert(std::pair<std::string, std::string>(_splitLine[1], _splitLine[2]));
+	else if (!_isHTTPErrorCode(_splitLine.at(1)))
+		throw (MyException("Not a valid HTTP error code", MyException::ELVL_ERROR, _splitLine.at(1)));
+	else if (_errorPages.find(_splitLine.at(1)) != _errorPages.end())
+		throw (MyException("Error page is already defined", MyException::ELVL_ERROR, _splitLine.at(1)));
+	_errorPages.insert(std::pair<std::string, std::string>(_splitLine.at(1), _splitLine.at(2)));
 }
 
 void	Server::ParsServer::_addLocation(void)
 {
 	if (_splitLine.size() != 2)
 		throw (MyException("Needs one argument", MyException::ELVL_ERROR, _splitLine.front()));
-	// 
-	// add location
+	_locations.push_back(Location(_configFile, _line));
 }
 
 void	Server::ParsServer::_addReturn(void)

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:08:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/15 18:37:41 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 12:21:06 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ void	WebServ::ParsWebServ::_readConfigFile(void)
 			continue ;
 		while (_line == _keyServer)
 			_addServer();
-		
 		std::cout << _line << std::endl;
 	}
 }

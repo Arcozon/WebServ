@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:18:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/15 16:05:54 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 11:04:47 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ class Location
 
 	public:
 		Location(void);
+		Location(std::ifstream &configFile, std::string &line);
 		~Location(void);
 
 		bool	_isGET(void) const;

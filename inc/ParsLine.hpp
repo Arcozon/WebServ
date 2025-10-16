@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 12:22:31 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 14:59:16 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 16:07:46 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ class ParsLine
 	private:
 		bool	_isLineEmpty(void);
 
+		void	splitLine(const char sep = ' ', const bool skipTabs = true);
+
 	public:
 		ParsLine(const std::string &fileName);
 		ParsLine(void);
@@ -41,7 +43,8 @@ class ParsLine
 		// Return false if err
 		bool		readLine(const std::size_t expectedTab = 0);
 
-		void		open(const std::string &fileName,  std::ios_base::openmode mode = (std::ios_base::openmode)8);
+		void		open(const std::string &fileName,
+			std::ios_base::openmode mode = (std::ios_base::openmode) 8);
 
 		static inline std::size_t	getTabDepth(const std::string &str)
 		{	return (str.find_first_not_of('\t'));	};
@@ -58,6 +61,8 @@ class ParsLine
 		inline bool	fail(void) const
 			{	return (_file.fail());	}
 		
+		static std::vector<std::string>	splitLine(const std::string &str,
+			const char sep = ' ', const bool skipTabs = true);
 };
 
 #endif

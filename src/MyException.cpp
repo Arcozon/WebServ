@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 11:44:19 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/15 18:20:46 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 16:03:38 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 const std::string	MyException::_colorLvl[ELVL_MAX] = {CMAGENTA, CRED, CBRIGHTRED};
 const std::string	MyException::_errLvl[ELVL_MAX]   = {"warning: ", "error: ", "fatal error: "};
 const MyException::eLevel	MyException::_lvlThrowDown = MyException::ELVL_FATAL;
-
-#include <iostream>
 
 MyException::MyException(const std::string &err, const eLevel level,
 		const std::string &context)

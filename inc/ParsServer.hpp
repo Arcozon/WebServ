@@ -6,13 +6,14 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:25:55 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 14:49:08 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 16:14:59 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSSERVER_HPP
 # define PARSSERVER_HPP
 
+# include <iostream>
 # include <fstream>
 # include <string>
 # include <vector>
@@ -61,6 +62,13 @@ class Server::ParsServer
 		Return								_return;
 
 	private:
+		inline const std::string	_inServer(void) const
+			{
+				if (_isDefined(S_host) && _isDefined(S_port))
+					return (" in server " + _host + ":" + _port);
+				return (" in server");
+			}
+
 		void	_addServerLine(void);
 		void	_addHost(void);
 		void	_addPort(void);

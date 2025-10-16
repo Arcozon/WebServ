@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 12:28:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 15:16:10 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 16:07:59 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	ParsLine::open(const std::string &fileName, std::ios_base::openmode mode)
 
 bool	ParsLine::_isLineEmpty(void)
 {
-	return (_line.empty() || _getTabDepth(_line) == std::string::npos);
+	return (_line.empty() || getTabDepth(_line) == std::string::npos);
 }
 
 bool	ParsLine::readLine(const std::size_t expectedTab)
@@ -54,8 +54,34 @@ bool	ParsLine::readLine(const std::size_t expectedTab)
 				return (false);
 		}	while (_isLineEmpty());
 		_tabDepth = getTabDepth(_line);
-		_splitLine = _split(_line);
+		splitLine();
 	}
 	_needNewline = ( _tabDepth >= expectedTab );
 	return (_needNewline);
+}
+
+void	ParsLine::splitLine(const char sep, const bool skipTabs)
+{
+	_splitLine = ParsLine::splitLine(_line, sep, skipTabs);
+}
+
+std::vector<std::string>	ParsLine::splitLine(const std::string &str,
+	const char sep, const bool skipTabs)
+{
+	std::vector<std::string>	split;
+	std::size_t	nextSpace = std::string::npos;
+	std::size_t	start = 0;
+
+	if (skipTabs)
+		start = getTabDepth(str);
+	start = str.find_first_not_of(sep, start);
+	while (start != std::string::npos)
+	{
+		nextSpace = str.find_first_of(sep, start);
+		split.push_back(str.substr(start, nextSpace - start));
+		start = str.find_first_not_of(sep, nextSpace);
+	}
+	if (nextSpace != std::string::npos)
+		split.push_back("");
+	return (split);
 }

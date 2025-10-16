@@ -6,13 +6,14 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:03:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 14:59:25 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 16:35:22 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSLOCATION_HPP
 # define PARSLOCATION_HPP
 
+# include <iostream>
 # include <fstream>
 
 # include <string>
@@ -73,7 +74,11 @@ class Location::ParsLocation
 		std::map<std::string, std::string>	_cgiHandler;
 		std::map<std::string, std::string>	_errorPages;
 
+		inline const std::string	_inLocation(void) const
+			{	return (std::string(" in location " + _location));	}
+
 	private:
+		bool	_isAllowed(allowMethods toTest) const;
 		bool	_isDefined(alreadyDefined toTest) const;
 		void	_addDefined(alreadyDefined toTest);
 
@@ -94,6 +99,8 @@ class Location::ParsLocation
 		bool	isParsLocationValid(void) const;
 
 		Location	toLocation(void) const;
+
+		void	printfLocation(void) const;
 };
 
 #endif

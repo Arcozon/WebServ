@@ -6,13 +6,14 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:31 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 14:46:20 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 16:05:34 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSWEBSERV_HPP
 # define PARSWEBSERV_HPP
 
+# include <iostream>
 # include <fstream>
 
 # include <string>

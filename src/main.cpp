@@ -23,5 +23,14 @@ int	main(int ac, char **av, char **env)
 		std::cerr << e;
 		return (e.getErrLvl());
 	}
+	try
+	{
+		Server server;
+		server.print_fds();
+	}
+	catch (std::exception &e)
+	{
+		std::cout << e.what() << std::endl;
+	}
 	return (EXIT_SUCCESS);
 }

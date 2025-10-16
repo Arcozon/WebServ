@@ -8,9 +8,9 @@ S_LOCATION	 =  $(SRC_PARSLOCATION)  Location.cpp
 D_LOCATION	 =  Location/
 SRC_LOCATION =  $(addprefix $(D_LOCATION), $(S_LOCATION))
 
-S_PARSSERVER   =  ParsServer.cpp
-D_PARSSERVER   =  ParsServer/
-SRC_PARSSERVER =  $(addprefix $(D_PARSSERVER), $(S_PARSSERVER))
+#S_PARSSERVER   =  ParsServer.cpp
+#D_PARSSERVER   =  ParsServer/
+#SRC_PARSSERVER =  $(addprefix $(D_PARSSERVER), $(S_PARSSERVER))
 
 S_SERVER   =  $(SRC_PARSSERVER)  Server.cpp
 D_SERVER   =  Server/

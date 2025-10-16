@@ -22,6 +22,8 @@
 #include <arpa/inet.h>
 #include <iostream>
 #include <unistd.h>
+#include <cstring>
+#include <sstream>
 
 class Server
 {
@@ -32,11 +34,12 @@ class Server
 
 		void initSockets();
 		void initEpoll();
-	public:
+		public:
 		Server(void);
 		~Server(void);
 		void start(); // démarre l'event loop du serveur
 		void stop(); // arrête l'event loop du serveur
+		void print_fds();
 };
 
 #endif

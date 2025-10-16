@@ -24,6 +24,9 @@
 #include <unistd.h>
 #include <cstring>
 #include <sstream>
+#include <cerrno>
+
+#define EVENT_SIZE 100
 
 class Server
 {
@@ -34,7 +37,8 @@ class Server
 
 		void initSockets();
 		void initEpoll();
-	
+	 	bool is_registered_socket(int fd);
+		
 		public:
 		Server(void);
 		~Server(void);

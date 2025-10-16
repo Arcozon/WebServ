@@ -26,7 +26,8 @@ int	main(int ac, char **av, char **env)
 	try
 	{
 		Server server;
-		server.print_fds();
+		//server.print_fds();
+		server.start();
 	}
 	catch (std::exception &e)
 	{

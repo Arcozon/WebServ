@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:31 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/15 17:04:03 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 14:46:20 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,15 @@
 # include "MyException.hpp"
 # include "WebServ.hpp"
 
+# include "ParsLine.hpp"
+
 class WebServ::ParsWebServ
 {
 	private:
 		static const std::string	_keyServer;
 	
 	private:
-		std::ifstream	_configFile;
-		std::string		_line;
+		ParsLine	_parsLine;
 
 		std::string			_pname;
 		std::vector<Server>	_servers; 

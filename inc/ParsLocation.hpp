@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:03:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 12:13:29 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 14:59:25 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include "Return.hpp"
 # include "MyException.hpp"
 
+# include "ParsLine.hpp"
 # include "utils.hpp"
 
 class Location::ParsLocation
@@ -58,9 +59,7 @@ class Location::ParsLocation
 		static const std::string	_keyErrorPage;
 
 	private:
-		std::ifstream				&_configFile;
-		std::string					&_line;
-		std::vector<std::string>	_splitLine;
+		ParsLine	&_parsLine;	
 
 		unsigned long	_fDefined;
 
@@ -89,7 +88,7 @@ class Location::ParsLocation
 		void	_addErrPages(void);
 
 	public:
-		ParsLocation(std::ifstream &configFile, std::string &line);
+		ParsLocation(ParsLine &parsLine);
 		~ParsLocation(void);
 
 		bool	isParsLocationValid(void) const;

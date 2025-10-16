@@ -6,18 +6,20 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 12:03:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/15 17:05:38 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 14:46:08 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
-#include <string>
-#include <vector>
+# include <string>
+# include <vector>
 
-#include "Location.hpp"
-#include "Return.hpp"
+# include "Location.hpp"
+# include "Return.hpp"
+
+# include "ParsLine.hpp"
 
 class Server
 {
@@ -40,7 +42,7 @@ class Server
 
 	public:
 		Server(void);
-		Server(std::ifstream &configFile, std::string &line);
+		Server(ParsLine &parsLine);
 		~Server(void);
 };
 

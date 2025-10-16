@@ -6,11 +6,16 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 12:28:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 14:28:01 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 15:16:10 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ParsLine.hpp"
+
+ParsLine::ParsLine(void)
+:	_needNewline(true),
+	_tabDepth(0)
+{}
 
 ParsLine::ParsLine(const std::string &fileName)
 :	_needNewline(true),
@@ -24,15 +29,23 @@ ParsLine::~ParsLine(void)
 	_file.close();
 }
 
+void	ParsLine::open(const std::string &fileName, std::ios_base::openmode mode)
+{
+	_file.close();
+	_file.open(fileName.c_str(), mode);
+}
+
 bool	ParsLine::_isLineEmpty(void)
 {
 	return (_line.empty() || _getTabDepth(_line) == std::string::npos);
 }
 
-bool	ParsLine::readLine(void)
+bool	ParsLine::readLine(const std::size_t expectedTab)
 {
 	if (_file.fail())
+	{
 		return (false);
+	}
 	else if (_needNewline)
 	{
 		do
@@ -40,12 +53,9 @@ bool	ParsLine::readLine(void)
 			if (!std::getline(_file, _line))
 				return (false);
 		}	while (_isLineEmpty());
-		if (_tabDepth > getTabDepth(_line))
-			_needNewline = false;
 		_tabDepth = getTabDepth(_line);
 		_splitLine = _split(_line);
 	}
-	else
-		_needNewline = true;
-	return (true);
+	_needNewline = ( _tabDepth >= expectedTab );
+	return (_needNewline);
 }

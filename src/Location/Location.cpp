@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:37:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 11:05:16 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 15:05:00 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@
 Location::Location(void)
 {}
 
-Location::Location(std::ifstream &configFile, std::string &line)
+Location::Location(ParsLine &parsLine)
 {
-	ParsLocation	parsLocation(configFile, line);
+	ParsLocation	parsLocation(parsLine);
 
 	(void)parsLocation;
 }

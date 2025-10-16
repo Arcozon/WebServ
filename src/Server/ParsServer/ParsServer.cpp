@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:24 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 14:17:17 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 15:01:15 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,17 +35,12 @@ Server::ParsServer::~ParsServer(void)
 	printParsServ();
 }
 
-Server::ParsServer::ParsServer(std::ifstream &configFile, std::string &line)
-:	_configFile(configFile),
-	_line(line),
+Server::ParsServer::ParsServer(ParsLine &parsLine)
+:	_parsLine(parsLine),
 	_fDefined(0)
 {
-	while (std::getline(_configFile, _line))
+	while (_parsLine.readLine(_nTabServer))
 	{
-		if (_isLineEmpty(_line))
-			continue ;
-		else if (_getTabDepth(_line) < _nTabServer)
-			break ;
 		try
 		{
 			_addServerLine();
@@ -60,91 +55,106 @@ Server::ParsServer::ParsServer(std::ifstream &configFile, std::string &line)
 
 void	Server::ParsServer::_addServerLine(void)
 {
-	if (_getTabDepth(_line) > _nTabServer)
-		throw (MyException("Too many tabs", MyException::ELVL_ERROR, _line));
+	if (_parsLine.getTabDepth() > _nTabServer)
+		throw (MyException("Too many tabs", MyException::ELVL_ERROR, _parsLine.getLine()));
 	
-	_splitLine = _split(_line);
-	if (_splitLine.front() == _keyHost)
+	const std::string	&splitLineFront( _parsLine.getSplitLine().front() );
+
+	if (splitLineFront == _keyHost)
 		_addHost();
-	else if (_splitLine.front() == _keyPort)
+	else if (splitLineFront == _keyPort)
 		_addPort();
-	else if (_splitLine.front() == _keyServerName)
+	else if (splitLineFront == _keyServerName)
 		_addServerName();
-	else if (_splitLine.front() == _keyClientBodySize)
+	else if (splitLineFront == _keyClientBodySize)
 		_addClientBodySize();
-	else if (_splitLine.front() == _keyErrorPage)
+	else if (splitLineFront == _keyErrorPage)
 		_addErrorPage();
-	else if (_splitLine.front() == _keyLocation)
+	else if (splitLineFront == _keyLocation)
 		_addLocation();
-	else if (_splitLine.front() == _keyReturn)
+	else if (splitLineFront == _keyReturn)
 		_addReturn();
 	else
 		throw (MyException("Unknown key in server",
-			MyException::ELVL_ERROR, _splitLine.front()));
+			MyException::ELVL_ERROR, splitLineFront));
 }
 
 void	Server::ParsServer::_addHost(void)
 {
+	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
+
 	if (_isDefined(S_host))
-		throw (MyException("Already defined", MyException::ELVL_ERROR, _splitLine.front()));
-	else if (_splitLine.size() != 2)
-		throw (MyException("Needs one argument", MyException::ELVL_ERROR, _splitLine.front()));
-	_host = _splitLine.at(1); // TODO: check empty
+		throw (MyException("Already defined", MyException::ELVL_ERROR, splitLine.front()));
+	else if (splitLine.size() != 2)
+		throw (MyException("Needs one argument", MyException::ELVL_ERROR, splitLine.front()));
+	_host = splitLine.at(1); // TODO: check empty
 	_addDefined(S_host);
 }
 
 void	Server::ParsServer::_addPort(void)
 {
+	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
+
 	if (_isDefined(S_port))
-		throw (MyException("Already defined", MyException::ELVL_ERROR, _splitLine.front()));
-	else if (_splitLine.size() != 2)
-		throw (MyException("Needs one argument", MyException::ELVL_ERROR, _splitLine.front()));
-	_port = _splitLine.at(1);	// TODO: check value of port
+		throw (MyException("Already defined", MyException::ELVL_ERROR, splitLine.front()));
+	else if (splitLine.size() != 2)
+		throw (MyException("Needs one argument", MyException::ELVL_ERROR, splitLine.front()));
+	_port = splitLine.at(1);	// TODO: check value of port
 	_addDefined(S_port);
 }
 
 void	Server::ParsServer::_addServerName(void)
 {
-	if (_splitLine.size() <= 1)
-		throw (MyException("Needs one or more arguments", MyException::ELVL_ERROR, _splitLine.front()));
-	for (std::vector<std::string>::size_type i = 1; i < _splitLine.size(); ++i)
-		_serverNames.push_back(_splitLine.at(i));			// TODO: check duplicates ?
+	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
+
+	if (splitLine.size() <= 1)
+		throw (MyException("Needs one or more arguments", MyException::ELVL_ERROR, splitLine.front()));
+	for (std::vector<std::string>::size_type i = 1; i < splitLine.size(); ++i)
+		_serverNames.push_back(splitLine.at(i));			// TODO: check duplicates ?
 }
 
 void	Server::ParsServer::_addClientBodySize(void)
 {
+	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
+
 	if (_isDefined(S_clientBodySize))
-		throw (MyException("Already defined", MyException::ELVL_ERROR, _splitLine.front()));
-	else if (_splitLine.size() != 2)
-		throw (MyException("Needs one argument", MyException::ELVL_ERROR, _splitLine.front()));
-	_clientMaxBodySize = _splitLine.at(1);	// TODO: Check val, convert to int
+		throw (MyException("Already defined", MyException::ELVL_ERROR, splitLine.front()));
+	else if (splitLine.size() != 2)
+		throw (MyException("Needs one argument", MyException::ELVL_ERROR, splitLine.front()));
+	_clientMaxBodySize = splitLine.at(1);	// TODO: Check val, convert to int
 	_addDefined(S_clientBodySize);
 }
 
 void	Server::ParsServer::_addErrorPage(void)
 {
-	if (_splitLine.size() != 3)
-		throw (MyException("Needs two arguments", MyException::ELVL_ERROR, _splitLine.front()));
-	else if (!_isHTTPErrorCode(_splitLine.at(1)))
-		throw (MyException("Not a valid HTTP error code", MyException::ELVL_ERROR, _splitLine.at(1)));
-	else if (_errorPages.find(_splitLine.at(1)) != _errorPages.end())
-		throw (MyException("Error page is already defined", MyException::ELVL_ERROR, _splitLine.at(1)));
-	_errorPages.insert(std::pair<std::string, std::string>(_splitLine.at(1), _splitLine.at(2)));
+	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
+
+	if (splitLine.size() != 3)
+		throw (MyException("Needs two arguments", MyException::ELVL_ERROR, splitLine.front()));
+	else if (!_isHTTPErrorCode(splitLine.at(1)))
+		throw (MyException("Not a valid HTTP error code", MyException::ELVL_ERROR, splitLine.at(1)));
+	else if (_errorPages.find(splitLine.at(1)) != _errorPages.end())
+		throw (MyException("Error page is already defined", MyException::ELVL_ERROR, splitLine.at(1)));
+	_errorPages.insert(std::pair<std::string, std::string>(splitLine.at(1), splitLine.at(2)));
 }
 
 void	Server::ParsServer::_addLocation(void)
 {
-	if (_splitLine.size() != 2)
-		throw (MyException("Needs one argument", MyException::ELVL_ERROR, _splitLine.front()));
-	_locations.push_back(Location(_configFile, _line));
+	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
+
+	if (splitLine.size() != 2)
+		throw (MyException("Needs one argument", MyException::ELVL_ERROR, splitLine.front()));
+	_locations.push_back(Location(_parsLine));
 }
 
 void	Server::ParsServer::_addReturn(void)
 {
+	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
+
 	if (_isDefined(S_return))
-		throw (MyException("Already defined", MyException::ELVL_ERROR, _splitLine.front()));
-	else if (_splitLine.size() != 2 && _splitLine.size() != 3)
-		throw (MyException("Needs one or two arguments", MyException::ELVL_ERROR, _splitLine.front()));
+		throw (MyException("Already defined", MyException::ELVL_ERROR, splitLine.front()));
+	else if (splitLine.size() != 2 && splitLine.size() != 3)
+		throw (MyException("Needs one or two arguments", MyException::ELVL_ERROR, splitLine.front()));
 	_addDefined(S_return);
 }
 

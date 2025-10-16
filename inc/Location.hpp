@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:18:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 11:04:47 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 14:57:31 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 
 # include "MyException.hpp"
 # include "Return.hpp"
+
+# include "ParsLine.hpp"
 
 class Location
 {
@@ -38,7 +40,7 @@ class Location
 
 	public:
 		Location(void);
-		Location(std::ifstream &configFile, std::string &line);
+		Location(ParsLine &parsLine);
 		~Location(void);
 
 		bool	_isGET(void) const;

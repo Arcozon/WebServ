@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 12:22:31 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 14:13:42 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 14:59:16 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,13 @@ class ParsLine
 
 	public:
 		ParsLine(const std::string &fileName);
+		ParsLine(void);
 		~ParsLine(void);
 		
 		// Return false if err
-		bool		readLine(void);
+		bool		readLine(const std::size_t expectedTab = 0);
+
+		void		open(const std::string &fileName,  std::ios_base::openmode mode = (std::ios_base::openmode)8);
 
 		static inline std::size_t	getTabDepth(const std::string &str)
 		{	return (str.find_first_not_of('\t'));	};

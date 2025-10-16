@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:08:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 12:21:06 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 14:47:57 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,20 +41,20 @@ inline void	WebServ::ParsWebServ::_openConfigFile(const int ac, char *av[])
 		throw (MyException("Too many args", MyException::ELVL_FATAL, _pname));
 	else if (!_is_dot_config(av[1]))
 		throw (MyException("File must end with " DOT_CONFIG, MyException::ELVL_FATAL, _pname));
-	_configFile.open(av[1], std::ios::in);
-	if (_configFile.fail())
+	_parsLine.open(av[1], std::ios::in);
+	if (_parsLine.fail())
 		throw (MyException("Can't open config file", MyException::ELVL_FATAL, av[1]));
 }
 
 void	WebServ::ParsWebServ::_readConfigFile(void)
 {
-	while (std::getline(_configFile, _line))
+	while (_parsLine.readLine())
 	{
-		if (_isLineEmpty(_line))
-			continue ;
-		while (_line == _keyServer)
+		if (_parsLine.getLine() == _keyServer)
 			_addServer();
-		std::cout << _line << std::endl;
+		else
+			throw (MyException("Unknown line in .config",
+				MyException::ELVL_ERROR, _parsLine.getLine()));
 	}
 }
 
@@ -62,7 +62,7 @@ void	WebServ::ParsWebServ::_addServer(void)
 {
 	try
 	{
-		_servers.push_back(Server(_configFile, _line));
+		_servers.push_back(Server(_parsLine));
 	}
 	catch (const MyException &e)
 	{
@@ -78,7 +78,5 @@ WebServ::ParsWebServ::ParsWebServ(const int ac, char *av[])
 }
 
 WebServ::ParsWebServ::~ParsWebServ(void)
-{
-	_configFile.close();
-}
+{}
 

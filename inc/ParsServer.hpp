@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:25:55 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/15 18:29:48 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 14:49:08 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include "Location.hpp"
 # include "MyException.hpp"
 
+# include "ParsLine.hpp"
 # include "utils.hpp"
 
 class Server::ParsServer
@@ -47,9 +48,7 @@ class Server::ParsServer
 		static const std::string	_keyReturn;
 
 	private:
-		std::ifstream				&_configFile;
-		std::string					&_line;
-		std::vector<std::string>	_splitLine;
+		ParsLine	&_parsLine;
 
 		unsigned long	_fDefined;
 
@@ -77,7 +76,7 @@ class Server::ParsServer
 		void	printParsServ(void) const;
 
 	public:
-		ParsServer(std::ifstream &_configFile, std::string &line);
+		ParsServer(ParsLine &parsLine);
 		~ParsServer(void);
 
 		bool	_isServValid(void) const;

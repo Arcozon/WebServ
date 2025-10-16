@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 10:51:19 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 14:25:03 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 15:05:39 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,7 @@ int	main(int ac, char **av, char **env)
 {
 	try
 	{
-		// WebServ	MyWebServ(ac, av, env);
-		ParsLine	test(av[1]);
-		while (test.readLine())
-		{
-			std::cout << test.getLine() << std::endl;
-		}
+		WebServ	MyWebServ(ac, av, env);
 	}
 	catch (const MyException &e)
 	{

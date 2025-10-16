@@ -41,11 +41,12 @@ void Server::initSockets()
 		}
 
 		if (listen(fd, SOMAXCONN) == -1)
-			throw std::runtime_error("listen() syscall failed to accept incoming connections on port: ");
+		{
+			std::ostringstream oss;
+			oss << "listen() syscall failed to accept incoming connections on port: " << _ports[i];
+			throw std::runtime_error(oss.str());
+		}
 		
-		if (listen(fd, SOMAXCONN) == -1)
-			throw std::runtime_error("listen() syscall failed to accept incoming connections on port: ");
-
 		this->_epoll_fds.push_back(fd); // fd qu'on va monitor avec epoll
 	}
 }

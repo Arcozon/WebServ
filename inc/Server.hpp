@@ -34,6 +34,7 @@ class Server
 
 		void initSockets();
 		void initEpoll();
+	
 		public:
 		Server(void);
 		~Server(void);

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:24 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 15:01:15 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 15:26:24 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,6 +155,10 @@ void	Server::ParsServer::_addReturn(void)
 		throw (MyException("Already defined", MyException::ELVL_ERROR, splitLine.front()));
 	else if (splitLine.size() != 2 && splitLine.size() != 3)
 		throw (MyException("Needs one or two arguments", MyException::ELVL_ERROR, splitLine.front()));
+	else if (splitLine.size() == 2)
+		_return = Return(splitLine.at(1));
+	else if (splitLine.size() == 3) 
+		_return = Return(splitLine.at(1), splitLine.at(2));
 	_addDefined(S_return);
 }
 

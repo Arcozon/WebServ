@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 14:25:40 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/15 15:37:21 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 15:27:32 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,3 +35,6 @@ Return::Return(const std::string &text)
 	_argOne = text;
 	(void)_type;
 }
+
+Return	&Return::operator=(const Return &other)
+{}

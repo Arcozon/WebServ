@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 12:22:31 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 12:38:36 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 14:13:42 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,18 +37,24 @@ class ParsLine
 		ParsLine(const std::string &fileName);
 		~ParsLine(void);
 		
+		// Return false if err
 		bool		readLine(void);
 
-		std::size_t	getTabDepth(void) const;
-		const std::vector<std::string>	&getSplitLine(void) const;
-		const std::string	&getLine(void) const;
-
-		bool	fail(void) const;
-
 		static inline std::size_t	getTabDepth(const std::string &str)
-		{
-			return (str.find_first_not_of('\t'));
-		};
+		{	return (str.find_first_not_of('\t'));	};
+
+		inline std::size_t	getTabDepth(void) const
+		{	return (_tabDepth);	}
+
+		inline const std::vector<std::string>	&getSplitLine(void) const
+			{	return (_splitLine);	}
+	
+		inline const std::string	&getLine(void) const
+			{	return (_line);	}
+
+		inline bool	fail(void) const
+			{	return (_file.fail());	}
+		
 };
 
 #endif

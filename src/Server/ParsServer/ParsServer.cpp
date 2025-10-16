@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:24 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 12:19:15 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 14:17:17 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,7 @@ Server::ParsServer::ParsServer(std::ifstream &configFile, std::string &line)
 			break ;
 		try
 		{
-			_addServerLine())
-				
+			_addServerLine();
 		}
 		catch(const MyException& e)
 		{

@@ -29,7 +29,7 @@ D_WEBSERV	=  WebServ/
 SRC_WEBSERV =  $(addprefix $(D_WEBSERV), $(S_WEBSERV))
 
 SRC   =  $(SRC_WEBSERV)  $(SRC_SERVER)  $(SRC_LOCATION)  $(SRC_RETURN)
-SRC  +=  main.cpp  MyException.cpp
+SRC  +=  main.cpp  MyException.cpp  ParsLine.cpp
 D_SRC =  src/
 
 D_BUILD = .build/
@@ -49,8 +49,8 @@ MAKE += --no-print-directory
 .DEFAULT_GOAL := test
 
 test:
-	@clear && $(MAKE) all && clear && $(VAL) ./$(NAME) test.config
-	@echo ./$(NAME) test.config
+	@clear && $(MAKE) all && clear && echo '	'./$(NAME) test.config && $(VAL) ./$(NAME) test.config
+	
 
 all:	$(NAME)
 

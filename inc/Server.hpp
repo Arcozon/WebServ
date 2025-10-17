@@ -37,8 +37,9 @@ class Server
 
 		void initSockets();
 		void initEpoll();
-	 	bool is_registered_socket(int fd);
-		
+	 	bool isServerSocket(int fd);
+		void registerNewClient(int client_fd);
+
 		public:
 		Server(void);
 		~Server(void);

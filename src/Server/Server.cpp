@@ -84,8 +84,8 @@ bool Server::isServerSocket(int fd)
 
 void Server::registerNewClient(int new_fd)
 {
-	while (1)
-	{
+	// while (1)
+	// {
 		/*
 			accept() créer un nouvel fd pour chaque requete envoyé sur les ports (fd) qu'on monitor à l'init
 			donc obligé de le monitor à nouveau avec epoll_ctl pour communiquer ensuite avec
@@ -100,7 +100,7 @@ void Server::registerNewClient(int new_fd)
 		if (accept_fd == -1)
 		{
 			if (errno == EAGAIN || errno == EWOULDBLOCK)
-				break;
+				return ;
 			else
 				throw std::runtime_error("accept() syscall failed");
 		}
@@ -114,7 +114,7 @@ void Server::registerNewClient(int new_fd)
 		accept_event.data.fd = accept_fd;
 
 		epoll_ctl(_epoll_instance, EPOLL_CTL_ADD, accept_fd, &accept_event);
-	}
+	//}
 }
 
 void Server::start()
@@ -156,14 +156,42 @@ void Server::start()
 				else
 				{
 					std::cout << "Received " << rd << " bytes" << std::endl
-							  << std::endl;
+					<< std::endl;
 					std::cout.write(buffer, rd);
 					std::cout << std::endl;
+					//send(ev_fd, "Bonsoir", 8, 0);
+
+					struct epoll_event client_event;
+					std::memset(&client_event, 0, sizeof(client_event));
+					client_event.events = EPOLLOUT | EPOLLET;
+					client_event.data.fd = ev_fd;
+
+					epoll_ctl(_epoll_instance, EPOLL_CTL_MOD, ev_fd, &client_event);			
 				}
 			}
 			else if (ev & EPOLLOUT)
 			{
-				// écrire la requete
+				send(ev_fd, "⢀⡴⠑⡄⠀⠀⠀⠀⠀⠀⠀⣀⣀⣤⣤⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ \n\
+⠸⡇⠀⠿⡀⠀⠀⠀⣀⡴⢿⣿⣿⣿⣿⣿⣿⣿⣷⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀ \n\
+⠀⠀⠀⠀⠑⢄⣠⠾⠁⣀⣄⡈⠙⣿⣿⣿⣿⣿⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀ \n\
+⠀⠀⠀⠀⢀⡀⠁⠀⠀⠈⠙⠛⠂⠈⣿⣿⣿⣿⣿⠿⡿⢿⣆⠀⠀⠀⠀⠀⠀⠀ \n\
+⠀⠀⠀⢀⡾⣁⣀⠀⠴⠂⠙⣗⡀⠀⢻⣿⣿⠭⢤⣴⣦⣤⣹⠀⠀⠀⢀⢴⣶⣆ \n\
+⠀⠀⢀⣾⣿⣿⣿⣷⣮⣽⣾⣿⣥⣴⣿⣿⡿⢂⠔⢚⡿⢿⣿⣦⣴⣾⠁⠸⣼⡿ \n\
+⠀⢀⡞⠁⠙⠻⠿⠟⠉⠀⠛⢹⣿⣿⣿⣿⣿⣌⢤⣼⣿⣾⣿⡟⠉⠀⠀⠀⠀⠀ \n\
+⠀⣾⣷⣶⠇⠀⠀⣤⣄⣀⡀⠈⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀ \n\
+⠀⠉⠈⠉⠀⠀⢦⡈⢻⣿⣿⣿⣶⣶⣶⣶⣤⣽⡹⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀ \n\
+⠀⠀⠀⠀⠀⠀⠀⠉⠲⣽⡻⢿⣿⣿⣿⣿⣿⣿⣷⣜⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀ \n\
+⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣷⣶⣮⣭⣽⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀ \n\
+⠀⠀⠀⠀⠀⠀⣀⣀⣈⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀ \n\
+⠀⠀⠀⠀⠀⠀⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀ \n\
+⠀⠀⠀⠀⠀⠀⠀⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀ \n\
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠻⠿⠿⠿⠿⠛⠉", 1343, 0);
+				// struct epoll_event client_event;
+				// std::memset(&client_event, 0, sizeof(client_event));
+				// client_event.events = EPOLLIN | EPOLLET;
+				// client_event.data.fd = ev_fd;
+				// epoll_ctl(_epoll_instance, EPOLL_CTL_MOD, ev_fd, &client_event);
+				close(ev_fd);
 			}
 		}
 	}
@@ -174,7 +202,7 @@ Server::Server(void)
 {
 	_ports.push_back(8080);
 	_ports.push_back(8181);
-	_ports.push_back(8282);
+	_ports.push_back(8083);
 	initSockets();
 	initEpoll();
 }

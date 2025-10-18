@@ -39,6 +39,7 @@ class Server
 		void initEpoll();
 	 	bool isServerSocket(int fd);
 		void registerNewClient(int client_fd);
+		
 
 		public:
 		Server(void);

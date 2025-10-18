@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 10:44:46 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/15 18:49:03 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/18 17:09:15 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ class WebServ
 	public:
 		WebServ(const int ac, char *av[], char *env[]);
 		~WebServ(void);
+
 };
+
 
 #endif

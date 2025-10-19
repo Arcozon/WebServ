@@ -6,13 +6,14 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:24 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/19 11:15:30 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/19 12:30:32 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ParsIpPort.hpp"
 
 const std::string	IpPort::ParsIpPort::_keyHost("host");
+const std::string	IpPort::ParsIpPort::_keyLocalHost("localhost");
 const std::string	IpPort::ParsIpPort::_keyPort("port");
 const std::string	IpPort::ParsIpPort::_keyServerName("server_name");
 const std::string	IpPort::ParsIpPort::_keyClientBodySize("client_max_body_size");
@@ -33,6 +34,40 @@ void	IpPort::ParsIpPort::_addDefined(alreadyDefined toTest)
 IpPort::ParsIpPort::~ParsIpPort(void)
 {
 	printParsServ();
+}
+
+bool	IpPort::ParsIpPort::_isValidNumInRange0to255(const std::string& str)
+{
+	const std::size_t	strSize = str.size();
+	
+	if (strSize == 0 || strSize > 3)
+		return (false);
+	for (std::string::const_iterator cit = str.begin(); cit != str.end(); ++cit)
+		if (!std::isdigit(*cit))
+			return  (false);
+	
+	const int	toInt = std::atoi(str.c_str());
+
+	return (toInt <= 255);
+}
+
+bool	IpPort::ParsIpPort::_isValidIP(const std::string &hostStr) const
+{
+	static const int	_NDotInIP = 3;
+	if (hostStr == _keyLocalHost)
+		return (true);
+	if (std::count(hostStr.begin(), hostStr.end(), '.') != _NDotInIP)
+		return (false);
+	
+	std::vector<std::string>	hostSplit = ParsLine::splitLine(hostStr, '.', false);
+
+	if (hostSplit.size() != (_NDotInIP + 1))
+		return (false);
+
+	for (std::vector<std::string>::iterator it = hostSplit.begin(); it != hostSplit.end(); ++it)
+		if (!_isValidNumInRange0to255(*it))
+			return (false);
+	return (true);
 }
 
 IpPort::ParsIpPort::ParsIpPort(ParsLine &parsLine)
@@ -87,7 +122,12 @@ void	IpPort::ParsIpPort::_addHost(void)
 		throw (MyException("Already defined" + _inIpPort(), MyException::ELVL_WARNING, splitLine.front()));
 	else if (splitLine.size() != 2)
 		throw (MyException("Needs one argument", MyException::ELVL_WARNING, splitLine.front()));
-	_host = splitLine.at(1); // TODO: check empty
+	
+	std::string TmpHostStr = splitLine.at(1);
+	
+	if (!_isValidIP(TmpHostStr))
+		throw (MyException("Invalid host format", MyException::ELVL_ERROR, TmpHostStr));
+	_hostStr = TmpHostStr;
 	_addDefined(S_host);
 }
 
@@ -99,7 +139,7 @@ void	IpPort::ParsIpPort::_addPort(void)
 		throw (MyException("Already defined" + _inIpPort(), MyException::ELVL_WARNING, splitLine.front()));
 	else if (splitLine.size() != 2)
 		throw (MyException("Needs one argument", MyException::ELVL_WARNING, splitLine.front()));
-	_port = splitLine.at(1);	// TODO: check value of port
+	_portStr = splitLine.at(1);	// TODO: check value of port
 	_addDefined(S_port);
 }
 
@@ -110,7 +150,7 @@ void	IpPort::ParsIpPort::_addIpPortName(void)
 	if (splitLine.size() <= 1)
 		throw (MyException("Needs one or more arguments", MyException::ELVL_WARNING, splitLine.front()));
 	for (std::vector<std::string>::size_type i = 1; i < splitLine.size(); ++i)
-		_IpPortNames.push_back(splitLine.at(i));			// TODO: check duplicates ?
+		_ServerNames.push_back(splitLine.at(i));			// TODO: check duplicates ?
 }
 
 void	IpPort::ParsIpPort::_addClientBodySize(void)
@@ -169,13 +209,13 @@ bool	IpPort::ParsIpPort::_isServValid(void) const
 
 void	IpPort::ParsIpPort::printParsServ(void) const
 {
-	std::cout << "Host: " << _host << '\n';
-	std::cout << "Port: " << _port << '\n';
-	std::cout << "IpPortNames: ";
+	std::cout << "Host: " << _hostStr << '\n';
+	std::cout << "Port: " << _portStr << '\n';
+	std::cout << "ServerNames: ";
 	{
-		for (std::vector<std::string>::const_iterator it = _IpPortNames.begin(); it != _IpPortNames.end(); ++it)
+		for (std::vector<std::string>::const_iterator it = _ServerNames.begin(); it != _ServerNames.end(); ++it)
 			std::cout << *it << "  ";
-		if (_IpPortNames.size() == 0)
+		if (_ServerNames.size() == 0)
 			std::cout << "	" << "None";
 		std::cout << '\n';
 	}

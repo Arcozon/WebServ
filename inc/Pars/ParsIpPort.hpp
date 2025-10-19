@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:25:55 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/19 11:15:21 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/19 11:53:21 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ class IpPort::ParsIpPort
 		static const std::size_t	_nTabIpPort = 1;
 
 		static const std::string	_keyHost;
+		static const std::string	_keyLocalHost;
 		static const std::string	_keyPort;
 		static const std::string	_keyServerName;
 		static const std::string	_keyClientBodySize;
@@ -52,10 +53,13 @@ class IpPort::ParsIpPort
 		ParsLine	&_parsLine;
 
 		unsigned long	_fDefined;
-
-		std::string							_host;
-		std::string							_port;
-		std::vector<std::string>			_IpPortNames;
+	
+		std::string							_hostStr;
+		unsigned long						_host;
+		std::string							_portStr;
+		short								_port;
+	
+		std::vector<std::string>			_ServerNames;
 		std::string							_clientMaxBodySize;
 		std::map<std::string, std::string>	_errorPages;
 		std::vector<Location>				_locations;
@@ -65,7 +69,7 @@ class IpPort::ParsIpPort
 		inline const std::string	_inIpPort(void) const
 			{
 				if (_isDefined(S_host) && _isDefined(S_port))
-					return (" in IpPort " + _host + ":" + _port);
+					return (" in IpPort " + _hostStr + ":" + _portStr);
 				return (" in IpPort");
 			}
 
@@ -83,6 +87,10 @@ class IpPort::ParsIpPort
 
 		void	printParsServ(void) const;
 
+		static bool	_isValidNumInRange0to255(const std::string& str);
+		bool	_isValidIP(const std::string &_hostStr) const;
+		void	_IPStrToUL(void);
+	
 	public:
 		ParsIpPort(ParsLine &parsLine);
 		~ParsIpPort(void);

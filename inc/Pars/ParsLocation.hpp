@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:03:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 16:50:25 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/19 14:21:19 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,10 +78,12 @@ class Location::ParsLocation
 		std::map<std::string, std::string>	_cgiHandler;
 		std::map<std::string, std::string>	_errorPages;
 
+		bool	_valid;
+
+	private:
 		inline const std::string	_inLocation(void) const
 			{	return (std::string(" in location " + _location));	}
 
-	private:
 		bool	_isAllowed(allowMethods toTest) const;
 		bool	_isDefined(alreadyDefined toTest) const;
 		void	_addDefined(alreadyDefined toTest);
@@ -100,11 +102,11 @@ class Location::ParsLocation
 		ParsLocation(ParsLine &parsLine);
 		~ParsLocation(void);
 
-		bool	isParsLocationValid(void) const;
+		bool		isParsLocationValid(void) const;
 
 		Location	toLocation(void) const;
 
-		void	printfLocation(void) const;
+		void		printfLocation(void) const;
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:24 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/19 12:30:32 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/19 14:17:03 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,26 +72,32 @@ bool	IpPort::ParsIpPort::_isValidIP(const std::string &hostStr) const
 
 IpPort::ParsIpPort::ParsIpPort(ParsLine &parsLine)
 :	_parsLine(parsLine),
-	_fDefined(0)
+	_fDefined(0),
+	_valid(true)
 {
 	while (_parsLine.readLine(_nTabIpPort))
 	{
-		try
+		if (_valid)
 		{
-			_addIpPortLine();
+			try
+			{
+				_addIpPortLine();
+			}
+			catch(const MyException& e)
+			{
+				e.throwDown();
+				std::cerr << e;
+				if (e.getErrLvl() == MyException::ELVL_ERROR)
+					_valid = false;
+			}			
 		}
-		catch(const MyException& e)
-		{
-			e.throwDown();
-			std::cerr << e;
-		}			
 	}
 }
 
 void	IpPort::ParsIpPort::_addIpPortLine(void)
 {
 	if (_parsLine.getTabDepth() > _nTabIpPort)
-		throw (MyException("Too many tabs", MyException::ELVL_ERROR, _parsLine.getLine()));
+		throw (MyException("Too many tabs", MyException::ELVL_WARNING, _parsLine.getLine()));
 	
 	const std::string	&splitLineFront( _parsLine.getSplitLine().front() );
 
@@ -111,7 +117,7 @@ void	IpPort::ParsIpPort::_addIpPortLine(void)
 		_addReturn();
 	else
 		throw (MyException("Unknown key" + _inIpPort(),
-			MyException::ELVL_ERROR, splitLineFront));
+			MyException::ELVL_WARNING, splitLineFront));
 }
 
 void	IpPort::ParsIpPort::_addHost(void)

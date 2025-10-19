@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 16:53:06 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/19 14:22:15 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ Location::ParsLocation::~ParsLocation(void)
 void	Location::ParsLocation::_addLocationLine(void)
 {
 	if (_parsLine.getTabDepth() > _nTabLocation)
-		throw (MyException("Too many tabs", MyException::ELVL_ERROR, _parsLine.getLine()));
+		throw (MyException("Too many tabs", MyException::ELVL_WARNING, _parsLine.getLine()));
 	
 	const std::string	&splitLineFront( _parsLine.getSplitLine().front() );
 
@@ -75,7 +75,7 @@ void	Location::ParsLocation::_addLocationLine(void)
 		_addErrPages();
 	else
 		throw (MyException("Unknown key" + _inLocation(),
-			MyException::ELVL_ERROR, splitLineFront));	
+			MyException::ELVL_WARNING, splitLineFront));	
 }
 
 void	Location::ParsLocation::_addRoot(void)
@@ -198,19 +198,25 @@ Location::ParsLocation::ParsLocation(ParsLine &parsLine)
 :	_parsLine(parsLine),
 	_fDefined(0),
 	_autoindex(_defaultAutoIndex),
-	_allow( GET_MASK(S_GET) | GET_MASK(S_POST) | GET_MASK(S_DELETE) )
+	_allow( GET_MASK(S_GET) | GET_MASK(S_POST) | GET_MASK(S_DELETE) ),
+	_valid(true)
 {
 	_location = _parsLine.getSplitLine().at(1);
 	while (_parsLine.readLine(_nTabLocation))
 	{
-		try
+		if (_valid)
 		{
-			_addLocationLine();
-		}
-		catch(const MyException& e)
-		{
-			e.throwDown();
-			std::cerr << e;
+			try
+			{
+				_addLocationLine();
+			}
+			catch(const MyException& e)
+			{
+				e.throwDown();
+				std::cerr << e;
+				if (e.getErrLvl() == MyException::ELVL_ERROR)
+					_valid = false;
+			}			
 		}			
 	}
 }

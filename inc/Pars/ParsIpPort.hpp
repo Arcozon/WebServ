@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:25:55 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/19 11:53:21 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/19 14:18:54 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ class IpPort::ParsIpPort
 		std::map<std::string, std::string>	_errorPages;
 		std::vector<Location>				_locations;
 		Return								_return;
+
+		bool	_valid;
 
 	private:
 		inline const std::string	_inIpPort(void) const

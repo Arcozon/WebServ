@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ParsServer.hpp                                     :+:      :+:    :+:   */
+/*   ParsIpPort.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:25:55 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 16:14:59 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/19 11:15:21 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PARSSERVER_HPP
-# define PARSSERVER_HPP
+#ifndef PARSIpPort_HPP
+# define PARSIpPort_HPP
 
 # include <iostream>
 # include <fstream>
@@ -20,14 +20,14 @@
 # include <map>
 # include <utility>
 
-# include "Server.hpp"
+# include "IpPort.hpp"
 # include "Location.hpp"
 # include "MyException.hpp"
 
 # include "ParsLine.hpp"
 # include "utils.hpp"
 
-class Server::ParsServer
+class IpPort::ParsIpPort
 {
 	private:
 		enum alreadyDefined
@@ -38,7 +38,7 @@ class Server::ParsServer
 			S_return
 		};
 
-		static const std::size_t	_nTabServer = 1;
+		static const std::size_t	_nTabIpPort = 1;
 
 		static const std::string	_keyHost;
 		static const std::string	_keyPort;
@@ -55,24 +55,24 @@ class Server::ParsServer
 
 		std::string							_host;
 		std::string							_port;
-		std::vector<std::string>			_serverNames;
+		std::vector<std::string>			_IpPortNames;
 		std::string							_clientMaxBodySize;
 		std::map<std::string, std::string>	_errorPages;
 		std::vector<Location>				_locations;
 		Return								_return;
 
 	private:
-		inline const std::string	_inServer(void) const
+		inline const std::string	_inIpPort(void) const
 			{
 				if (_isDefined(S_host) && _isDefined(S_port))
-					return (" in server " + _host + ":" + _port);
-				return (" in server");
+					return (" in IpPort " + _host + ":" + _port);
+				return (" in IpPort");
 			}
 
-		void	_addServerLine(void);
+		void	_addIpPortLine(void);
 		void	_addHost(void);
 		void	_addPort(void);
-		void	_addServerName(void);
+		void	_addIpPortName(void);
 		void	_addClientBodySize(void);
 		void	_addErrorPage(void);
 		void	_addLocation(void);
@@ -84,8 +84,8 @@ class Server::ParsServer
 		void	printParsServ(void) const;
 
 	public:
-		ParsServer(ParsLine &parsLine);
-		~ParsServer(void);
+		ParsIpPort(ParsLine &parsLine);
+		~ParsIpPort(void);
 
 		bool	_isServValid(void) const;
 };

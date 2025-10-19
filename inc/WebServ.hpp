@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 10:44:46 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/18 17:09:15 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/19 11:15:46 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 # include <cstdlib>
 
 # include "MyException.hpp"
-# include "Server.hpp"
+# include "IpPort.hpp"
 
 # define DOT_CONFIG ".config"
 
@@ -32,7 +32,7 @@ class WebServ
 		class ParsWebServ;
 
 	private:
-		std::vector<Server>	_servers;
+		std::vector<IpPort>	_servers;
 
 		std::string			_pname;
 		char				**_env;

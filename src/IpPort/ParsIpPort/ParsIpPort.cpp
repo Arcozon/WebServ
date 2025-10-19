@@ -1,49 +1,49 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ParsServer.cpp                                     :+:      :+:    :+:   */
+/*   ParsIpPort.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:24 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 16:15:35 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/19 11:15:30 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ParsServer.hpp"
+#include "ParsIpPort.hpp"
 
-const std::string	Server::ParsServer::_keyHost("host");
-const std::string	Server::ParsServer::_keyPort("port");
-const std::string	Server::ParsServer::_keyServerName("server_name");
-const std::string	Server::ParsServer::_keyClientBodySize("client_max_body_size");
-const std::string	Server::ParsServer::_keyErrorPage("error_page");
-const std::string	Server::ParsServer::_keyLocation("location");
-const std::string	Server::ParsServer::_keyReturn("return");
+const std::string	IpPort::ParsIpPort::_keyHost("host");
+const std::string	IpPort::ParsIpPort::_keyPort("port");
+const std::string	IpPort::ParsIpPort::_keyServerName("server_name");
+const std::string	IpPort::ParsIpPort::_keyClientBodySize("client_max_body_size");
+const std::string	IpPort::ParsIpPort::_keyErrorPage("error_page");
+const std::string	IpPort::ParsIpPort::_keyLocation("location");
+const std::string	IpPort::ParsIpPort::_keyReturn("return");
 
-bool	Server::ParsServer::_isDefined(alreadyDefined toTest) const
+bool	IpPort::ParsIpPort::_isDefined(alreadyDefined toTest) const
 {
 	return ((_fDefined & GET_MASK(toTest)) != 0);
 }
 
-void	Server::ParsServer::_addDefined(alreadyDefined toTest)
+void	IpPort::ParsIpPort::_addDefined(alreadyDefined toTest)
 {
 	_fDefined |= GET_MASK(toTest);
 }
 
-Server::ParsServer::~ParsServer(void)
+IpPort::ParsIpPort::~ParsIpPort(void)
 {
 	printParsServ();
 }
 
-Server::ParsServer::ParsServer(ParsLine &parsLine)
+IpPort::ParsIpPort::ParsIpPort(ParsLine &parsLine)
 :	_parsLine(parsLine),
 	_fDefined(0)
 {
-	while (_parsLine.readLine(_nTabServer))
+	while (_parsLine.readLine(_nTabIpPort))
 	{
 		try
 		{
-			_addServerLine();
+			_addIpPortLine();
 		}
 		catch(const MyException& e)
 		{
@@ -53,9 +53,9 @@ Server::ParsServer::ParsServer(ParsLine &parsLine)
 	}
 }
 
-void	Server::ParsServer::_addServerLine(void)
+void	IpPort::ParsIpPort::_addIpPortLine(void)
 {
-	if (_parsLine.getTabDepth() > _nTabServer)
+	if (_parsLine.getTabDepth() > _nTabIpPort)
 		throw (MyException("Too many tabs", MyException::ELVL_ERROR, _parsLine.getLine()));
 	
 	const std::string	&splitLineFront( _parsLine.getSplitLine().front() );
@@ -65,7 +65,7 @@ void	Server::ParsServer::_addServerLine(void)
 	else if (splitLineFront == _keyPort)
 		_addPort();
 	else if (splitLineFront == _keyServerName)
-		_addServerName();
+		_addIpPortName();
 	else if (splitLineFront == _keyClientBodySize)
 		_addClientBodySize();
 	else if (splitLineFront == _keyErrorPage)
@@ -75,57 +75,57 @@ void	Server::ParsServer::_addServerLine(void)
 	else if (splitLineFront == _keyReturn)
 		_addReturn();
 	else
-		throw (MyException("Unknown key" + _inServer(),
+		throw (MyException("Unknown key" + _inIpPort(),
 			MyException::ELVL_ERROR, splitLineFront));
 }
 
-void	Server::ParsServer::_addHost(void)
+void	IpPort::ParsIpPort::_addHost(void)
 {
 	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
 
 	if (_isDefined(S_host))
-		throw (MyException("Already defined" + _inServer(), MyException::ELVL_WARNING, splitLine.front()));
+		throw (MyException("Already defined" + _inIpPort(), MyException::ELVL_WARNING, splitLine.front()));
 	else if (splitLine.size() != 2)
 		throw (MyException("Needs one argument", MyException::ELVL_WARNING, splitLine.front()));
 	_host = splitLine.at(1); // TODO: check empty
 	_addDefined(S_host);
 }
 
-void	Server::ParsServer::_addPort(void)
+void	IpPort::ParsIpPort::_addPort(void)
 {
 	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
 
 	if (_isDefined(S_port))
-		throw (MyException("Already defined" + _inServer(), MyException::ELVL_WARNING, splitLine.front()));
+		throw (MyException("Already defined" + _inIpPort(), MyException::ELVL_WARNING, splitLine.front()));
 	else if (splitLine.size() != 2)
 		throw (MyException("Needs one argument", MyException::ELVL_WARNING, splitLine.front()));
 	_port = splitLine.at(1);	// TODO: check value of port
 	_addDefined(S_port);
 }
 
-void	Server::ParsServer::_addServerName(void)
+void	IpPort::ParsIpPort::_addIpPortName(void)
 {
 	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
 
 	if (splitLine.size() <= 1)
 		throw (MyException("Needs one or more arguments", MyException::ELVL_WARNING, splitLine.front()));
 	for (std::vector<std::string>::size_type i = 1; i < splitLine.size(); ++i)
-		_serverNames.push_back(splitLine.at(i));			// TODO: check duplicates ?
+		_IpPortNames.push_back(splitLine.at(i));			// TODO: check duplicates ?
 }
 
-void	Server::ParsServer::_addClientBodySize(void)
+void	IpPort::ParsIpPort::_addClientBodySize(void)
 {
 	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
 
 	if (_isDefined(S_clientBodySize))
-		throw (MyException("Already defined" + _inServer(), MyException::ELVL_WARNING, splitLine.front()));
+		throw (MyException("Already defined" + _inIpPort(), MyException::ELVL_WARNING, splitLine.front()));
 	else if (splitLine.size() != 2)
 		throw (MyException("Needs one argument", MyException::ELVL_WARNING, splitLine.front()));
 	_clientMaxBodySize = splitLine.at(1);	// TODO: Check val, convert to int
 	_addDefined(S_clientBodySize);
 }
 
-void	Server::ParsServer::_addErrorPage(void)
+void	IpPort::ParsIpPort::_addErrorPage(void)
 {
 	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
 
@@ -138,7 +138,7 @@ void	Server::ParsServer::_addErrorPage(void)
 	_errorPages.insert(std::pair<std::string, std::string>(splitLine.at(1), splitLine.at(2)));
 }
 
-void	Server::ParsServer::_addLocation(void)
+void	IpPort::ParsIpPort::_addLocation(void)
 {
 	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
 
@@ -147,12 +147,12 @@ void	Server::ParsServer::_addLocation(void)
 	_locations.push_back(Location(_parsLine));
 }
 
-void	Server::ParsServer::_addReturn(void)
+void	IpPort::ParsIpPort::_addReturn(void)
 {
 	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
 
 	if (_isDefined(S_return))
-		throw (MyException("Already defined" + _inServer(), MyException::ELVL_WARNING, splitLine.front()));
+		throw (MyException("Already defined" + _inIpPort(), MyException::ELVL_WARNING, splitLine.front()));
 	else if (splitLine.size() != 2 && splitLine.size() != 3)
 		throw (MyException("Needs one or two arguments", MyException::ELVL_WARNING, splitLine.front()));
 	else if (splitLine.size() == 2)
@@ -162,20 +162,20 @@ void	Server::ParsServer::_addReturn(void)
 	_addDefined(S_return);
 }
 
-bool	Server::ParsServer::_isServValid(void) const
+bool	IpPort::ParsIpPort::_isServValid(void) const
 {
 	return (true);
 }
 
-void	Server::ParsServer::printParsServ(void) const
+void	IpPort::ParsIpPort::printParsServ(void) const
 {
 	std::cout << "Host: " << _host << '\n';
 	std::cout << "Port: " << _port << '\n';
-	std::cout << "ServerNames: ";
+	std::cout << "IpPortNames: ";
 	{
-		for (std::vector<std::string>::const_iterator it = _serverNames.begin(); it != _serverNames.end(); ++it)
+		for (std::vector<std::string>::const_iterator it = _IpPortNames.begin(); it != _IpPortNames.end(); ++it)
 			std::cout << *it << "  ";
-		if (_serverNames.size() == 0)
+		if (_IpPortNames.size() == 0)
 			std::cout << "	" << "None";
 		std::cout << '\n';
 	}

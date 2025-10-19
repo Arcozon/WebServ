@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:08:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 14:47:57 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/19 11:16:23 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	WebServ::ParsWebServ::_addServer(void)
 {
 	try
 	{
-		_servers.push_back(Server(_parsLine));
+		_ipPorts.push_back(IpPort(_parsLine));
 	}
 	catch (const MyException &e)
 	{

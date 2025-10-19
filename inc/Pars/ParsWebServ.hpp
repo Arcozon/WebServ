@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:31 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 16:05:34 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/19 11:16:30 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ class WebServ::ParsWebServ
 		ParsLine	_parsLine;
 
 		std::string			_pname;
-		std::vector<Server>	_servers; 
+		std::vector<IpPort>	_ipPorts; 
 
 	private:
 		void	_openConfigFile(const int ac, char *av[]);

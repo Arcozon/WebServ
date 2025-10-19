@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Server.hpp                                         :+:      :+:    :+:   */
+/*   IpPort.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 12:03:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 14:46:08 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/19 11:14:57 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SERVER_HPP
-# define SERVER_HPP
+#ifndef IPPORT_HPP
+# define IPPORT_HPP
 
 # include <string>
 # include <vector>
@@ -21,10 +21,10 @@
 
 # include "ParsLine.hpp"
 
-class Server
+class IpPort
 {
 	private:
-		class ParsServer;
+		class ParsIpPort;
 
 	private:
 		unsigned long	_fDefined;
@@ -33,7 +33,7 @@ class Server
 		std::string		_port;
 		std::string		_url;
 
-		std::vector<std::string>	_serverNames;
+		std::vector<std::string>			_IpPortNames;
 		std::map<std::string, std::string>	_errPages;
 
 		unsigned long	_maxBodySize;
@@ -41,9 +41,9 @@ class Server
 		std::vector<Location>	_locations;
 
 	public:
-		Server(void);
-		Server(ParsLine &parsLine);
-		~Server(void);
+		IpPort(void);
+		IpPort(ParsLine &parsLine);
+		~IpPort(void);
 };
 
 #endif

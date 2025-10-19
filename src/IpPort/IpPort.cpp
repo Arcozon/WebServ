@@ -1,31 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Server.cpp                                         :+:      :+:    :+:   */
+/*   IpPort.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 14:47:31 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/19 11:12:40 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Server.hpp"
-#include "ParsServer.hpp"
+#include "IpPort.hpp"
+#include "ParsIpPort.hpp"
 
-Server::Server(void)
+IpPort::IpPort(void)
 :	_fDefined(0),
 	_maxBodySize(0)
 {}
 
-Server::Server(ParsLine &parsLine)
+IpPort::IpPort(ParsLine &parsLine)
 :	_fDefined(0),
 	_maxBodySize(0)
 {
-	ParsServer	parsServer(parsLine);
+	ParsIpPort	parsIpPort(parsLine);
 
-	(void)parsServer;
+	(void)parsIpPort;
 }
 
-Server::~Server(void)
+IpPort::~IpPort(void)
 {}

@@ -68,12 +68,6 @@ void Server::initEpoll()
 	}
 }
 
-void Server::print_fds()
-{
-	for(size_t i = 0; i < _epoll_fds.size(); i++)
-		std::cout << "_epoll_fds[" << i << "] = " << _epoll_fds[i] << std::endl;
-}
-
 bool Server::isServerSocket(int fd)
 {
 	for(size_t i = 0; i < _epoll_fds.size(); i++)
@@ -84,8 +78,8 @@ bool Server::isServerSocket(int fd)
 
 void Server::registerNewClient(int new_fd)
 {
-	// while (1)
-	// {
+	 while (1)
+	 {
 		/*
 			accept() créer un nouvel fd pour chaque requete envoyé sur les ports (fd) qu'on monitor à l'init
 			donc obligé de le monitor à nouveau avec epoll_ctl pour communiquer ensuite avec
@@ -95,9 +89,9 @@ void Server::registerNewClient(int new_fd)
 		struct sockaddr_in client_addr;
 		socklen_t client_len = sizeof(client_addr);
 		std::memset(&client_addr, 0, sizeof(client_addr));
-		int accept_fd = accept(new_fd, (struct sockaddr *)&client_addr, &client_len);
+		int client_fd = accept(new_fd, (struct sockaddr *)&client_addr, &client_len);
 
-		if (accept_fd == -1)
+		if (client_fd == -1)
 		{
 			if (errno == EAGAIN || errno == EWOULDBLOCK)
 				return ;
@@ -105,16 +99,30 @@ void Server::registerNewClient(int new_fd)
 				throw std::runtime_error("accept() syscall failed");
 		}
 
-		int flags = fcntl(accept_fd, F_GETFL, 0);
-		fcntl(accept_fd, F_SETFL, flags | O_NONBLOCK);
+		int flags = fcntl(client_fd, F_GETFL, 0);
+		fcntl(client_fd, F_SETFL, flags | O_NONBLOCK);
 
 		struct epoll_event accept_event;
 		std::memset(&accept_event, 0, sizeof(accept_event));
 		accept_event.events = EPOLLIN | EPOLLET;
-		accept_event.data.fd = accept_fd;
+		accept_event.data.fd = client_fd;
 
-		epoll_ctl(_epoll_instance, EPOLL_CTL_ADD, accept_fd, &accept_event);
-	//}
+		Client *client = new Client(client_fd);
+		_clients[client_fd] = client;
+
+		if(epoll_ctl(_epoll_instance, EPOLL_CTL_ADD, client_fd, &accept_event) == -1)
+			throw std::runtime_error("epoll_ctl() failed");
+
+	}
+}
+
+/* à potentiellement changer, si la clé n'existe pas (close hasardeux quelque part) 
+	Client *cl = _clients[client_fd]; rajoute une nouvelle entrée en C++98 */
+
+void Server::readFromClient(int client_fd)
+{
+	Client *cl = _clients[client_fd];
+	cl->readFromFd();
 }
 
 void Server::start()
@@ -132,6 +140,18 @@ void Server::start()
 			int ev_fd = events[i].data.fd;
 			int ev = events[i].events;
 
+			if (ev & (EPOLLERR | EPOLLHUP))
+			{
+				std::cout << "Error for fd: " << ev_fd << std::endl;
+				if (!isServerSocket(ev_fd))
+				{
+					epoll_ctl(_epoll_instance, EPOLL_CTL_DEL, ev_fd, NULL);
+					Client* cl = _clients[ev_fd];
+					delete cl;
+					_clients.erase(ev_fd);
+				}
+				continue ;
+			}
 			if (isServerSocket(ev_fd))
 			{
 				if(ev & EPOLLIN)
@@ -139,59 +159,11 @@ void Server::start()
 			}
 			else if (ev & EPOLLIN)
 			{
-				char buffer[1024];
-				int rd = read(ev_fd, buffer, sizeof(buffer));
-				if (rd == -1)
-				{
-					std::cout << "read failed for fd " << ev_fd << std::endl;
-					// close(ev_fd);
-					break;
-				}
-				else if (rd == 0)
-				{
-					std::cout << "no more data to recieve" << std::endl;
-					close(ev_fd);
-					break;
-				}
-				else
-				{
-					std::cout << "Received " << rd << " bytes" << std::endl
-					<< std::endl;
-					std::cout.write(buffer, rd);
-					std::cout << std::endl;
-					//send(ev_fd, "Bonsoir", 8, 0);
-
-					struct epoll_event client_event;
-					std::memset(&client_event, 0, sizeof(client_event));
-					client_event.events = EPOLLOUT | EPOLLET;
-					client_event.data.fd = ev_fd;
-
-					epoll_ctl(_epoll_instance, EPOLL_CTL_MOD, ev_fd, &client_event);			
-				}
+				readFromClient(ev_fd);
 			}
 			else if (ev & EPOLLOUT)
 			{
-				send(ev_fd, "⢀⡴⠑⡄⠀⠀⠀⠀⠀⠀⠀⣀⣀⣤⣤⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ \n\
-⠸⡇⠀⠿⡀⠀⠀⠀⣀⡴⢿⣿⣿⣿⣿⣿⣿⣿⣷⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀ \n\
-⠀⠀⠀⠀⠑⢄⣠⠾⠁⣀⣄⡈⠙⣿⣿⣿⣿⣿⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀ \n\
-⠀⠀⠀⠀⢀⡀⠁⠀⠀⠈⠙⠛⠂⠈⣿⣿⣿⣿⣿⠿⡿⢿⣆⠀⠀⠀⠀⠀⠀⠀ \n\
-⠀⠀⠀⢀⡾⣁⣀⠀⠴⠂⠙⣗⡀⠀⢻⣿⣿⠭⢤⣴⣦⣤⣹⠀⠀⠀⢀⢴⣶⣆ \n\
-⠀⠀⢀⣾⣿⣿⣿⣷⣮⣽⣾⣿⣥⣴⣿⣿⡿⢂⠔⢚⡿⢿⣿⣦⣴⣾⠁⠸⣼⡿ \n\
-⠀⢀⡞⠁⠙⠻⠿⠟⠉⠀⠛⢹⣿⣿⣿⣿⣿⣌⢤⣼⣿⣾⣿⡟⠉⠀⠀⠀⠀⠀ \n\
-⠀⣾⣷⣶⠇⠀⠀⣤⣄⣀⡀⠈⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀ \n\
-⠀⠉⠈⠉⠀⠀⢦⡈⢻⣿⣿⣿⣶⣶⣶⣶⣤⣽⡹⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀ \n\
-⠀⠀⠀⠀⠀⠀⠀⠉⠲⣽⡻⢿⣿⣿⣿⣿⣿⣿⣷⣜⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀ \n\
-⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣷⣶⣮⣭⣽⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀ \n\
-⠀⠀⠀⠀⠀⠀⣀⣀⣈⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀ \n\
-⠀⠀⠀⠀⠀⠀⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀ \n\
-⠀⠀⠀⠀⠀⠀⠀⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀ \n\
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠻⠿⠿⠿⠿⠛⠉", 1343, 0);
-				// struct epoll_event client_event;
-				// std::memset(&client_event, 0, sizeof(client_event));
-				// client_event.events = EPOLLIN | EPOLLET;
-				// client_event.data.fd = ev_fd;
-				// epoll_ctl(_epoll_instance, EPOLL_CTL_MOD, ev_fd, &client_event);
-				close(ev_fd);
+				
 			}
 		}
 	}
@@ -212,4 +184,8 @@ Server::~Server(void)
 	for(size_t i = 0; i < _epoll_fds.size(); i++)
 		close(_epoll_fds[i]);
 	close(_epoll_instance);
+
+	for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
+		delete it->second;
+	_clients.clear();
 }

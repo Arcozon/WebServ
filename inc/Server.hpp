@@ -25,28 +25,32 @@
 #include <cstring>
 #include <sstream>
 #include <cerrno>
+#include <map>
+#include "Client.hpp"
 
 #define EVENT_SIZE 100
+
+class Client;
 
 class Server
 {
 	private:
 		std::vector<unsigned short> _ports; 
 		std::vector<int> _epoll_fds; 
+		std::map<int, Client *> _clients;
 		int	_epoll_instance;
 
 		void initSockets();
 		void initEpoll();
 	 	bool isServerSocket(int fd);
 		void registerNewClient(int client_fd);
-		
+		void readFromClient(int client_fd);
 
 		public:
 		Server(void);
 		~Server(void);
 		void start(); // démarre l'event loop du serveur
 		void stop(); // arrête l'event loop du serveur
-		void print_fds();
 };
 
 #endif

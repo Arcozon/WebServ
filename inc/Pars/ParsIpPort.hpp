@@ -6,12 +6,12 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:25:55 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/19 14:18:54 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/19 18:46:47 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PARSIpPort_HPP
-# define PARSIpPort_HPP
+#ifndef PARSIPPORT_HPP
+# define PARSIPPORT_HPP
 
 # include <iostream>
 # include <fstream>
@@ -90,9 +90,12 @@ class IpPort::ParsIpPort
 		void	printParsServ(void) const;
 
 		static bool	_isValidNumInRange0to255(const std::string& str);
+		
 		bool	_isValidIP(const std::string &_hostStr) const;
-		void	_IPStrToUL(void);
+		unsigned long	_IPStrToUL(const std::string &_hostStr) const;
 	
+		bool _isValidPort(const std::string &portStr) const;
+
 	public:
 		ParsIpPort(ParsLine &parsLine);
 		~ParsIpPort(void);

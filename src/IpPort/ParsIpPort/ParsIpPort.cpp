@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:24 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/19 14:17:03 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/19 18:58:29 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ bool	IpPort::ParsIpPort::_isValidNumInRange0to255(const std::string& str)
 		return (false);
 	for (std::string::const_iterator cit = str.begin(); cit != str.end(); ++cit)
 		if (!std::isdigit(*cit))
-			return  (false);
+			return (false);
 	
 	const int	toInt = std::atoi(str.c_str());
 
@@ -59,15 +59,38 @@ bool	IpPort::ParsIpPort::_isValidIP(const std::string &hostStr) const
 	if (std::count(hostStr.begin(), hostStr.end(), '.') != _NDotInIP)
 		return (false);
 	
-	std::vector<std::string>	hostSplit = ParsLine::splitLine(hostStr, '.', false);
+	const std::vector<std::string>	hostSplit = ParsLine::splitLine(hostStr, '.', false);
 
 	if (hostSplit.size() != (_NDotInIP + 1))
 		return (false);
 
-	for (std::vector<std::string>::iterator it = hostSplit.begin(); it != hostSplit.end(); ++it)
+	for (std::vector<std::string>::const_iterator it = hostSplit.begin(); it != hostSplit.end(); ++it)
 		if (!_isValidNumInRange0to255(*it))
 			return (false);
 	return (true);
+}
+
+unsigned long	IpPort::ParsIpPort::_IPStrToUL(const std::string &hostStr)	const
+{
+	const std::vector<std::string>	hostSplit = ParsLine::splitLine(hostStr, '.', false);
+	unsigned long	res(0);
+
+	for (std::vector<std::string>::const_iterator it = hostSplit.begin(); it != hostSplit.end(); ++it)
+	{
+		res <<= 8;
+		res |= std::atoi(it->c_str());
+	}
+	return (res);
+}
+
+bool	IpPort::ParsIpPort::_isValidPort(const std::string &portStr) const
+{
+	static const int	_portMax = 65535;
+
+	for (std::string::const_iterator cit = portStr.begin(); cit != portStr.end(); ++cit)
+		if (!std::isdigit(*cit))
+			return (false);
+	return (std::atoi(portStr.c_str()) < _portMax);
 }
 
 IpPort::ParsIpPort::ParsIpPort(ParsLine &parsLine)
@@ -134,6 +157,7 @@ void	IpPort::ParsIpPort::_addHost(void)
 	if (!_isValidIP(TmpHostStr))
 		throw (MyException("Invalid host format", MyException::ELVL_ERROR, TmpHostStr));
 	_hostStr = TmpHostStr;
+	_host = _IPStrToUL(_hostStr);
 	_addDefined(S_host);
 }
 
@@ -145,7 +169,13 @@ void	IpPort::ParsIpPort::_addPort(void)
 		throw (MyException("Already defined" + _inIpPort(), MyException::ELVL_WARNING, splitLine.front()));
 	else if (splitLine.size() != 2)
 		throw (MyException("Needs one argument", MyException::ELVL_WARNING, splitLine.front()));
-	_portStr = splitLine.at(1);	// TODO: check value of port
+	
+	std::string TmpPortStr = splitLine.at(1);
+	
+	if (!_isValidPort(TmpPortStr))
+		throw (MyException("Invalid port format", MyException::ELVL_ERROR, TmpPortStr));
+	_portStr = TmpPortStr;
+	_port = std::atoi(TmpPortStr.c_str());
 	_addDefined(S_port);
 }
 

@@ -13,6 +13,19 @@ private:
 	int _fd;
 	unsigned int _request_len;
 	std::string _str_buffer;
+	size_t _pos;
+	size_t _last_pos;
+
+	typedef enum E_REQUEST_STEP
+	{
+		REQUEST_LINE,
+		HEADERS,
+		FIN,
+		ERROR
+	} REQUEST_STEP;
+
+	REQUEST_STEP _request_step;
+	
 
 public:
 	Client(/* args */);
@@ -20,6 +33,8 @@ public:
 	~Client();
 
 	void readFromFd();
+	void checkStep();
+	int checkCurrentLine();
 };
 
 

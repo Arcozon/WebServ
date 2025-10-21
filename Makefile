@@ -12,7 +12,7 @@ SRC_LOCATION =  $(addprefix $(D_LOCATION), $(S_LOCATION))
 #D_PARSSERVER   =  ParsServer/
 #SRC_PARSSERVER =  $(addprefix $(D_PARSSERVER), $(S_PARSSERVER))
 
-S_SERVER   =  $(SRC_PARSSERVER)  Server.cpp
+S_SERVER   =  $(SRC_PARSSERVER)  Server.cpp Client.cpp
 D_SERVER   =  Server/
 SRC_SERVER =  $(addprefix $(D_SERVER), $(S_SERVER))
 

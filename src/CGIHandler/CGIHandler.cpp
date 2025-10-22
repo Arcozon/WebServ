@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 14:31:00 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/22 15:03:52 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/22 16:12:57 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,23 @@ const char	**CGIHandler::getEnv(void)
 		_cEnv.push_back(it->c_str());
 	_cEnv.push_back(NULL);
 	return (_cEnv.data());
+}
+
+void	CGIHandler::_unset(const std::string &toUnset)
+{
+	typedef std::vector<std::string>::iterator	vsit_t;
+
+	const std::string toUnsetEq(toUnset + "=");
+
+	for (vsit_t	it = _strEnv.begin(); it != _strEnv.end(); ++it)
+	{
+		if (it->compare(0, toUnsetEq.length(), toUnsetEq) == 0)
+		{
+			std::cout << *it << std::endl;
+			_strEnv.erase(it);
+			return ;
+		}
+	}
 }
 
 void	CGIHandler::_addVar(const std::string &vName, const std::string &vContent)

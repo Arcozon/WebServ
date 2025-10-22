@@ -1,5 +1,9 @@
 NAME =  webserv
 
+S_CGIHANDLER	=  SGIHandler.cpp
+D_CGIHANDLER	=  SGIHandler/
+SRC_CGIHANDLER	=  $(addprefix $(D_CGIHANDLER), $(S_CGIHANDLER))
+
 S_RETURN	=  Return.cpp
 D_RETURN	=  Return/
 SRC_RETURN	=  $(addprefix $(D_RETURN), $(S_RETURN))
@@ -28,7 +32,7 @@ S_WEBSERV	=  $(SRC_PARSWEBSERV)  WebServ.cpp
 D_WEBSERV	=  WebServ/
 SRC_WEBSERV =  $(addprefix $(D_WEBSERV), $(S_WEBSERV))
 
-SRC   =  $(SRC_WEBSERV)  $(SRC_IPPORT)  $(SRC_LOCATION)  $(SRC_RETURN)
+SRC   =  $(SRC_WEBSERV)  $(SRC_IPPORT)  $(SRC_LOCATION)  $(SRC_RETURN)  $(SRC_CGIHANDLER)
 SRC  +=  main.cpp  MyException.cpp  ParsLine.cpp
 D_SRC =  src/
 

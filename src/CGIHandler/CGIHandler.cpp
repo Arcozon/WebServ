@@ -6,11 +6,14 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 14:31:00 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/22 15:00:23 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/22 15:03:52 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "CGIHandler.hpp"
+
+std::vector<std::string>	CGIHandler::_strEnv;
+std::vector<const char *>	CGIHandler::_cEnv;
 
 void	CGIHandler::copyEnv(char *env[])
 {
@@ -49,7 +52,7 @@ void	CGIHandler::printEnv(void)
 {
 	const char	**cEnv = getEnv();
 
-	std::cout << "Env:";
+	std::cout << "Env:\n";
 	for (int i = 0; cEnv[i]; ++i)
 		std::cout << cEnv[i] << "\n";
 	std::cout << std::endl;

@@ -22,3 +22,8 @@ Location:
 Check if server Direcctive are valid (HTTP error, name already set, location existing ...)
 Do multiple servers
 
+-	CGI
+	- Unset var before adding them
+	- Add vars ?
+	- Cd
+	- execve

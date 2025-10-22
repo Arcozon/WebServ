@@ -1,7 +1,7 @@
 NAME =  webserv
 
-S_CGIHANDLER	=  SGIHandler.cpp
-D_CGIHANDLER	=  SGIHandler/
+S_CGIHANDLER	=  CGIHandler.cpp
+D_CGIHANDLER	=  CGIHandler/
 SRC_CGIHANDLER	=  $(addprefix $(D_CGIHANDLER), $(S_CGIHANDLER))
 
 S_RETURN	=  Return.cpp

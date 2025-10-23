@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:18:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/14 18:11:55 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/16 14:57:31 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,9 @@
 # include <map>
 
 # include "MyException.hpp"
+# include "Return.hpp"
+
+# include "ParsLine.hpp"
 
 class Location
 {
@@ -25,16 +28,24 @@ class Location
 
 	private:
 		unsigned long	_flags;
+
+		std::string		_location;
 		std::string		_root;
 		std::string		_index;
 		std::string		_guard;
 		bool			_autoindex;
 		std::map<std::string, std::string>	_cgiHandler;
 		std::map<std::string, std::string>	_errPages;
+		Return								_return;
 
 	public:
 		Location(void);
+		Location(ParsLine &parsLine);
 		~Location(void);
+
+		bool	_isGET(void) const;
+		bool	_isPOST(void) const;
+		bool	_isDELETE(void) const;
 };
 
 #endif

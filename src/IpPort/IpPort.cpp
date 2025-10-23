@@ -1,17 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Server.cpp                                         :+:      :+:    :+:   */
+/*   IpPort.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/14 18:01:31 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/19 11:12:40 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Server.hpp"
+#include "IpPort.hpp"
+#include "ParsIpPort.hpp"
 
+<<<<<<< HEAD:src/Server/Server.cpp
 void Server::initSockets()
 {
 	for (size_t i = 0; i < _ports.size(); i++)
@@ -69,3 +71,21 @@ Server::~Server(void)
 		close(_epoll_fds[i]);
 	close(_epoll_instance);
 }
+=======
+IpPort::IpPort(void)
+:	_fDefined(0),
+	_maxBodySize(0)
+{}
+
+IpPort::IpPort(ParsLine &parsLine)
+:	_fDefined(0),
+	_maxBodySize(0)
+{
+	ParsIpPort	parsIpPort(parsLine);
+
+	(void)parsIpPort;
+}
+
+IpPort::~IpPort(void)
+{}
+>>>>>>> gaeudes_pars_config:src/IpPort/IpPort.cpp

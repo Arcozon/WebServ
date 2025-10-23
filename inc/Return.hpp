@@ -1,28 +1,48 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ParsServer.hpp                                     :+:      :+:    :+:   */
+/*   Return.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/14 17:25:55 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/14 18:11:40 by gaeudes          ###   ########.fr       */
+/*   Created: 2025/10/15 14:20:21 by gaeudes           #+#    #+#             */
+/*   Updated: 2025/10/16 15:46:04 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PARSSERVER_HPP
-# define PARSSERVER_HPP
+#ifndef RETURN_HPP
+# define RETURN_HPP
 
-# include "Server.hpp"
+# include <string>
+# include <algorithm>
+
 # include "MyException.hpp"
+# include "utils.hpp"
 
-class Server::ParsServer
+class	Return
 {
 	private:
-		
+		enum typeReturn
+		{
+			RET_TEXT,
+			RET_ERR_URL,
+			UNDEF
+		};
+
+	private:
+		typeReturn	_type;
+		std::string	_argOne;
+		std::string	_argTwo;
+	
 	public:
-		ParsServer(void);
-		~ParsServer(void);
+		Return(const std::string &code, const std::string &url);
+		Return(const std::string &text);
+		Return(void);
+		~Return(void);
+
+		Return	&operator=(const Return &other);
+
+		void	_printInfo(void) const;
 };
 
 #endif

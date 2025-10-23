@@ -1,5 +1,13 @@
 NAME =  webserv
 
+S_CGIHANDLER	=  CGIHandler.cpp
+D_CGIHANDLER	=  CGIHandler/
+SRC_CGIHANDLER	=  $(addprefix $(D_CGIHANDLER), $(S_CGIHANDLER))
+
+S_RETURN	=  Return.cpp
+D_RETURN	=  Return/
+SRC_RETURN	=  $(addprefix $(D_RETURN), $(S_RETURN))
+
 S_PARSLOCATION	 =  ParsLocation.cpp
 D_PARSLOCATION	 =  ParsLocation/
 SRC_PARSLOCATION =  $(addprefix $(D_PARSLOCATION), $(S_PARSLOCATION))
@@ -8,13 +16,13 @@ S_LOCATION	 =  $(SRC_PARSLOCATION)  Location.cpp
 D_LOCATION	 =  Location/
 SRC_LOCATION =  $(addprefix $(D_LOCATION), $(S_LOCATION))
 
-S_PARSSERVER   =  ParsServer.cpp
-D_PARSSERVER   =  ParsServer/
-SRC_PARSSERVER =  $(addprefix $(D_PARSSERVER), $(S_PARSSERVER))
+S_PARSIPPORT   =  ParsIpPort.cpp
+D_PARSIPPORT   =  ParsIpPort/
+SRC_PARSIPPORT =  $(addprefix $(D_PARSIPPORT), $(S_PARSIPPORT))
 
-S_SERVER   =  $(SRC_PARSSERVER)  Server.cpp
-D_SERVER   =  Server/
-SRC_SERVER =  $(addprefix $(D_SERVER), $(S_SERVER))
+S_IPPORT   =  $(SRC_PARSIPPORT)  IpPort.cpp
+D_IPPORT   =  IpPort/
+SRC_IPPORT =  $(addprefix $(D_IPPORT), $(S_IPPORT))
 
 S_PARSWEBSERV	=  init.cpp  ParsWebServ.cpp
 D_PARSWEBSERV	=  ParsWebServ/
@@ -24,19 +32,20 @@ S_WEBSERV	=  $(SRC_PARSWEBSERV)  WebServ.cpp
 D_WEBSERV	=  WebServ/
 SRC_WEBSERV =  $(addprefix $(D_WEBSERV), $(S_WEBSERV))
 
-SRC   =  $(SRC_WEBSERV)  $(SRC_SERVER)  $(SRC_LOCATION)
-SRC  +=  main.cpp  MyException.cpp
+SRC   =  $(SRC_WEBSERV)  $(SRC_IPPORT)  $(SRC_LOCATION)  $(SRC_RETURN)  $(SRC_CGIHANDLER)
+SRC  +=  main.cpp  MyException.cpp  ParsLine.cpp
 D_SRC =  src/
 
-D_BUILD = .build/
-OBJ =  $(addprefix $(D_BUILD), $(SRC:.cpp=.o))
+D_BUILD =  .build/
+OBJ		=  $(addprefix $(D_BUILD), $(SRC:.cpp=.o))
 
-D_INC = inc/  
-INC = $(D_INC)
+D_INC =  inc/
+S_INC =  . Pars
+INC	  =  $(addprefix $(D_INC), $(S_INC))
 
-CPP =  c++
-FLAGS = -Wall -Wextra -Werror -MMD -g -std=c++98
-IFLAGS = $(addprefix "-I", $(INC)) 
+CPP		=  c++
+FLAGS	=  -Wall -Wextra -Werror -MMD -g -std=c++98
+IFLAGS	=  $(addprefix "-I", $(INC)) 
 
 RM =  rm -rf
 
@@ -45,8 +54,8 @@ MAKE += --no-print-directory
 .DEFAULT_GOAL := test
 
 test:
-	@clear && $(MAKE) all && clear && $(VAL) ./$(NAME) test.config
-	@echo ./$(NAME) test.config
+	@clear && $(MAKE) all && clear && echo '	'./$(NAME) test.config && $(VAL) ./$(NAME) test.config
+	
 
 all:	$(NAME)
 

@@ -23,6 +23,7 @@ int	main(int ac, char **av, char **env)
 		CGIHandler::addVar("Salut", "toi");
 		CGIHandler::printEnv();
 	}
+<<<<<<< HEAD
 	// try
 	// {
 	// 	WebServ	MyWebServ(ac, av, env);
@@ -32,6 +33,18 @@ int	main(int ac, char **av, char **env)
 	// 	std::cerr << e;
 	// 	return (e.getErrLvl() + 1);
 	// }
+=======
+	try
+	{
+		Server server;
+		//server.print_fds();
+		server.start();
+	}
+	catch (std::exception &e)
+	{
+		std::cout << e.what() << std::endl;
+	}
+>>>>>>> origin/saal-kur_server
 	return (EXIT_SUCCESS);
 	(void)ac, (void)av, (void)env;
 }

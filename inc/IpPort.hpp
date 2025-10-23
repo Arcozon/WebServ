@@ -23,9 +23,21 @@
 #include <arpa/inet.h>
 #include <iostream>
 #include <unistd.h>
+<<<<<<< HEAD:inc/IpPort.hpp
 =======
 # include <string>
 # include <vector>
+=======
+#include <cstring>
+#include <sstream>
+#include <cerrno>
+#include <map>
+#include "Client.hpp"
+
+#define EVENT_SIZE 100
+
+class Client;
+>>>>>>> origin/saal-kur_server:inc/Server.hpp
 
 # include "Location.hpp"
 # include "Return.hpp"
@@ -39,6 +51,7 @@ class IpPort
 <<<<<<< HEAD:inc/Server.hpp
 		std::vector<unsigned short> _ports; 
 		std::vector<int> _epoll_fds; 
+		std::map<int, Client *> _clients;
 		int	_epoll_instance;
 =======
 		class ParsIpPort;
@@ -60,8 +73,16 @@ class IpPort
 
 		void initSockets();
 		void initEpoll();
+<<<<<<< HEAD:inc/IpPort.hpp
 	public:
 <<<<<<< HEAD:inc/Server.hpp
+=======
+	 	bool isServerSocket(int fd);
+		void registerNewClient(int client_fd);
+		void readFromClient(int client_fd);
+
+		public:
+>>>>>>> origin/saal-kur_server:inc/Server.hpp
 		Server(void);
 		~Server(void);
 		void start(); // démarre l'event loop du serveur

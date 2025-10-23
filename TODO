@@ -24,6 +24,19 @@ Do multiple servers
 
 -	CGI
 	- Unset var before adding them
-	- Add vars ?
+	- Set vars
+		REQUEST_METHOD
+		QUERY_STRING
+		CONTENT_TYPE
+		CONTENT_LENGTH
+		SCRIPT_NAME
+		PATH_INFO
+		PATH_TRANSLATED
+		SERVER_NAME
+		SERVER_PORT
+		SERVER_PROTOCOL
+		REMOTE_ADDR
+		REMOTE_PORT
+		GATEWAY_INTERFACE
 	- Cd
 	- execve

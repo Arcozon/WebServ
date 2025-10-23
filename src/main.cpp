@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 10:51:19 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/22 16:12:25 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/22 16:33:41 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,7 @@ int	main(int ac, char **av, char **env)
 {
 	{
 		CGIHandler::copyEnv(env);
-		CGIHandler::printEnv();
 		CGIHandler::addVar("Salut", "toi");
-		CGIHandler::printEnv();
 	}
 	// try
 	// {

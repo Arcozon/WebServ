@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 10:51:19 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/22 16:12:25 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/23 18:49:02 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "CGIHandler.hpp"
 
 #include "ParsLine.hpp"
+#include "Server.hpp"
 
 int	main(int ac, char **av, char **env)
 {
@@ -23,7 +24,6 @@ int	main(int ac, char **av, char **env)
 		CGIHandler::addVar("Salut", "toi");
 		CGIHandler::printEnv();
 	}
-<<<<<<< HEAD
 	// try
 	// {
 	// 	WebServ	MyWebServ(ac, av, env);
@@ -33,7 +33,6 @@ int	main(int ac, char **av, char **env)
 	// 	std::cerr << e;
 	// 	return (e.getErrLvl() + 1);
 	// }
-=======
 	try
 	{
 		Server server;
@@ -44,7 +43,6 @@ int	main(int ac, char **av, char **env)
 	{
 		std::cout << e.what() << std::endl;
 	}
->>>>>>> origin/saal-kur_server
 	return (EXIT_SUCCESS);
 	(void)ac, (void)av, (void)env;
 }

@@ -16,7 +16,6 @@ S_LOCATION	 =  $(SRC_PARSLOCATION)  Location.cpp
 D_LOCATION	 =  Location/
 SRC_LOCATION =  $(addprefix $(D_LOCATION), $(S_LOCATION))
 
-<<<<<<< HEAD
 S_PARSIPPORT   =  ParsIpPort.cpp
 D_PARSIPPORT   =  ParsIpPort/
 SRC_PARSIPPORT =  $(addprefix $(D_PARSIPPORT), $(S_PARSIPPORT))
@@ -24,15 +23,10 @@ SRC_PARSIPPORT =  $(addprefix $(D_PARSIPPORT), $(S_PARSIPPORT))
 S_IPPORT   =  $(SRC_PARSIPPORT)  IpPort.cpp
 D_IPPORT   =  IpPort/
 SRC_IPPORT =  $(addprefix $(D_IPPORT), $(S_IPPORT))
-=======
-#S_PARSSERVER   =  ParsServer.cpp
-#D_PARSSERVER   =  ParsServer/
-#SRC_PARSSERVER =  $(addprefix $(D_PARSSERVER), $(S_PARSSERVER))
 
-S_SERVER   =  $(SRC_PARSSERVER)  Server.cpp Client.cpp
+S_SERVER   =  Server.cpp Client.cpp
 D_SERVER   =  Server/
 SRC_SERVER =  $(addprefix $(D_SERVER), $(S_SERVER))
->>>>>>> origin/saal-kur_server
 
 S_PARSWEBSERV	=  init.cpp  ParsWebServ.cpp
 D_PARSWEBSERV	=  ParsWebServ/

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:24 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/19 18:58:29 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/23 19:09:26 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,7 +238,7 @@ void	IpPort::ParsIpPort::_addReturn(void)
 	_addDefined(S_return);
 }
 
-bool	IpPort::ParsIpPort::_isServValid(void) const
+bool	IpPort::ParsIpPort::_isIpPortValid(void) const
 {
 	return (true);
 }

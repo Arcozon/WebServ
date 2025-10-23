@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/19 14:22:15 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/23 19:11:09 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,4 +240,11 @@ void	Location::ParsLocation::printfLocation(void) const
 	std::cout << " " << (_isAllowed(S_DELETE) ? CGREEN : CRED) << "DELETE" << CRESET << '\n';
 	std::cout << "		UploadStore: " << (_isDefined(S_upload_store) ? _uploadLocation : "UNDEFINED") << "\n";
 	_return._printInfo();
+}
+
+
+bool	Location::ParsLocation::isParsLocationValid(void) const
+{
+	
+	return (true);
 }

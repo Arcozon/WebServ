@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/23 18:48:45 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/23 19:08:17 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,3 +29,4 @@ IpPort::IpPort(ParsLine &parsLine)
 
 IpPort::~IpPort(void)
 {}
+

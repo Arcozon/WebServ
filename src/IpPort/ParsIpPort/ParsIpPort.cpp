@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:24 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/23 19:09:26 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/25 15:24:26 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@ const std::string	IpPort::ParsIpPort::_keyErrorPage("error_page");
 const std::string	IpPort::ParsIpPort::_keyLocation("location");
 const std::string	IpPort::ParsIpPort::_keyReturn("return");
 
-bool	IpPort::ParsIpPort::_isDefined(alreadyDefined toTest) const
+bool	IpPort::ParsIpPort::_isDefined(sDefined toTest) const
 {
 	return ((_fDefined & GET_MASK(toTest)) != 0);
 }
 
-void	IpPort::ParsIpPort::_addDefined(alreadyDefined toTest)
+void	IpPort::ParsIpPort::_addDefined(sDefined toTest)
 {
 	_fDefined |= GET_MASK(toTest);
 }
@@ -96,6 +96,7 @@ bool	IpPort::ParsIpPort::_isValidPort(const std::string &portStr) const
 IpPort::ParsIpPort::ParsIpPort(ParsLine &parsLine)
 :	_parsLine(parsLine),
 	_fDefined(0),
+	_clientMaxBodySize(0),
 	_valid(true)
 {
 	while (_parsLine.readLine(_nTabIpPort))
@@ -147,7 +148,7 @@ void	IpPort::ParsIpPort::_addHost(void)
 {
 	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
 
-	if (_isDefined(S_host))
+	if (_isDefined(s_host))
 		throw (MyException("Already defined" + _inIpPort(), MyException::ELVL_WARNING, splitLine.front()));
 	else if (splitLine.size() != 2)
 		throw (MyException("Needs one argument", MyException::ELVL_WARNING, splitLine.front()));
@@ -158,14 +159,14 @@ void	IpPort::ParsIpPort::_addHost(void)
 		throw (MyException("Invalid host format", MyException::ELVL_ERROR, TmpHostStr));
 	_hostStr = TmpHostStr;
 	_host = _IPStrToUL(_hostStr);
-	_addDefined(S_host);
+	_addDefined(s_host);
 }
 
 void	IpPort::ParsIpPort::_addPort(void)
 {
 	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
 
-	if (_isDefined(S_port))
+	if (_isDefined(s_port))
 		throw (MyException("Already defined" + _inIpPort(), MyException::ELVL_WARNING, splitLine.front()));
 	else if (splitLine.size() != 2)
 		throw (MyException("Needs one argument", MyException::ELVL_WARNING, splitLine.front()));
@@ -176,7 +177,7 @@ void	IpPort::ParsIpPort::_addPort(void)
 		throw (MyException("Invalid port format", MyException::ELVL_ERROR, TmpPortStr));
 	_portStr = TmpPortStr;
 	_port = std::atoi(TmpPortStr.c_str());
-	_addDefined(S_port);
+	_addDefined(s_port);
 }
 
 void	IpPort::ParsIpPort::_addIpPortName(void)
@@ -186,19 +187,25 @@ void	IpPort::ParsIpPort::_addIpPortName(void)
 	if (splitLine.size() <= 1)
 		throw (MyException("Needs one or more arguments", MyException::ELVL_WARNING, splitLine.front()));
 	for (std::vector<std::string>::size_type i = 1; i < splitLine.size(); ++i)
-		_ServerNames.push_back(splitLine.at(i));			// TODO: check duplicates ?
+		_serverNames.push_back(splitLine.at(i));			// TODO: check duplicates ?
 }
 
 void	IpPort::ParsIpPort::_addClientBodySize(void)
 {
 	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
 
-	if (_isDefined(S_clientBodySize))
+	if (_isDefined(s_clientBodySize))
 		throw (MyException("Already defined" + _inIpPort(), MyException::ELVL_WARNING, splitLine.front()));
 	else if (splitLine.size() != 2)
 		throw (MyException("Needs one argument", MyException::ELVL_WARNING, splitLine.front()));
-	_clientMaxBodySize = splitLine.at(1);	// TODO: Check val, convert to int
-	_addDefined(S_clientBodySize);
+
+	std::string	strCMBS = splitLine.at(1);
+
+	for (std::string::iterator it = strCMBS.begin(); it != strCMBS.end(); ++it)
+		if (!std::isdigit(*it))
+			throw (MyException("Invalid client_max_body_size format", MyException::ELVL_ERROR, strCMBS));
+	_clientMaxBodySize = std::atol(strCMBS.c_str());	// TODO: check if 0?
+	_addDefined(s_clientBodySize);
 }
 
 void	IpPort::ParsIpPort::_addErrorPage(void)
@@ -220,14 +227,20 @@ void	IpPort::ParsIpPort::_addLocation(void)
 
 	if (splitLine.size() != 2)
 		throw (MyException("Needs one argument", MyException::ELVL_WARNING, splitLine.front()));
-	_locations.push_back(Location(_parsLine));
+	
+	Location	location(_parsLine);
+
+	if (!location.isValid())
+		throw (MyException("Invalid location", MyException::ELVL_ERROR, std::string()));
+
+	_locations.push_back(location);
 }
 
 void	IpPort::ParsIpPort::_addReturn(void)
 {
 	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
 
-	if (_isDefined(S_return))
+	if (_isDefined(s_return))
 		throw (MyException("Already defined" + _inIpPort(), MyException::ELVL_WARNING, splitLine.front()));
 	else if (splitLine.size() != 2 && splitLine.size() != 3)
 		throw (MyException("Needs one or two arguments", MyException::ELVL_WARNING, splitLine.front()));
@@ -235,11 +248,12 @@ void	IpPort::ParsIpPort::_addReturn(void)
 		_return = Return(splitLine.at(1));
 	else if (splitLine.size() == 3) 
 		_return = Return(splitLine.at(1), splitLine.at(2));
-	_addDefined(S_return);
+	_addDefined(s_return);
 }
 
 bool	IpPort::ParsIpPort::_isIpPortValid(void) const
 {
+	// TODO
 	return (true);
 }
 
@@ -249,13 +263,17 @@ void	IpPort::ParsIpPort::printParsServ(void) const
 	std::cout << "Port: " << _portStr << '\n';
 	std::cout << "ServerNames: ";
 	{
-		for (std::vector<std::string>::const_iterator it = _ServerNames.begin(); it != _ServerNames.end(); ++it)
+		for (std::vector<std::string>::const_iterator it = _serverNames.begin(); it != _serverNames.end(); ++it)
 			std::cout << *it << "  ";
-		if (_ServerNames.size() == 0)
+		if (_serverNames.size() == 0)
 			std::cout << "	" << "None";
 		std::cout << '\n';
 	}
-	std::cout << "ClientMaxSizeBody: " << (_isDefined(S_clientBodySize) ? _clientMaxBodySize : "Not defined") << '\n';
+	std::cout << "ClientMaxSizeBody: ";
+	if (_isDefined(s_clientBodySize))
+		std::cout << _clientMaxBodySize <<'\n';
+	else
+		std::cout << "Not defined" << '\n';
 	std::cout << "ErrorPages: " << '\n';
 	{
 		for (std::map<std::string, std::string>::const_iterator it = _errorPages.begin();
@@ -274,4 +292,54 @@ void	IpPort::ParsIpPort::printParsServ(void) const
 	std::cout << "Return: ";
 	_return._printInfo();
 	std::cout << std::endl;
+}
+
+unsigned long	IpPort::ParsIpPort::getIpPortFlag(void) const
+{
+	return (_fDefined);
+}
+
+const std::string	&IpPort::ParsIpPort::getStrHost(void) const
+{
+	return (_hostStr);
+}
+
+unsigned long	IpPort::ParsIpPort::getHost(void) const
+{
+	return (_host);
+}
+
+const std::string	&IpPort::ParsIpPort::getStrPort(void) const
+{
+	return (_portStr);
+}
+
+unsigned long	IpPort::ParsIpPort::getPort(void) const
+{
+	return (_port);
+}
+
+const std::vector<std::string>	&IpPort::ParsIpPort::getServerNames(void) const
+{
+	return (_serverNames);
+}
+
+unsigned long	IpPort::ParsIpPort::getClientMaxBodySize(void) const
+{
+	return (_clientMaxBodySize);
+}
+
+const std::map<std::string, std::string>	&IpPort::ParsIpPort::getErrorPages(void) const
+{
+	return (_errorPages);
+}
+
+const std::vector<Location>	&IpPort::ParsIpPort::getLocations(void) const
+{
+	return (_locations);
+}
+
+const Return	&IpPort::ParsIpPort::getReturn(void) const
+{
+	return (_return);
 }

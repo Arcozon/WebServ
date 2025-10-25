@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 12:03:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/23 18:48:23 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/25 15:28:20 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,17 +27,27 @@ class IpPort
 	private:
 		class ParsIpPort;
 
+	public:
+		enum sDefined
+		{
+			s_host,
+			s_port,
+			s_clientBodySize,
+			s_return
+		};
 	private:
 		unsigned long	_fDefined;
 
-		std::string		_host;
-		std::string		_port;
-		std::string		_url;
+		std::string		_StrHost;
+		unsigned long	_host;
+		std::string		_StrPort;
+		unsigned short	_port;
+		std::string		_strHostPort;
 
 		std::vector<std::string>			_IpPortNames;
 		std::map<std::string, std::string>	_errPages;
 
-		unsigned long	_maxBodySize;
+		unsigned long	_clientMaxBodySize;
 
 		std::vector<Location>	_locations;
 

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:25:55 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/23 19:07:55 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/25 15:24:13 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,6 @@
 class IpPort::ParsIpPort
 {
 	private:
-		enum alreadyDefined
-		{
-			S_host,
-			S_port,
-			S_clientBodySize,
-			S_return
-		};
-
 		static const std::size_t	_nTabIpPort = 1;
 
 		static const std::string	_keyHost;
@@ -59,8 +51,8 @@ class IpPort::ParsIpPort
 		std::string							_portStr;
 		short								_port;
 	
-		std::vector<std::string>			_ServerNames;
-		std::string							_clientMaxBodySize;
+		std::vector<std::string>			_serverNames;
+		unsigned long						_clientMaxBodySize;
 		std::map<std::string, std::string>	_errorPages;
 		std::vector<Location>				_locations;
 		Return								_return;
@@ -70,7 +62,7 @@ class IpPort::ParsIpPort
 	private:
 		inline const std::string	_inIpPort(void) const
 			{
-				if (_isDefined(S_host) && _isDefined(S_port))
+				if (_isDefined(s_host) && _isDefined(s_port))
 					return (" in IpPort " + _hostStr + ":" + _portStr);
 				return (" in IpPort");
 			}
@@ -84,8 +76,8 @@ class IpPort::ParsIpPort
 		void	_addLocation(void);
 		void	_addReturn(void);
 
-		void	_addDefined(alreadyDefined toTest);
-		bool	_isDefined(alreadyDefined toTest) const;
+		void	_addDefined(sDefined toTest);
+		bool	_isDefined(sDefined toTest) const;
 
 		void	printParsServ(void) const;
 
@@ -101,6 +93,17 @@ class IpPort::ParsIpPort
 		~ParsIpPort(void);
 
 		bool	_isIpPortValid(void) const;
+
+		unsigned long		getIpPortFlag(void) const;
+		const std::string	&getStrHost(void) const;
+		unsigned long		getHost(void) const;
+		const std::string	&getStrPort(void) const;
+		unsigned long		getPort(void) const;
+		const std::vector<std::string>	&getServerNames(void) const;
+		unsigned long					getClientMaxBodySize(void) const;
+		const std::map<std::string, std::string>	&getErrorPages(void) const;
+		const std::vector<Location>		&getLocations(void) const;
+		const Return					&getReturn(void) const;
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:18:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/25 14:53:32 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/25 15:19:41 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ class Location
 		};
 
 	private:
+		bool			_valid;
 		unsigned long	_flags;
 
 		// std::string		_guard;	??
@@ -60,9 +61,12 @@ class Location
 		Location(ParsLine &parsLine);
 		~Location(void);
 
+		bool	isValid(void) const;
+
 		bool	_isAllowedGET(void) const;
 		bool	_isAllowedPOST(void) const;
 		bool	_isAllowedDELETE(void) const;
+
 };
 
 #endif

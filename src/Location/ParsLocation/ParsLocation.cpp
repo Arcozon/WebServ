@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/23 19:11:09 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/25 14:54:08 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,17 +30,17 @@ bool	Location::ParsLocation::_isOnOff(const std::string &str)
 	return (str == "on" || str == "off");
 }
 
-bool	Location::ParsLocation::_isAllowed(allowMethods toTest) const
+bool	Location::ParsLocation::_isAllowed(sAllowedMethods toTest) const
 {
 	return ((_allow & GET_MASK(toTest)) > 1);
 }
 
-bool	Location::ParsLocation::_isDefined(alreadyDefined toTest) const
+bool	Location::ParsLocation::_isDefined(sDefined toTest) const
 {
 	return ((_fDefined & GET_MASK(toTest)) != 0);
 }
 
-void	Location::ParsLocation::_addDefined(alreadyDefined toTest)
+void	Location::ParsLocation::_addDefined(sDefined toTest)
 {
 	_fDefined |= GET_MASK(toTest);
 }
@@ -82,10 +82,10 @@ void	Location::ParsLocation::_addRoot(void)
 {
 	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
 
-	if (_isDefined(S_root))
+	if (_isDefined(s_root))
 		throw (MyException("Already defined"  + _inLocation(), MyException::ELVL_WARNING, splitLine.front()));
 	_root = splitLine.at(1);
-	_addDefined(S_root);
+	_addDefined(s_root);
 }
 
 void	Location::ParsLocation::_addIndex(void)
@@ -102,7 +102,7 @@ void	Location::ParsLocation::_addAutoIndex(void)
 {
 	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
 
-	if (_isDefined(S_autoindex))
+	if (_isDefined(s_autoindex))
 		throw (MyException("Already defined" + _inLocation(), MyException::ELVL_WARNING, splitLine.front()));
 	else if (splitLine.size() != 2)
 		throw (MyException("Needs one argument", MyException::ELVL_WARNING, splitLine.front()));
@@ -110,55 +110,56 @@ void	Location::ParsLocation::_addAutoIndex(void)
 		throw (MyException("Needs to be [on] or [off]", MyException::ELVL_WARNING, splitLine.at(1)));
 
 	_autoindex = (splitLine.at(1) == "on");
-	_addDefined(S_autoindex);
+	_addDefined(s_autoindex);
 }
 
 void	Location::ParsLocation::_addAllow(void)
 {
 	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
 
-	if (_isDefined(S_allow))
+	if (_isDefined(s_allow))
 		throw (MyException("Already defined" + _inLocation(), MyException::ELVL_WARNING, splitLine.front()));
 	else if (splitLine.size() == 1)
 		throw (MyException("Needs arguments", MyException::ELVL_WARNING, splitLine.front()));
 	_allow = 0;
-	enum allowMethods	toAllow;
+	
+	enum sAllowedMethods	toAllow;
 	for (std::size_t i = 1; i < splitLine.size() ; ++i)
 	{
-		toAllow = S_METHODS_MAX;
+		toAllow = s_METHODS_MAX;
 		if (splitLine.at(i) == _keyAllowGet)
-			toAllow = S_GET;
+			toAllow = s_GET;
 		else if (splitLine.at(i) == _keyAllowPost)
-			toAllow = S_POST;
+			toAllow = s_POST;
 		else if (splitLine.at(i) == _keyAllowDelete)
-			toAllow = S_DELETE;
-		if (toAllow == S_METHODS_MAX)
+			toAllow = s_DELETE;
+		if (toAllow == s_METHODS_MAX)
 			std::cerr << MyException("Unknown method", MyException::ELVL_WARNING, splitLine.at(i));
 		else if (_isAllowed(toAllow))
 			std::cerr << MyException("Already allowed", MyException::ELVL_WARNING, splitLine.at(i));
 		else
 			_allow |= GET_MASK(toAllow);
 	}
-	_addDefined(S_allow);
+	_addDefined(s_allow);
 }
 
 void	Location::ParsLocation::_addUploadLocation(void)
 {
 	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
 
-	if (_isDefined(S_upload_store))
+	if (_isDefined(s_upload_store))
 		throw (MyException("Already defined" + _inLocation(), MyException::ELVL_WARNING, splitLine.front()));
 	else if (splitLine.size() != 2)
 		throw (MyException("Needs one argument", MyException::ELVL_WARNING, splitLine.front()));
 	_uploadLocation = splitLine.at(1);
-	_addDefined(S_upload_store);
+	_addDefined(s_upload_store);
 }
 
 void	Location::ParsLocation::_addReturn(void)
 {
 	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
 
-	if (_isDefined(S_return))
+	if (_isDefined(s_return))
 		throw (MyException("Already defined" + _inLocation(), MyException::ELVL_WARNING, splitLine.front()));
 	else if (splitLine.size() != 2 && splitLine.size() != 3)
 		throw (MyException("Needs one or two arguments", MyException::ELVL_WARNING, splitLine.front()));
@@ -166,7 +167,7 @@ void	Location::ParsLocation::_addReturn(void)
 		_return = Return(splitLine.at(1));
 	else if (splitLine.size() == 3) 
 		_return = Return(splitLine.at(1), splitLine.at(2));
-	_addDefined(S_return);
+	_addDefined(s_return);
 }
 
 void	Location::ParsLocation::_addCGIHandler(void)
@@ -198,7 +199,7 @@ Location::ParsLocation::ParsLocation(ParsLine &parsLine)
 :	_parsLine(parsLine),
 	_fDefined(0),
 	_autoindex(_defaultAutoIndex),
-	_allow( GET_MASK(S_GET) | GET_MASK(S_POST) | GET_MASK(S_DELETE) ),
+	_allow( GET_MASK(s_GET) | GET_MASK(s_POST) | GET_MASK(s_DELETE) ),
 	_valid(true)
 {
 	_location = _parsLine.getSplitLine().at(1);
@@ -225,7 +226,7 @@ Location::ParsLocation::ParsLocation(ParsLine &parsLine)
 void	Location::ParsLocation::printfLocation(void) const
 {
 	std::cout << "	Location " << _location << ":\n";
-	std::cout << "		Root: " << (_isDefined(S_root) ? _root : "UNDEFINED") << "\n";
+	std::cout << "		Root: " << (_isDefined(s_root) ? _root : "UNDEFINED") << "\n";
 	std::cout << "		Index:";
 	{
 		for (std::vector<std::string>::const_iterator it = _index.begin(); it != _index.end(); ++it)
@@ -235,16 +236,73 @@ void	Location::ParsLocation::printfLocation(void) const
 	}
 	std::cout << "		AutoIndex: " << (_autoindex ? CGREEN "ON" : CRED "OFF") << CRESET"\n";
 	std::cout << "		AllowedMethods:";
-	std::cout << " " << (_isAllowed(S_GET) ? CGREEN : CRED) << "GET" << CRESET;
-	std::cout << " " << (_isAllowed(S_POST) ? CGREEN : CRED) << "POST" << CRESET;
-	std::cout << " " << (_isAllowed(S_DELETE) ? CGREEN : CRED) << "DELETE" << CRESET << '\n';
-	std::cout << "		UploadStore: " << (_isDefined(S_upload_store) ? _uploadLocation : "UNDEFINED") << "\n";
+	std::cout << " " << (_isAllowed(s_GET) ? CGREEN : CRED) << "GET" << CRESET;
+	std::cout << " " << (_isAllowed(s_POST) ? CGREEN : CRED) << "POST" << CRESET;
+	std::cout << " " << (_isAllowed(s_DELETE) ? CGREEN : CRED) << "DELETE" << CRESET << '\n';
+	std::cout << "		UploadStore: " << (_isDefined(s_upload_store) ? _uploadLocation : "UNDEFINED") << "\n";
 	_return._printInfo();
+}
+
+
+bool	Location::ParsLocation::_checkRedirs(void) const
+{
+	int	count(0);
+
+	if (_cgiHandler.size() > 0)
+		++count;
+	if (_isDefined(s_upload_store))
+		++count;
+	if (_isDefined(s_return))
+		++count;
+	return (count == 1);
 }
 
 
 bool	Location::ParsLocation::isParsLocationValid(void) const
 {
-	
+	if (!_checkRedirs())
+		return (false);
 	return (true);
 }
+
+
+unsigned long	Location::ParsLocation::getLocationFlags(void) const
+{
+	return (_allow | _fDefined);
+}
+
+const std::string	&Location::ParsLocation::getLocation(void) const
+{
+	return (_location);
+}
+
+const std::string	&Location::ParsLocation::getRoot(void) const
+{
+	return (_root);
+}
+
+const std::vector<std::string>	&Location::ParsLocation::getIndex(void) const
+{
+	return (_index);
+}
+
+const bool			&Location::ParsLocation::getAutoIndex(void) const
+{
+	return (_autoindex);
+}
+
+const std::map<std::string, std::string>	&Location::ParsLocation::getCGIHandler(void) const
+{
+	return (_cgiHandler);
+}
+
+const std::map<std::string, std::string>	&Location::ParsLocation::getErrPages(void) const
+{
+	return (_errorPages);
+}
+
+const Return		&Location::ParsLocation::getReturn(void) const
+{
+	return (_return);
+}
+

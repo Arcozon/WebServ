@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:03:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/23 19:11:13 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/25 14:54:03 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,22 +29,6 @@
 class Location::ParsLocation
 {
 	private:
-		enum alreadyDefined
-		{
-			S_root,
-			S_autoindex,
-			S_allow,
-			S_upload_store,
-			S_return
-		};
-		enum allowMethods
-		{
-			S_GET,
-			S_POST,
-			S_DELETE,
-			S_METHODS_MAX
-		};
-
 		static bool	_isOnOff(const std::string &str);
 
 		static const std::size_t	_nTabLocation = 2;
@@ -72,7 +56,7 @@ class Location::ParsLocation
 		std::string					_root;
 		std::vector<std::string>	_index;
 		bool						_autoindex;
-		unsigned char				_allow;
+		unsigned long				_allow;
 		std::string					_uploadLocation;
 		Return						_return;
 		std::map<std::string, std::string>	_cgiHandler;
@@ -84,9 +68,9 @@ class Location::ParsLocation
 		inline const std::string	_inLocation(void) const
 			{	return (std::string(" in location " + _location));	}
 
-		bool	_isAllowed(allowMethods toTest) const;
-		bool	_isDefined(alreadyDefined toTest) const;
-		void	_addDefined(alreadyDefined toTest);
+		bool	_isAllowed(sAllowedMethods toTest) const;
+		bool	_isDefined(sDefined toTest) const;
+		void	_addDefined(sDefined toTest);
 
 		void	_addLocationLine(void);
 		void	_addRoot(void);
@@ -98,15 +82,25 @@ class Location::ParsLocation
 		void	_addCGIHandler(void);
 		void	_addErrPages(void);
 
+		bool _checkRedirs(void) const;
+
 	public:
 		ParsLocation(ParsLine &parsLine);
 		~ParsLocation(void);
 
 		bool		isParsLocationValid(void) const;
 
-		Location	toLocation(void) const;
-
+		
 		void		printfLocation(void) const;
+		
+		unsigned long	getLocationFlags(void) const;
+		const std::string	&getLocation(void) const;
+		const std::string	&getRoot(void) const;
+		const std::vector<std::string>	&getIndex(void) const;
+		const bool			&getAutoIndex(void) const;
+		const std::map<std::string, std::string>	&getCGIHandler(void) const;
+		const std::map<std::string, std::string>	&getErrPages(void) const;
+		const Return		&getReturn(void) const;
 };
 
 #endif

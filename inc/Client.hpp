@@ -13,6 +13,7 @@ private:
 	int _fd;
 	unsigned int _request_len;
 	std::string _str_buffer;
+	std::string _extract_line;
 	size_t _pos;
 	size_t _last_pos;
 
@@ -20,6 +21,7 @@ private:
 	{
 		REQUEST_LINE,
 		HEADERS,
+		BODY,
 		FIN,
 		ERROR
 	} REQUEST_STEP;

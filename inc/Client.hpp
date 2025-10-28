@@ -3,6 +3,9 @@
 
 #include "Server.hpp"
 
+
+class Response;
+
 class Client
 {
 private:
@@ -16,6 +19,8 @@ private:
 	std::string _extract_line;
 	size_t _pos;
 	size_t _last_pos;
+	std::map<std::string, std::string> _headers;
+	Response _response();
 
 	typedef enum E_REQUEST_STEP
 	{

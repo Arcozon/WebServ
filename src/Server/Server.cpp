@@ -18,7 +18,7 @@ void Server::sigHandler(int signum)
 {
 	if (signum == SIGINT || signum == SIGTERM)
 	{
-		std::cout << "Recieved " << (signum == SIGINT ? "SIGINT" : "SIGTERM") << std::endl;
+		std::cout << std::endl << "Recieved " << (signum == SIGINT ? "SIGINT" : "SIGTERM") << std::endl;
 		_stop_signal = 1;
 	}
 }

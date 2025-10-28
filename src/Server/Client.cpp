@@ -43,11 +43,17 @@ void Client::checkStep()
 				std::cout << "End of headers found" << std::endl;
 				_request_step = BODY;
 			}
-			
-			break ;
 		}
 		else if(_request_step == BODY)
-		{}
+		{
+			if(!checkCurrentLine())
+				return ;
+			else
+			{
+				_request_step = FIN;
+				break;
+			}
+		}
 	}
 
 }
@@ -63,6 +69,8 @@ void Client::readFromFd()
 			_str_buffer.append(buffer, rd);
 			_request_len += rd;
 			checkStep();
+			if(_request_len == ERROR)
+				;
 			//std::cout << "Read " << rd << " bytes: " << _str_buffer.substr(_request_len - rd) << std::endl;
 		}
 		else if(rd == -1)

@@ -59,7 +59,7 @@ MAKE += --no-print-directory
 
 test:
 	@clear && $(MAKE) all && clear && echo '	'./$(NAME) test.config && $(VAL) ./$(NAME) test.config
-	
+# curl -X POST localhost:8080 -H "Le G le : Eudes" -d "le eudes le g"
 
 all:	$(NAME)
 

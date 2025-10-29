@@ -43,7 +43,7 @@ bool	Client::_makeExtractLine(void)
 		{
 			_extract_line = _str_buffer.substr(_last_pos, _pos - _last_pos);
 			_last_pos = _pos + _sepLineLen;
-			// std::cout << "line: " << _extract_line << '\n';
+			std::cout << "line: " << _extract_line << '\n';
 			return (true);
 		}
 		rd = read(_fd, buffer, bufferSize);

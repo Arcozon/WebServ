@@ -27,6 +27,8 @@
 #include <cerrno>
 #include <map>
 #include "Client.hpp"
+#include <signal.h>
+#include <csignal>
 
 #define EVENT_SIZE 100
 
@@ -39,12 +41,14 @@ class Server
 		std::vector<int> _epoll_fds; 
 		std::map<int, Client *> _clients;
 		int	_epoll_instance;
+		static int _stop_signal;
 
 		void initSockets();
 		void initEpoll();
 	 	bool isServerSocket(int fd);
 		void registerNewClient(int client_fd);
 		void readFromClient(int client_fd);
+		static void sigHandler(int signum);
 
 		public:
 		Server(void);

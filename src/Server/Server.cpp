@@ -12,6 +12,17 @@
 
 #include "Server.hpp"
 
+int Server::_stop_signal = 0;
+
+void Server::sigHandler(int signum)
+{
+	if (signum == SIGINT || signum == SIGTERM)
+	{
+		std::cout << std::endl << "Recieved " << (signum == SIGINT ? "SIGINT" : "SIGTERM") << std::endl;
+		_stop_signal = 1;
+	}
+}
+
 void Server::initSockets()
 {
 	for (size_t i = 0; i < _ports.size(); i++)
@@ -130,11 +141,15 @@ void Server::start()
 	struct epoll_event events[4096];
 	int n_fds;
 	std::cout << "Webserv started, awaiting for incoming connections" << std::endl;
-	while (1)
+	while (_stop_signal != 1)
 	{
-		if ((n_fds = epoll_wait(_epoll_instance, events, EVENT_SIZE, -1)) == -1)
+		n_fds = epoll_wait(_epoll_instance, events, EVENT_SIZE, 1000);
+		if (n_fds == -1)
+		{
+			if (errno == EINTR)
+				continue ;
 			throw std::runtime_error("Failed to register epoll events (epoll_wait");
-
+		}
 		for (int i = 0; i < n_fds; i++)
 		{
 			int ev_fd = events[i].data.fd;
@@ -167,6 +182,7 @@ void Server::start()
 			}
 		}
 	}
+	std::cout << "Bonne nuit!" << std::endl;
 }
 
 
@@ -177,6 +193,9 @@ Server::Server(void)
 	_ports.push_back(8083);
 	initSockets();
 	initEpoll();
+	signal(SIGINT, Server::sigHandler);
+	signal(SIGTERM, Server::sigHandler);
+
 }
 
 Server::~Server(void)

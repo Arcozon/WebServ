@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 10:51:19 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/23 18:53:09 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/29 10:41:54 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@
 
 int	main(int ac, char **av, char **env)
 {
-	{
-		CGIHandler::copyEnv(env);
-		CGIHandler::printEnv();
-		CGIHandler::addVar("Salut", "toi");
-		CGIHandler::printEnv();
-	}
+	// {
+	// 	CGIHandler::copyEnv(env);
+	// 	CGIHandler::printEnv();
+	// 	CGIHandler::addVar("Salut", "toi");
+	// 	CGIHandler::printEnv();
+	// }
 	// try
 	// {
 	// 	WebServ	MyWebServ(ac, av, env);

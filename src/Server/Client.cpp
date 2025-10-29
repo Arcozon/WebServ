@@ -1,5 +1,9 @@
 #include "Client.hpp"
 
+
+const std::string	Client::_sepLine = "\r\n";
+const std::size_t	Client::_sepLineLen = _sepLine.size();
+
 Client::Client(int fd): _fd(fd), _request_len(0),_last_pos(0), _request_step(REQUEST_LINE)
 {
 }
@@ -8,24 +12,48 @@ Client::~Client()
 {
 	close(_fd);
 }
-int Client::checkCurrentLine()
+
+bool	Client::_makeExtractLine(void)
 {
-	_pos = _str_buffer.find("\r\n", _last_pos);
+	_pos = _str_buffer.find(_sepLine, _last_pos);
 	if(_pos == std::string::npos)
-		return 0;
+		return (false);
 	else
 	{
 		//std::cout << "Got full request line" << std::endl << _str_buffer.substr(_last_pos, _pos + 2) << std::endl;
 		_extract_line = _str_buffer.substr(_last_pos, _pos - _last_pos);
-		std::cout << "Full line recieved: " << _extract_line << std::endl;
-		_last_pos = _pos + 2;
-		return 1;
+		// std::cout << "Full line recieved: " << _extract_line << std::endl;
+		std::cout  << "\e[34m"<< _extract_line << "\e[0m" << std::endl;
+		_last_pos = _pos + _sepLineLen;
+		return (true);
 	}
+}
+
+bool Client::checkCurrentLine()
+{
+	if (_makeExtractLine())
+		return (false);
+	return (true);
+}
+
+bool	Client::_checkRequestLine(void)	// Add IoPort (to check )
+{
+
+}
+
+bool	Client::_checkHeader(void)	// Add IoPort (to check )
+{
+
+}
+
+bool	Client::_checkBody(void)	// Add IoPort (to check )
+{
+
 }
 
 void Client::checkStep()
 {
-	while(1)
+	while (_request_step != FIN && _request_step != ERROR)
 	{
 		if(_request_step == REQUEST_LINE)
 		{

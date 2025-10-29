@@ -26,9 +26,10 @@
 #include <sstream>
 #include <cerrno>
 #include <map>
-#include "Client.hpp"
 #include <signal.h>
 #include <csignal>
+#include "Client.hpp"
+#include "WebServ.hpp"
 
 #define EVENT_SIZE 100
 
@@ -37,21 +38,27 @@ class Client;
 class Server
 {
 	private:
-		std::vector<unsigned short> _ports; 
 		std::vector<int> _epoll_fds; 
 		std::map<int, Client *> _clients;
+		std::vector<IpPort> &_server_configs;
+		std::map<int, IpPort*>	_fd_config;
 		int	_epoll_instance;
 		static int _stop_signal;
 
-		void initSockets();
+		void initSockets(IpPort *config);
 		void initEpoll();
 	 	bool isServerSocket(int fd);
-		void registerNewClient(int client_fd);
+		void registerNewClient(int server_fd);
 		void readFromClient(int client_fd);
 		static void sigHandler(int signum);
+		IpPort *getConfig(int fd);
+
+
+		Server(void);
 
 		public:
-		Server(void);
+		
+		Server(std::vector<IpPort> &servers);
 		~Server(void);
 		void start(); // démarre l'event loop du serveur
 		void stop(); // arrête l'event loop du serveur

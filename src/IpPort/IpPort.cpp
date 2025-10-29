@@ -29,3 +29,13 @@ IpPort::IpPort(ParsLine &parsLine)
 
 IpPort::~IpPort(void)
 {}
+
+const std::string &IpPort::getHost(void) const
+{
+	return _host;
+}
+
+const std::string &IpPort::getPort(void) const
+{
+	return _port;
+}

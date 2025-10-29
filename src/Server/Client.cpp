@@ -1,6 +1,6 @@
 #include "Client.hpp"
 
-Client::Client(int fd): _fd(fd), _request_len(0),_last_pos(0), _request_step(REQUEST_LINE)
+Client::Client(int fd, IpPort *config): _fd(fd), _config(config), _request_len(0),_last_pos(0), _request_step(REQUEST_LINE)
 {
 }
 
@@ -70,7 +70,9 @@ void Client::readFromFd()
 			_request_len += rd;
 			checkStep();
 			if(_request_len == ERROR)
+			{
 				;
+			}
 			//std::cout << "Read " << rd << " bytes: " << _str_buffer.substr(_request_len - rd) << std::endl;
 		}
 		else if(rd == -1)

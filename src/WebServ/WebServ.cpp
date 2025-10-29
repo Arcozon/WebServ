@@ -14,3 +14,8 @@
 
 WebServ::~WebServ(void)
 {}
+
+std::vector<IpPort> &WebServ::getServers()
+{
+	return _servers;
+}

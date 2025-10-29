@@ -18,12 +18,12 @@
 
 int	main(int ac, char **av, char **env)
 {
-	{
-		CGIHandler::copyEnv(env);
-		CGIHandler::printEnv();
-		CGIHandler::addVar("Salut", "toi");
-		CGIHandler::printEnv();
-	}
+	// {
+	// 	CGIHandler::copyEnv(env);
+	// 	CGIHandler::printEnv();
+	// 	CGIHandler::addVar("Salut", "toi");
+	// 	CGIHandler::printEnv();
+	// }
 	// try
 	// {
 	// 	WebServ	MyWebServ(ac, av, env);
@@ -35,7 +35,8 @@ int	main(int ac, char **av, char **env)
 	// }
 	try
 	{
-		Server server;
+		WebServ	MyWebServ(ac, av, env);
+		Server server(MyWebServ.getServers());
 		//server.print_fds();
 		server.start();
 	}

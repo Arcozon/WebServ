@@ -23,43 +23,39 @@ void Server::sigHandler(int signum)
 	}
 }
 
-void Server::initSockets()
+void Server::initSockets(IpPort *config)
 {
-	for (size_t i = 0; i < _ports.size(); i++)
+	
+	int fd = socket(AF_INET, SOCK_STREAM, 0); // necessaire pour recevoir et envoyer des informations (par la que tout arrive)
+	if (fd == -1)
+		throw std::runtime_error("socket() syscall failed");
+	int flags = fcntl(fd, F_GETFL, 0); // rends les sockets non bloquants, doit être appelé pour chaque fd (potentiellement à enlever selon le sujet)
+	fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+	int opt = 1;
+	if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1) // https://stackoverflow.com/a/69923308
+		throw std::runtime_error("setsockopt() syscall failed");
+	
+	sockaddr_in addr;
+	std::memset(&addr, 0, sizeof(addr));
+	addr.sin_family = AF_INET; // IPv4
+	addr.sin_addr.s_addr = INADDR_ANY;
+	//std::cout << "SERVER: " << config->getHost() << ":" << config->getPort() << std::endl;
+	addr.sin_port = htons(std::atoi(config->getPort().c_str()));
+	if (bind(fd, (struct sockaddr *)&addr, sizeof(addr)) == -1)
 	{
-		int fd = socket(AF_INET, SOCK_STREAM, 0); // necessaire pour recevoir et envoyer des informations (par la que tout arrive)
-		if (fd == -1)
-			throw std::runtime_error("socket() syscall failed");
-
-		int flags = fcntl(fd, F_GETFL, 0); // rends les sockets non bloquants, doit être appelé pour chaque fd (potentiellement à enlever selon le sujet)
-		fcntl(fd, F_SETFL, flags | O_NONBLOCK);
-
-		int opt = 1;
-		if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1) // https://stackoverflow.com/a/69923308
-			throw std::runtime_error("setsockopt() syscall failed");
-		
-		sockaddr_in addr;
-		std::memset(&addr, 0, sizeof(addr));
-		addr.sin_family = AF_INET; // IPv4
-		addr.sin_addr.s_addr = INADDR_ANY; // 0.0.0.0
-		addr.sin_port = htons(_ports[i]);
-
-		if (bind(fd, (struct sockaddr *)&addr, sizeof(addr)) == -1)
-		{
-			std::ostringstream oss;
-			oss << "bind() syscall failed to listen on port: " << _ports[i];
-			throw std::runtime_error(oss.str());
-		}
-
-		if (listen(fd, SOMAXCONN) == -1)
-		{
-			std::ostringstream oss;
-			oss << "listen() syscall failed to accept incoming connections on port: " << _ports[i];
-			throw std::runtime_error(oss.str());
-		}
-
-		this->_epoll_fds.push_back(fd); // fd qu'on va monitor avec epoll
+		std::ostringstream oss;
+		oss << "bind() syscall failed to listen on port: " << config->getPort();
+		throw std::runtime_error(oss.str());
 	}
+	if (listen(fd, SOMAXCONN) == -1)
+	{
+		std::ostringstream oss;
+		oss << "listen() syscall failed to accept incoming connections on port: " << config->getPort();
+		throw std::runtime_error(oss.str());
+	}
+	_fd_config[fd] = config;
+	this->_epoll_fds.push_back(fd); // fd qu'on va monitor avec epoll
+	
 }
 
 void Server::initEpoll()
@@ -87,7 +83,7 @@ bool Server::isServerSocket(int fd)
 	return false;
 }
 
-void Server::registerNewClient(int new_fd)
+void Server::registerNewClient(int server_fd)
 {
 	 while (1)
 	 {
@@ -100,7 +96,7 @@ void Server::registerNewClient(int new_fd)
 		struct sockaddr_in client_addr;
 		socklen_t client_len = sizeof(client_addr);
 		std::memset(&client_addr, 0, sizeof(client_addr));
-		int client_fd = accept(new_fd, (struct sockaddr *)&client_addr, &client_len);
+		int client_fd = accept(server_fd, (struct sockaddr *)&client_addr, &client_len);
 
 		if (client_fd == -1)
 		{
@@ -118,7 +114,7 @@ void Server::registerNewClient(int new_fd)
 		accept_event.events = EPOLLIN | EPOLLET;
 		accept_event.data.fd = client_fd;
 
-		Client *client = new Client(client_fd);
+		Client *client = new Client(client_fd, getConfig(server_fd));
 		_clients[client_fd] = client;
 
 		if(epoll_ctl(_epoll_instance, EPOLL_CTL_ADD, client_fd, &accept_event) == -1)
@@ -186,12 +182,16 @@ void Server::start()
 }
 
 
-Server::Server(void)
+Server::Server(std::vector<IpPort> &servers): _server_configs(servers)
 {
-	_ports.push_back(8080);
-	_ports.push_back(8181);
-	_ports.push_back(8083);
-	initSockets();
+	// _ports.push_back(8080);
+	// _ports.push_back(8181);
+	// _ports.push_back(8083);
+	for(size_t i = 0; i < _server_configs.size(); i++)
+	{
+		std::cout << "test" << std::endl;
+		initSockets(&_server_configs[i]);
+	}
 	initEpoll();
 	signal(SIGINT, Server::sigHandler);
 	signal(SIGTERM, Server::sigHandler);
@@ -207,4 +207,12 @@ Server::~Server(void)
 	for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
 		delete it->second;
 	_clients.clear();
+}
+
+IpPort *Server::getConfig(int fd)
+{
+	std::map<int, IpPort*>::iterator it = _fd_config.find(fd);
+	if(it != _fd_config.end())
+		return it->second;
+	return NULL;
 }

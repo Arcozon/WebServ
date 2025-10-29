@@ -45,6 +45,9 @@ class IpPort
 		IpPort(void);
 		IpPort(ParsLine &parsLine);
 		~IpPort(void);
+		const std::string &getHost(void) const;
+		const std::string &getPort(void) const;
+
 };
 
 #endif

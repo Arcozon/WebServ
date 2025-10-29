@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/25 14:54:08 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/26 11:19:15 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,8 +217,8 @@ Location::ParsLocation::ParsLocation(ParsLine &parsLine)
 				std::cerr << e;
 				if (e.getErrLvl() == MyException::ELVL_ERROR)
 					_valid = false;
-			}			
-		}			
+			}	
+		}
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 11:39:47 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 16:03:43 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/26 11:21:13 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,13 @@ class MyException : public std::exception
 
 inline void	MyException::throwDown(void) const
 {
-	if (this->_level >= MyException::_lvlThrowDown)
+	if (_level >= MyException::_lvlThrowDown)
 		throw (*this);
 }
 
 inline MyException::eLevel	MyException::getErrLvl(void) const
 {
-	return (this->_level);
+	return (_level);
 }
 
 std::ostream	&operator<<(std::ostream &os, const MyException &exp);

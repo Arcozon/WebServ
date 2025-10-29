@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:03:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/25 14:54:03 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/26 11:39:43 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ class Location::ParsLocation
 		
 		void		printfLocation(void) const;
 		
-		unsigned long	getLocationFlags(void) const;
+		unsigned long			getLocationFlags(void) const;
 		const std::string	&getLocation(void) const;
 		const std::string	&getRoot(void) const;
 		const std::vector<std::string>	&getIndex(void) const;

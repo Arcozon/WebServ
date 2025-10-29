@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/26 11:19:15 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/29 14:37:22 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ bool	Location::ParsLocation::_isOnOff(const std::string &str)
 
 bool	Location::ParsLocation::_isAllowed(sAllowedMethods toTest) const
 {
-	return ((_allow & GET_MASK(toTest)) > 1);
+	return ((_allow & GET_MASK(toTest)) != 0);
 }
 
 bool	Location::ParsLocation::_isDefined(sDefined toTest) const

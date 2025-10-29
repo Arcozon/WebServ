@@ -1,8 +1,12 @@
 #ifndef CLIENT_HPP
-#define CLIENT_HPP
+# define CLIENT_HPP
 
-#include "Server.hpp"
+# include "Server.hpp"
 
+# include <string>
+# include <map>
+# include <vector>
+# include <algorithm>
 
 class Response;
 
@@ -21,6 +25,8 @@ private:
 
 	static const std::string	_sepLine;
 	static const std::size_t	_sepLineLen;
+
+	static const std::string	_supportedHTTPVersion;
 	
 private:
 	// struct epoll_event _s_client_event;
@@ -36,14 +42,19 @@ private:
 	std::map<std::string, std::string> _headers;
 	Response _response();
 
-	REQUEST_STEP _request_step;
+	REQUEST_STEP	_request_step;
+	bool			_done;
 	
 private:
+	static const std::vector<std::string>	_splitRequestLine(const std::string &reqLine);
+	static const std::pair<std::string, std::string>	_splitHeaderLine(const std::string &reqLine);
+
 	bool	_makeExtractLine(void);
 	bool	_checkRequestLine(void);	// Add IoPort (to check Allowed Methods and other)
 	bool	_checkHeader(void);	// Add IoPort (to check )
 	bool	_checkBody(void);	// Add IoPort (to check )
-
+	bool	_checkCurrentLine(const Client::REQUEST_STEP &reqSection);
+	
 public:
 	Client(/* args */);
 	Client(int fd);

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/30 15:04:15 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/30 18:32:09 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,7 @@ Client::Client(int fd, IpPort *config)
 :	_fd(fd),
 	_config(config),
 	_request_len(0),
-	_last_pos(0),
-	_request_step(REQUEST_LINE),
-	_done(false)
+	_requestStep(REQUEST_LINE)
 {}
 
 Client::~Client()
@@ -33,41 +31,26 @@ Client::~Client()
 
 bool	Client::_makeExtractLine(void)
 {
-	// _pos = _str_buffer.find(_sepLine, _last_pos);
-	// if(_pos == std::string::npos)
-	// 	return (false);
-	// else
-	// {
-	// 	//std::cout << "Got full request line" << std::endl << _str_buffer.substr(_last_pos, _pos + 2) << std::endl;
-	// 	_extract_line = _str_buffer.substr(_last_pos, _pos - _last_pos);
-	// 	// std::cout << "Full line recieved: " << _extract_line << std::endl;
-	// 	// std::cout  << "\e[34m"<< _extract_line << "\e[0m" << std::endl;
-	// 	_last_pos = _pos + _sepLineLen;
-	// 	return (true);
-	// }
 	char	buffer[_bufferSize];
 	int		rd;
 
 	do
 	{
-		_pos = _str_buffer.find(_sepLine, _last_pos);
+		_pos = _strBuffer.find(_sepLine);
 		if (_pos != std::string::npos)
 		{
-			_extract_line = _str_buffer.substr(_last_pos, _pos - _last_pos);
-			_last_pos = _pos + _sepLineLen;
-			// std::cout << "line: " << _extract_line << '\n';
+			_extractedLine = _strBuffer.substr(0, _pos);
+			_strBuffer.erase(0, _pos + _sepLineLen); 
 			return (true);
 		}
 		rd = read(_fd, buffer, _bufferSize);
 		if(rd > 0)
 		{
-			_str_buffer.append(buffer, rd);
+			_strBuffer.append(buffer, rd);
 			_request_len += rd;
 		}
-		else if(rd < 0)
-			return (false);
-	}	while (rd != 0);
-	_done = true;
+	}	while (rd > 0);
+	_requestStep = FIN;
 	return (true);
 }
 
@@ -95,7 +78,6 @@ const std::pair<std::string, std::string>	Client::_splitHeaderLine(const std::st
 	std::pair<std::string, std::string>	splitHeaderLine;
 
 	std::size_t	indexSep = reqLine.find(nameValSep);
-	// std::cout << "Index: " << indexSep << std::endl; 
 	if (indexSep == std::string::npos)
 		return (splitHeaderLine);
 	splitHeaderLine.first = reqLine.substr(0, indexSep); 
@@ -105,7 +87,7 @@ const std::pair<std::string, std::string>	Client::_splitHeaderLine(const std::st
 
 bool	Client::_checkRequestLine(void)	// Add IpPort (to check )
 {
-	std::vector<std::string>	splitReqLine = _splitRequestLine(_extract_line);
+	std::vector<std::string>	splitReqLine = _splitRequestLine(_extractedLine);
 
 	if (splitReqLine.empty())
 		return (false);
@@ -127,14 +109,14 @@ bool	Client::_checkRequestLine(void)	// Add IpPort (to check )
 
 bool	Client::_checkHeader(void)	// Add IpPort (to check )
 {
-	if (_extract_line.empty())
+	if (_extractedLine.empty())
 	{
 		std::cout  << "\e[1:31m"<< "	-- End Of Header --" << "\e[0m" << std::endl;
-		_request_step = BODY;
+		_requestStep = BODY;
 		return (true);
 	}
 
-	std::pair<std::string, std::string>	_nameVal = _splitHeaderLine(_extract_line);
+	std::pair<std::string, std::string>	_nameVal = _splitHeaderLine(_extractedLine);
 
 	if (_nameVal.first.empty())
 		return (false);
@@ -145,7 +127,7 @@ bool	Client::_checkHeader(void)	// Add IpPort (to check )
 
 bool	Client::_checkBody(void)	// Add IpPort (to check )
 {
-	std::cout  << "\e[1;37m"<< _extract_line << "\e[0m" << std::endl;
+	std::cout  << "\e[1;37m"<< _extractedLine << "\e[0m" << std::endl;
 	return (true);
 }
 
@@ -162,6 +144,11 @@ bool Client::_checkCurrentLine(const Client::REQUEST_STEP &reqSection)
 			return (_checkHeader());
 		case (BODY):
 			return (_checkBody());
+		case (FIN):
+		{
+			std::cout << "FIN" << std::endl;
+			return (true);
+		}
 		default:
 			return (false);
 	}
@@ -171,96 +158,36 @@ void Client::checkStep()
 {
 	if (!_checkCurrentLine(REQUEST_LINE))
 	{
-		_request_step = ERROR;
+		_requestStep = ERROR;
 		return ;
 	}
 	std::cout  << "\e[1:31m"<< "	-- Start Of Header --" << "\e[0m" << std::endl;
-	_request_step = HEADERS;
-	while (_request_step == HEADERS)
+	_requestStep = HEADERS;
+	while (_requestStep == HEADERS)
 	{
 		if (!_checkCurrentLine(HEADERS))
 		{
-			_request_step = ERROR;
+			_requestStep = ERROR;
 			return ;
 		}
 	}
-	while (_request_step == BODY)
+	while (_requestStep == BODY)
 	{
-		if (!_checkCurrentLine(REQUEST_LINE))
+		if (!_checkCurrentLine(BODY))
 		{
-			_request_step = ERROR;
+			std::cout << CBOLD << _extractedLine << '\n';
+			_requestStep = ERROR;
 			return ;
 		}
 	}
 	std::cout  << "\e[1:31m"<< "	-- End Of Body --" << "\e[0m" << std::endl;
-	_request_step = FIN;
+	_requestStep = FIN;
 }
 
 void Client::readFromFd()
 {
-	while(!_done && (_request_step != ERROR))
+	while(_requestStep != ERROR && _requestStep != FIN)
 	{
 		checkStep();
 	}
 }
-
-// void Client::checkStep()
-// {
-// 	while (_request_step != FIN && _request_step != ERROR)
-// 	{
-// 		if(_request_step == REQUEST_LINE)
-// 		{
-// 			if(!checkCurrentLine())
-// 				return ;
-// 			else
-// 				_request_step = HEADERS;
-// 		}
-// 		else if(_request_step == HEADERS)
-// 		{
-// 			if(!checkCurrentLine())
-// 				return ;
-// 			if(_extract_line.empty())
-// 			{
-// 				std::cout << "End of headers found" << std::endl;
-// 				_request_step = BODY;
-// 			}
-// 		}
-// 		else if(_request_step == BODY)
-// 		{
-// 			if(!checkCurrentLine())
-// 				return ;
-// 			else
-// 			{
-// 				_request_step = FIN;
-// 				break;
-// 			}
-// 		}
-// 	}
-// }
-
-// void Client::readFromFd()
-// {
-// 	char buffer[10];
-// 	while(1)
-// 	{
-// 		int rd = read(_fd, buffer, 10);
-// 		if(rd > 0)
-// 		{
-// 			_str_buffer.append(buffer, rd);
-// 			_request_len += rd;
-// 			checkStep();
-// 			if(_request_len == ERROR)
-// 				;
-// 			//std::cout << "Read " << rd << " bytes: " << _str_buffer.substr(_request_len - rd) << std::endl;
-// 		}
-// 		else if(rd == -1)
-// 			return ;
-// 		else if(rd == 0)
-// 		{
-// 			std::cout << "Client closed connection on fd: " << _fd << std::endl;
-// 			break ;
-// 		}
-// 	}
-// 	std::cout << "Client on fd [" << _fd << "] recieved a total of " << _request_len << " bytes:" << std::endl
-// 	<< _str_buffer << std::endl;
-// }

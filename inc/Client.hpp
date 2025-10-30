@@ -24,30 +24,30 @@ private:
 			ERROR
 		} REQUEST_STEP;
 
+	static const std::size_t	_bufferSize;
 	static const std::string	_sepLine;
 	static const std::size_t	_sepLineLen;
 
 	static const std::string	_supportedHTTPVersion;
 	
-	static const std::size_t	_bufferSize;
 	
 private:
 	// struct epoll_event _s_client_event;
 	// struct sockaddr_in _s_client_addr;
 	// struct epoll_event _s_epoll_event;
 
-	int _fd;
-	IpPort *_config;
+	int		_fd;
+	IpPort	*_config;
+	
 	unsigned int _request_len;
-	std::string _str_buffer;
-	std::string _extract_line;
-	size_t _pos;
-	size_t _last_pos;
+	std::string _strBuffer;
+	size_t 		_pos;
+	std::string _extractedLine;
+	
 	std::map<std::string, std::string> _headers;
+	REQUEST_STEP	_requestStep;
+	
 	Response _response();
-
-	REQUEST_STEP	_request_step;
-	bool			_done;
 	
 private:
 	static const std::vector<std::string>	_splitRequestLine(const std::string &reqLine);

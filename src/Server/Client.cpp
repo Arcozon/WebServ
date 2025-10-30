@@ -1,18 +1,30 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Client.cpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
+/*   Updated: 2025/10/30 15:04:15 by gaeudes          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "Client.hpp"
 
 const std::string	Client::_supportedHTTPVersion = "HTTP/1.1";
 const std::string	Client::_sepLine = "\r\n";
 const std::size_t	Client::_sepLineLen = _sepLine.size();
+const std::size_t	Client::_bufferSize = 1024;
 
-Client::Client(int fd)
+Client::Client(int fd, IpPort *config)
 :	_fd(fd),
+	_config(config),
 	_request_len(0),
 	_last_pos(0),
 	_request_step(REQUEST_LINE),
 	_done(false)
-Client::Client(int fd, IpPort *config): _fd(fd), _config(config), _request_len(0),_last_pos(0), _request_step(REQUEST_LINE)
-{
-}
+{}
 
 Client::~Client()
 {
@@ -33,9 +45,8 @@ bool	Client::_makeExtractLine(void)
 	// 	_last_pos = _pos + _sepLineLen;
 	// 	return (true);
 	// }
-	static const std::size_t	bufferSize = 2;
-	char						buffer[bufferSize + 1];
-	int							rd;
+	char	buffer[_bufferSize];
+	int		rd;
 
 	do
 	{
@@ -44,10 +55,10 @@ bool	Client::_makeExtractLine(void)
 		{
 			_extract_line = _str_buffer.substr(_last_pos, _pos - _last_pos);
 			_last_pos = _pos + _sepLineLen;
-			std::cout << "line: " << _extract_line << '\n';
+			// std::cout << "line: " << _extract_line << '\n';
 			return (true);
 		}
-		rd = read(_fd, buffer, bufferSize);
+		rd = read(_fd, buffer, _bufferSize);
 		if(rd > 0)
 		{
 			_str_buffer.append(buffer, rd);

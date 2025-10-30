@@ -29,6 +29,8 @@ private:
 
 	static const std::string	_supportedHTTPVersion;
 	
+	static const std::size_t	_bufferSize;
+	
 private:
 	// struct epoll_event _s_client_event;
 	// struct sockaddr_in _s_client_addr;

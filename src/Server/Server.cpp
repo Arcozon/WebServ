@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/14 18:01:31 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/30 14:58:35 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void Server::initSockets(IpPort *config)
 	addr.sin_family = AF_INET; // IPv4
 	addr.sin_addr.s_addr = INADDR_ANY;
 	//std::cout << "SERVER: " << config->getHost() << ":" << config->getPort() << std::endl;
-	addr.sin_port = htons(std::atoi(config->getPort().c_str()));
+	addr.sin_port = htons(config->getPort());
 	if (bind(fd, (struct sockaddr *)&addr, sizeof(addr)) == -1)
 	{
 		std::ostringstream oss;

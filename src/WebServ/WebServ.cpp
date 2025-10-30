@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 12:01:27 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/30 11:31:51 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/30 14:58:09 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,5 +29,5 @@ WebServ::~WebServ(void)
 
 std::vector<IpPort> &WebServ::getServers()
 {
-	return _servers;
+	return (_ipPorts);
 }

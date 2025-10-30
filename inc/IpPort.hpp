@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 12:03:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/30 11:31:16 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/30 14:51:36 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,9 @@ class IpPort
 
 		const std::string	&getIpPortStr(void) const;
 		bool	isValid(void) const;
+		const std::string &getHost(void) const;
+		const std::string &getPort(void) const;
+
 };
 
 #endif

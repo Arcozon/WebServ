@@ -26,3 +26,8 @@ WebServ::WebServ(const int ac, char *av[], char *env[])
 
 WebServ::~WebServ(void)
 {}
+
+std::vector<IpPort> &WebServ::getServers()
+{
+	return _servers;
+}

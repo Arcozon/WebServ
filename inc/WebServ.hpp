@@ -43,6 +43,7 @@ class WebServ
 	public:
 		WebServ(const int ac, char *av[], char *env[]);
 		~WebServ(void);
+		std::vector<IpPort> &getServers();
 
 };
 

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/30 11:31:26 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/30 14:51:49 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,4 +55,12 @@ bool	IpPort::isValid(void) const
 const std::string	&IpPort::getIpPortStr(void) const
 {
 	return (_strHostPort);
+const std::string &IpPort::getHost(void) const
+{
+	return _host;
+}
+
+const std::string &IpPort::getPort(void) const
+{
+	return _port;
 }

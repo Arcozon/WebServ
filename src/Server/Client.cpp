@@ -10,6 +10,7 @@ Client::Client(int fd)
 	_last_pos(0),
 	_request_step(REQUEST_LINE),
 	_done(false)
+Client::Client(int fd, IpPort *config): _fd(fd), _config(config), _request_len(0),_last_pos(0), _request_step(REQUEST_LINE)
 {
 }
 

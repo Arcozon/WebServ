@@ -9,6 +9,7 @@
 # include <algorithm>
 
 class Response;
+class IpPort;
 
 class Client
 {
@@ -34,6 +35,7 @@ private:
 	// struct epoll_event _s_epoll_event;
 
 	int _fd;
+	IpPort *_config;
 	unsigned int _request_len;
 	std::string _str_buffer;
 	std::string _extract_line;
@@ -57,7 +59,7 @@ private:
 	
 public:
 	Client(/* args */);
-	Client(int fd);
+	Client(int fd, IpPort *config);
 	~Client();
 
 	void readFromFd();

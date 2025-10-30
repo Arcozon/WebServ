@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:08:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/19 11:16:23 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/30 11:26:16 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,9 @@ void	WebServ::ParsWebServ::_addServer(void)
 {
 	try
 	{
-		_ipPorts.push_back(IpPort(_parsLine));
+		IpPort	newIpPort(_parsLine);
+		if (newIpPort.isValid())
+			_ipPorts.push_back(newIpPort);
 	}
 	catch (const MyException &e)
 	{
@@ -80,3 +82,7 @@ WebServ::ParsWebServ::ParsWebServ(const int ac, char *av[])
 WebServ::ParsWebServ::~ParsWebServ(void)
 {}
 
+const std::vector<IpPort>	WebServ::ParsWebServ::getIpPorts(void) const
+{
+	return (_ipPorts);
+}

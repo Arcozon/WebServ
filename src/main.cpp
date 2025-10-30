@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 10:51:19 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/29 10:41:54 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/30 11:22:30 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,15 @@ int	main(int ac, char **av, char **env)
 	// 	CGIHandler::addVar("Salut", "toi");
 	// 	CGIHandler::printEnv();
 	// }
-	// try
-	// {
-	// 	WebServ	MyWebServ(ac, av, env);
-	// }
-	// catch (const MyException &e)
-	// {
-	// 	std::cerr << e;
-	// 	return (e.getErrLvl() + 1);
-	// }
+	try
+	{
+		WebServ	MyWebServ(ac, av, env);
+	}
+	catch (const MyException &e)
+	{
+		std::cerr << e;
+		return (e.getErrLvl() + 1);
+	}
 	try
 	{
 		Server server;

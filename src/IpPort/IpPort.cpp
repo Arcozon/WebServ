@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/25 15:28:56 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/30 11:31:26 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,22 @@ IpPort::IpPort(void)
 :	_fDefined(0),
 	_host(0),
 	_port(0),
-	_clientMaxBodySize(0)
+	_clientMaxBodySize(0),
+	_valid(false)
 {}
 
 IpPort::IpPort(ParsLine &parsLine)
 :	_fDefined(0),
-	_clientMaxBodySize(0)
+	_host(0),
+	_port(0),
+	_clientMaxBodySize(0),
+	_valid(false)
 {
 	ParsIpPort	parsIpPort(parsLine);
 
 	if (!parsIpPort._isIpPortValid())
 		return ;
-
+	_valid = true;
 	_fDefined = parsIpPort.getIpPortFlag();
 	_StrHost = parsIpPort.getStrHost();
 	_host = parsIpPort.getHost();
@@ -43,3 +47,12 @@ IpPort::IpPort(ParsLine &parsLine)
 IpPort::~IpPort(void)
 {}
 
+bool	IpPort::isValid(void) const
+{
+	return (_valid);
+}
+
+const std::string	&IpPort::getIpPortStr(void) const
+{
+	return (_strHostPort);
+}

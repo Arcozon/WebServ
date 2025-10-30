@@ -28,7 +28,7 @@ S_SERVER   =  Server.cpp Client.cpp
 D_SERVER   =  Server/
 SRC_SERVER =  $(addprefix $(D_SERVER), $(S_SERVER))
 
-S_PARSWEBSERV	=  init.cpp  ParsWebServ.cpp
+S_PARSWEBSERV	=  ParsWebServ.cpp
 D_PARSWEBSERV	=  ParsWebServ/
 SRC_PARSWEBSERV =  $(addprefix $(D_PARSWEBSERV), $(S_PARSWEBSERV))
 

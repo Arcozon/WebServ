@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 12:03:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/25 15:28:20 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/10/30 11:31:16 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,15 @@ class IpPort
 
 		std::vector<Location>	_locations;
 
+		bool			_valid;
+
 	public:
 		IpPort(void);
 		IpPort(ParsLine &parsLine);
 		~IpPort(void);
+
+		const std::string	&getIpPortStr(void) const;
+		bool	isValid(void) const;
 };
 
 #endif

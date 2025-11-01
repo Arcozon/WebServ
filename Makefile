@@ -24,7 +24,7 @@ S_IPPORT   =  $(SRC_PARSIPPORT)  IpPort.cpp
 D_IPPORT   =  IpPort/
 SRC_IPPORT =  $(addprefix $(D_IPPORT), $(S_IPPORT))
 
-S_SERVER   =  Server.cpp Client.cpp
+S_SERVER   =  Server.cpp Client.cpp Response.cpp
 D_SERVER   =  Server/
 SRC_SERVER =  $(addprefix $(D_SERVER), $(S_SERVER))
 

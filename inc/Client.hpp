@@ -2,14 +2,15 @@
 # define CLIENT_HPP
 
 # include "Server.hpp"
+# include "Response.hpp"
 
 # include <string>
 # include <map>
 # include <vector>
 # include <algorithm>
 
-class Response;
 class IpPort;
+class Response;
 
 class Client
 {
@@ -47,7 +48,7 @@ private:
 	std::map<std::string, std::string> _headers;
 	REQUEST_STEP	_requestStep;
 	
-	Response _response();
+	Response *_response;
 	
 private:
 	static const std::vector<std::string>	_splitRequestLine(const std::string &reqLine);
@@ -67,6 +68,9 @@ public:
 	void readFromFd();
 	void checkStep();
 	bool checkCurrentLine();
+	void sendResponse();
+	bool responseSent() const;
+	bool finishedReading() const;
 };
 
 

@@ -50,8 +50,10 @@ class Server
 	 	bool isServerSocket(int fd);
 		void registerNewClient(int server_fd);
 		void readFromClient(int client_fd);
+		void writeToClient(int client_fd);
 		static void sigHandler(int signum);
 		IpPort *getConfig(int fd);
+		void removeClient(int client_fd);
 
 
 		Server(void);

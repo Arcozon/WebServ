@@ -37,8 +37,8 @@ private:
 	// struct sockaddr_in _s_client_addr;
 	// struct epoll_event _s_epoll_event;
 
-	int		_fd;
-	IpPort	*_config;
+	int				_fd;
+	const IpPort	&_config;
 	
 	unsigned int _request_len;
 	std::string _strBuffer;
@@ -61,16 +61,17 @@ private:
 	bool	_checkCurrentLine(const Client::REQUEST_STEP &reqSection);
 	
 public:
-	Client(/* args */);
-	Client(int fd, IpPort *config);
+	// Client(int fd, IpPort *config);
+	Client(int fd, const IpPort &config);
 	~Client();
 
 	void readFromFd();
 	void checkStep();
-	bool checkCurrentLine();
 	void sendResponse();
 	bool responseSent() const;
 	bool finishedReading() const;
+
+	const IpPort	&getConfig(void)	const;
 };
 
 

@@ -1,11 +1,11 @@
 #ifndef RESPONSE_HPP
-#define RESPONSE_HPP
+# define RESPONSE_HPP
 
-#include <iostream>
-#include <string>
-#include <map>
-#include <sstream>
-#include <unistd.h>
+# include <iostream>
+# include <string>
+# include <map>
+# include <sstream>
+# include <unistd.h>
 
 class Client;
 class IpPort;

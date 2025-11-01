@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/01 16:07:57 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/01 16:26:56 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,17 @@ const std::string	Client::_sepLine = "\r\n";
 const std::size_t	Client::_sepLineLen = _sepLine.size();
 const std::size_t	Client::_bufferSize = 1024;
 
-Client::Client(int fd, IpPort *config)
+// Client::Client(int fd, IpPort *config)
+// :	_fd(fd),
+// 	_config(config),
+// 	_request_len(0),
+// 	_requestStep(REQUEST_LINE),
+// 	_response(NULL)
+// {
+// 	_response = new Response(this);
+// }
+
+Client::Client(int fd, const IpPort &config)
 :	_fd(fd),
 	_config(config),
 	_request_len(0),
@@ -222,4 +232,9 @@ bool Client::responseSent()	const
 bool Client::finishedReading()	const
 {
 	return (_requestStep == FIN);
+}
+
+const IpPort	&Client::getConfig(void) const
+{
+	return (_config);
 }

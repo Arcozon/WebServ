@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/01 15:49:10 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/01 16:29:43 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,8 @@ void Server::registerNewClient(int server_fd)
 		accept_event.events = EPOLLIN | EPOLLET;
 		accept_event.data.fd = client_fd;
 
-		Client *client = new Client(client_fd, getConfig(server_fd));
+		// Client *client = new Client(client_fd, getConfig(server_fd));
+		Client *client = new Client(client_fd, *getConfig(server_fd));
 		_clients[client_fd] = client;
 
 		if(epoll_ctl(_epoll_instance, EPOLL_CTL_ADD, client_fd, &accept_event) == -1)

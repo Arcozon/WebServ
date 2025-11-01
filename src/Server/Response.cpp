@@ -1,4 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Response.cpp                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/01 16:29:20 by gaeudes           #+#    #+#             */
+/*   Updated: 2025/11/01 16:30:22 by gaeudes          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "Response.hpp"
+#include "Client.hpp"
 
 const std::string	Response::endOfLine = "\r\n";
 const std::string	Response::sepNameContent = ": ";
@@ -12,7 +25,8 @@ Response::Response(Client *cl)
 {
 	(void)_cl;
 	_body = "<html><body><h1>";
-	_body += _cl->
+	_body += "Je suis ";
+	_body += _cl->getConfig().getIpPortStr();
 	_body += "</h1></body></html>";
 }
 
@@ -52,7 +66,6 @@ void	Response::catHeader(void)
 void	Response::catResponse(void)
 {
 	catStatusLine(_responseCode, _reasonPhrase);
-	std::cout << "Status line: " << _response_buffer << '\n';
 	catHeader();
 	catBody();
 }

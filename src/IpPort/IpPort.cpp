@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/30 14:57:39 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/01 16:44:48 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,4 +75,26 @@ const unsigned long &IpPort::getHost(void) const
 const unsigned short &IpPort::getPort(void) const
 {
 	return (_port);
+}
+
+const Location	*IpPort::_findLocation(const std::string &location)	const
+{
+	typedef std::vector<Location>::const_iterator	CItVecLoc;
+
+	for (CItVecLoc it = _locations.begin(); it != _locations.end(); ++it)
+	{
+		if (it->getLocation() == location)
+			return (&*it);
+	}
+	return (NULL);
+}
+
+bool	IpPort::isValidLocation(const std::string &location)	const
+{
+	return (_findLocation(location) != 0);
+}
+
+const Location	&IpPort::getLocation(const std::string &location)	const
+{
+	return (*_findLocation(location));
 }

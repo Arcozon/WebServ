@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 16:29:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/01 16:30:22 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/01 16:46:33 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ const std::string	Response::endOfLine = "\r\n";
 const std::string	Response::sepNameContent = ": ";
 
 Response::Response(Client *cl)
-:	_responseCode(200),
+:	_responseCode(201),
 	_reasonPhrase("OK"),
 	_send_count(0),
 	_fully_sent(false),
@@ -25,7 +25,7 @@ Response::Response(Client *cl)
 {
 	(void)_cl;
 	_body = "<html><body><h1>";
-	_body += "Je suis ";
+	_body += "Je suis Martin ";
 	_body += _cl->getConfig().getIpPortStr();
 	_body += "</h1></body></html>";
 }

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 12:03:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/30 14:54:14 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/01 16:38:57 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ class IpPort
 
 		bool			_valid;
 
+		const Location	*_findLocation(const std::string &location) const;
+
 	public:
 		IpPort(void);
 		IpPort(ParsLine &parsLine);
@@ -65,6 +67,8 @@ class IpPort
 		const unsigned long &getHost(void) const;
 		const unsigned short &getPort(void) const;
 
+		bool		isValidLocation(const std::string &location)	const;
+		const Location	&getLocation(const std::string &location)	const;
 };
 
 #endif

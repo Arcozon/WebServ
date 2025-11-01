@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:37:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/25 15:25:23 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/01 16:41:53 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,9 @@ Location::~Location(void)
 bool	Location::isValid(void) const
 {
 	return (_valid);
+}
+
+const std::string	&Location::getLocation(void) const
+{
+	return (_location);
 }

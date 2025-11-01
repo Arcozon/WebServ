@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:25:55 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/01 17:48:01 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/01 17:51:17 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ class IpPort::ParsIpPort
 		void	_addIpPortLine(void);
 		void	_addHost(void);
 		void	_addPort(void);
-		void	_addIpPortName(void);
 		void	_addClientBodySize(void);
 		void	_addErrorPage(void);
 		void	_addLocation(void);

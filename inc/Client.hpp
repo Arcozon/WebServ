@@ -48,7 +48,7 @@ private:
 	
 	REQUEST_STEP	_request_step;
 	bool			_done;
-	Response _response;
+	Response *_response;
 	
 private:
 	static const std::vector<std::string>	_splitRequestLine(const std::string &reqLine);

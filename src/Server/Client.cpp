@@ -23,12 +23,16 @@ Client::Client(int fd, IpPort *config)
 	_request_len(0),
 	_last_pos(0),
 	_request_step(REQUEST_LINE),
-	_done(false)
-{}
+	_done(false),
+	_response(NULL)
+{
+	_response = new Response(this);
+}
 
 Client::~Client()
 {
 	close(_fd);
+	delete(_response);
 }
 
 bool	Client::_makeExtractLine(void)
@@ -204,8 +208,8 @@ void Client::checkStep()
 	_request_step = FIN;
 	if(_request_step == FIN)
 	{
-		_response.setBody("");
-		_response.prepare();
+		_response->setBody("");
+		_response->prepare();
 		_done = 1;
 		std::cout << "\033[1;34m" << "\t-- Response ready to be built --" << "\033[0m" << std::endl;
 	}
@@ -221,12 +225,12 @@ void Client::readFromFd()
 
 void Client::sendResponse()
 {
-	_response.send(_fd);
+	_response->send(_fd);
 }
 
 bool Client::responseSent()
 {
-	return _response.isResponseFullySent();
+	return _response->isResponseFullySent();
 }
 
 bool Client::finishedReading()

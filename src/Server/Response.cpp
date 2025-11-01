@@ -1,6 +1,6 @@
 #include "Response.hpp"
 
-Response::Response(): _response_code(200), _send_count(0), _fully_sent(0)
+Response::Response(Client *cl): _response_code(200), _send_count(0), _fully_sent(0), _cl(cl)
 {
 	_body = "<html><body><h1>Hello</h1></body></html>";
 

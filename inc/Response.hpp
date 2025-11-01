@@ -7,6 +7,7 @@
 #include <unistd.h>
 
 class Client;
+class IpPort;
 
 class Response
 {
@@ -17,10 +18,10 @@ private:
 	short int _response_code;
 	unsigned int _send_count;
 	bool _fully_sent;
-	//Client *_cl;
+	Client *_cl;
 
 	public:
-	Response();
+	Response(Client *cl);
 	~Response();
 	void setHeaders(std::map<std::string, std::string> &map);
 	void send(int fd);

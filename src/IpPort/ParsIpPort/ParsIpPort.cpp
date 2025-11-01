@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:24 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/30 15:03:04 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/01 17:50:36 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 const std::string	IpPort::ParsIpPort::_keyHost("host");
 const std::string	IpPort::ParsIpPort::_keyLocalHost("localhost");
 const std::string	IpPort::ParsIpPort::_keyPort("port");
-const std::string	IpPort::ParsIpPort::_keyServerName("server_name");
 const std::string	IpPort::ParsIpPort::_keyClientBodySize("client_max_body_size");
 const std::string	IpPort::ParsIpPort::_keyErrorPage("error_page");
 const std::string	IpPort::ParsIpPort::_keyLocation("location");
@@ -33,7 +32,7 @@ void	IpPort::ParsIpPort::_addDefined(sDefined toTest)
 
 IpPort::ParsIpPort::~ParsIpPort(void)
 {
-	printParsServ();
+	// printParsServ();
 }
 
 bool	IpPort::ParsIpPort::_isValidNumInRange0to255(const std::string& str)
@@ -129,8 +128,6 @@ void	IpPort::ParsIpPort::_addIpPortLine(void)
 		_addHost();
 	else if (splitLineFront == _keyPort)
 		_addPort();
-	else if (splitLineFront == _keyServerName)
-		_addIpPortName();
 	else if (splitLineFront == _keyClientBodySize)
 		_addClientBodySize();
 	else if (splitLineFront == _keyErrorPage)
@@ -178,16 +175,6 @@ void	IpPort::ParsIpPort::_addPort(void)
 	_portStr = TmpPortStr;
 	_port = std::atoi(TmpPortStr.c_str());
 	_addDefined(s_port);
-}
-
-void	IpPort::ParsIpPort::_addIpPortName(void)
-{
-	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
-
-	if (splitLine.size() <= 1)
-		throw (MyException("Needs one or more arguments", MyException::ELVL_WARNING, splitLine.front()));
-	for (std::vector<std::string>::size_type i = 1; i < splitLine.size(); ++i)
-		_serverNames.push_back(splitLine.at(i));			// TODO: check duplicates ?
 }
 
 void	IpPort::ParsIpPort::_addClientBodySize(void)
@@ -262,14 +249,6 @@ void	IpPort::ParsIpPort::printParsServ(void) const
 {
 	std::cout << "Host: " << _hostStr << '\n';
 	std::cout << "Port: " << _portStr << '\n';
-	std::cout << "ServerNames: ";
-	{
-		for (std::vector<std::string>::const_iterator it = _serverNames.begin(); it != _serverNames.end(); ++it)
-			std::cout << *it << "  ";
-		if (_serverNames.size() == 0)
-			std::cout << "	" << "None";
-		std::cout << '\n';
-	}
 	std::cout << "ClientMaxSizeBody: ";
 	if (_isDefined(s_clientBodySize))
 		std::cout << _clientMaxBodySize <<'\n';
@@ -318,11 +297,6 @@ const std::string	&IpPort::ParsIpPort::getStrPort(void) const
 unsigned long	IpPort::ParsIpPort::getPort(void) const
 {
 	return (_port);
-}
-
-const std::vector<std::string>	&IpPort::ParsIpPort::getServerNames(void) const
-{
-	return (_serverNames);
 }
 
 unsigned long	IpPort::ParsIpPort::getClientMaxBodySize(void) const

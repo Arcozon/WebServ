@@ -40,13 +40,16 @@ private:
 	int				_fd;
 	const IpPort	&_config;
 	
-	unsigned int _request_len;
-	std::string _strBuffer;
-	size_t 		_pos;
-	std::string _extractedLine;
-	
-	std::map<std::string, std::string> _headers;
+	std::size_t	_request_len;
+	std::string	_strBuffer;
+	size_t		_pos;
+	std::string	_extractedLine;
 	REQUEST_STEP	_requestStep;
+	
+	std::string	_method;
+	std::string	_requestTarget;
+	std::string	_HTTPVersion;
+	std::map<std::string, std::string> _headers;
 	
 	Response *_response;
 	
@@ -72,6 +75,8 @@ public:
 	bool finishedReading() const;
 
 	const IpPort	&getConfig(void)	const;
+	const std::string	&getMethod(void)	const;
+	const std::string	&getTargetLocation(void)	const;
 };
 
 

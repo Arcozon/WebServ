@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:37:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/01 16:41:53 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/01 17:38:34 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ Location::Location(void)
 {}
 
 Location::Location(ParsLine &parsLine)
-:	_valid(false),
+:	_valid(true),
 	_flags(0),
 	_autoindex(false)
 {

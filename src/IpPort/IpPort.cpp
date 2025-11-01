@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/01 16:44:48 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/01 17:49:06 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ IpPort::IpPort(ParsLine &parsLine)
 	_StrPort = parsIpPort.getStrPort();
 	_port = parsIpPort.getPort();
 	_strHostPort = _StrHost + ':' + _StrPort;
-	_IpPortNames = parsIpPort.getServerNames();
 	_clientMaxBodySize = parsIpPort.getClientMaxBodySize();
 	_locations = parsIpPort.getLocations();
 }
@@ -77,12 +76,13 @@ const unsigned short &IpPort::getPort(void) const
 	return (_port);
 }
 
-const Location	*IpPort::_findLocation(const std::string &location)	const
+const Location	*IpPort::_getLocation(const std::string &location)	const
 {
 	typedef std::vector<Location>::const_iterator	CItVecLoc;
 
 	for (CItVecLoc it = _locations.begin(); it != _locations.end(); ++it)
 	{
+		// std::cout << '<' << it->getLocation() << ">\n";
 		if (it->getLocation() == location)
 			return (&*it);
 	}
@@ -91,10 +91,10 @@ const Location	*IpPort::_findLocation(const std::string &location)	const
 
 bool	IpPort::isValidLocation(const std::string &location)	const
 {
-	return (_findLocation(location) != 0);
+	return (_getLocation(location) != 0);
 }
 
 const Location	&IpPort::getLocation(const std::string &location)	const
 {
-	return (*_findLocation(location));
+	return (*_getLocation(location));
 }

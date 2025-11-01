@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:25:55 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/25 15:24:13 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/01 17:48:01 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ class IpPort::ParsIpPort
 		static const std::string	_keyHost;
 		static const std::string	_keyLocalHost;
 		static const std::string	_keyPort;
-		static const std::string	_keyServerName;
 		static const std::string	_keyClientBodySize;
 		static const std::string	_keyErrorPage;
 		static const std::string	_keyLocation;
@@ -51,7 +50,6 @@ class IpPort::ParsIpPort
 		std::string							_portStr;
 		short								_port;
 	
-		std::vector<std::string>			_serverNames;
 		unsigned long						_clientMaxBodySize;
 		std::map<std::string, std::string>	_errorPages;
 		std::vector<Location>				_locations;

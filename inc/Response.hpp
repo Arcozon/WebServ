@@ -60,10 +60,8 @@ public:
 
 	void	send(int fd);
 	void	prepare();
+	void	prepare(const std::string &body);
 	bool	isResponseFullySent()	const;
 };
-
-
-
 
 #endif

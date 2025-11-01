@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/29 14:37:22 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/01 17:38:45 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	Location::ParsLocation::_addDefined(sDefined toTest)
 
 Location::ParsLocation::~ParsLocation(void)
 {
-	printfLocation();
+	// printfLocation();
 }
 
 void	Location::ParsLocation::_addLocationLine(void)
@@ -254,6 +254,9 @@ bool	Location::ParsLocation::_checkRedirs(void) const
 		++count;
 	if (_isDefined(s_return))
 		++count;
+	if (_isDefined(s_root))
+		++count;
+	return (true);
 	return (count == 1);
 }
 

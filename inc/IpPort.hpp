@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 12:03:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/01 16:38:57 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/01 17:49:13 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ class IpPort
 		unsigned short	_port;
 		std::string		_strHostPort;
 
-		std::vector<std::string>			_IpPortNames;
 		std::map<std::string, std::string>	_errPages;
 
 		unsigned long	_clientMaxBodySize;
@@ -53,21 +52,22 @@ class IpPort
 
 		bool			_valid;
 
-		const Location	*_findLocation(const std::string &location) const;
+		const Location	*_getLocation(const std::string &location) const;
 
 	public:
 		IpPort(void);
 		IpPort(ParsLine &parsLine);
 		~IpPort(void);
 
-		const std::string	&getIpPortStr(void) const;
 		bool	isValid(void) const;
+
+		const std::string	&getIpPortStr(void) const;
 		const std::string &getHostStr(void) const;
 		const std::string &getPortStr(void) const;
 		const unsigned long &getHost(void) const;
 		const unsigned short &getPort(void) const;
 
-		bool		isValidLocation(const std::string &location)	const;
+		bool			isValidLocation(const std::string &location)	const;
 		const Location	&getLocation(const std::string &location)	const;
 };
 

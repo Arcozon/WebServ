@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/01 16:26:56 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/01 17:12:24 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,19 +106,18 @@ bool	Client::_checkRequestLine(void)	// Add IpPort (to check )
 	if (splitReqLine.empty())
 		return (false);
 	
-	std::string	method = splitReqLine.at(0);
-	std::string	requestTarget = splitReqLine.at(1);
-	std::string	HTTPVersion = splitReqLine.at(2);
+	_method = splitReqLine.at(0);
+	_requestTarget = splitReqLine.at(1);
+	_HTTPVersion = splitReqLine.at(2);
 
-	if (!(method == "GET" || method == "POST" || method == "DELETE"))
+	if (!(_method == "GET" || _method == "POST" || _method == "DELETE"))
 		return (false);
 	// Check if method is in IpPort / location
 	// check if request target is in IoPort / if [Root]/[RequestTarget] is a dir
-	if (HTTPVersion != _supportedHTTPVersion)
+	if (_HTTPVersion != _supportedHTTPVersion)
 		return (false);
-	std::cout << "\e[32m[" << method << "]\e[33m[" << requestTarget << "]\e[34m[" << HTTPVersion << "]\e[0m" << std::endl;
+	std::cout << "\e[32m[" << _method << "]\e[33m[" << _requestTarget << "]\e[34m[" << _HTTPVersion << "]\e[0m" << std::endl;
 	return (true);
-	(void) requestTarget;
 }
 
 bool	Client::_checkHeader(void)	// Add IpPort (to check )
@@ -237,4 +236,15 @@ bool Client::finishedReading()	const
 const IpPort	&Client::getConfig(void) const
 {
 	return (_config);
+}
+
+
+const std::string	&Client::getMethod(void) const
+{
+	return (_method);
+}
+
+const std::string	&Client::getTargetLocation(void) const
+{
+	return (_requestTarget);
 }

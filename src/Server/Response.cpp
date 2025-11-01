@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 16:29:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/01 16:46:33 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/01 17:42:17 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,9 +70,22 @@ void	Response::catResponse(void)
 	catBody();
 }
 
+void	Response::prepare(const std::string &body)
+{
+	_body = body;
+	if (_cl->getConfig().isValidLocation(_cl->getTargetLocation()))
+	{
+		Location loc = _cl->getConfig().getLocation(_cl->getTargetLocation());
+		_body += loc.getLocation() + " Est une location valide";
+	}
+	else
+		_body += "Je connais pas cette location";
+	catResponse();	
+}
+
 void Response::prepare()
 {
-	catResponse();
+	prepare(_body);
 }
 
 void Response::send(int fd)

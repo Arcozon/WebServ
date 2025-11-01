@@ -1,37 +1,65 @@
 #include "Response.hpp"
 
+const std::string	Response::endOfLine = "\r\n";
+const std::string	Response::sepNameContent = ": ";
+
 Response::Response(Client *cl)
-:	_response_code(200),
+:	_responseCode(200),
+	_reasonPhrase("OK"),
 	_send_count(0),
 	_fully_sent(false),
 	_cl(cl)
 {
-	(void)_response_code;
 	(void)_cl;
-	_body = "<html><body><h1>Hello</h1></body></html>";
+	_body = "<html><body><h1>";
+	_body += _cl->
+	_body += "</h1></body></html>";
 }
 
-void Response::setHeaders(std::map<std::string, std::string> &map)
+void	Response::setHeaders(const std::map<std::string, std::string> &map)
 {
-	for (std::map<std::string, std::string>::iterator it = map.begin(); it != map.end(); ++it)
-		(void)it->second;
+	// _header.insert("Content-Type", "text/html; charset=UTF-8");
+	_header.insert(std::make_pair("Content-Type", "text/html; charset=UTF-8"));
+	_header.insert(std::make_pair("Connection", "close"));
+	(void)map;
 }
 
-void Response::setBody(const std::string &body)
+void	Response::catContentLenght(void)
 {
-	//_body += body;
-	(void)body;
-	_response_buffer += "HTTP/1.1 200 OK\r\n";
-	_response_buffer += "Content-Type: text/html; charset=UTF-8\r\n";
-	_response_buffer += "Content-Length: 40\r\n";
-	_response_buffer += "Connection: close\r\n";
-	_response_buffer += "\r\n";
-	_response_buffer += _body;
+	std::ostringstream	bodySize;
+	bodySize << _body.size();
+	catHeaderLine("Content-Lenght", bodySize.str());
+}
+
+void	Response::catBody(void)
+{
+	if (!_body.empty())
+	{
+		catContentLenght();
+		catLine("");
+		catLine(_body);	// remplacer les \n par des \r\n ?
+	}
+}
+
+void	Response::catHeader(void)
+{
+	typedef	std::map<std::string, std::string>::const_iterator CIttMapHeader;
+
+	for (CIttMapHeader it = _header.begin(); it != _header.end(); ++it)
+		this->catHeaderLine(it->first, it->second);
+}
+
+void	Response::catResponse(void)
+{
+	catStatusLine(_responseCode, _reasonPhrase);
+	std::cout << "Status line: " << _response_buffer << '\n';
+	catHeader();
+	catBody();
 }
 
 void Response::prepare()
 {
-	_response_buffer += _body;
+	catResponse();
 }
 
 void Response::send(int fd)
@@ -43,8 +71,8 @@ void Response::send(int fd)
 		if (sent > 0)
 		{
 			_send_count += sent;
-			std::cout << "\e[1;32mSent " << sent << " bytes (Remaining: " << _response_buffer.length() -_send_count 
-										<< ")\e[0m" << std::endl;
+			std::cout << "\e[1;32mSent " << sent << " bytes (Remaining: ";
+			std::cout << _response_buffer.length() - _send_count << ")\e[0m" << std::endl;
 		}
 		else
 		{
@@ -53,7 +81,7 @@ void Response::send(int fd)
 		}
 	}
 	if(_send_count ==_response_buffer.length())
-		_fully_sent = 1;
+		_fully_sent = true;
 	std::cout << "\e[1;32mResponse sent to client\e[0m" << std::endl;
 }
 
@@ -62,5 +90,5 @@ Response::~Response()
 
 bool Response::isResponseFullySent()	const
 {
-	return _fully_sent;
+	return (_fully_sent);
 }

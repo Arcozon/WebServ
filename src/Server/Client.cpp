@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/01 15:26:21 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/01 16:07:57 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,7 +196,6 @@ void Client::checkStep()
 	_requestStep = FIN;
 	if(_requestStep == FIN)
 	{
-		_response->setBody("");
 		_response->prepare();
 		std::cout << "\033[1;34m" << "\t-- Response ready to be built --" << "\033[0m" << std::endl;
 	}
@@ -217,70 +216,10 @@ void Client::sendResponse()
 
 bool Client::responseSent()	const
 {
-	return _response->isResponseFullySent();
+	return (_response->isResponseFullySent());
 }
 
 bool Client::finishedReading()	const
 {
 	return (_requestStep == FIN);
 }
-// void Client::checkStep()
-// {
-// 	while (_request_step != FIN && _request_step != ERROR)
-// 	{
-// 		if(_request_step == REQUEST_LINE)
-// 		{
-// 			if(!checkCurrentLine())
-// 				return ;
-// 			else
-// 				_request_step = HEADERS;
-// 		}
-// 		else if(_request_step == HEADERS)
-// 		{
-// 			if(!checkCurrentLine())
-// 				return ;
-// 			if(_extract_line.empty())
-// 			{
-// 				std::cout << "End of headers found" << std::endl;
-// 				_request_step = BODY;
-// 			}
-// 		}
-// 		else if(_request_step == BODY)
-// 		{
-// 			if(!checkCurrentLine())
-// 				return ;
-// 			else
-// 			{
-// 				_request_step = FIN;
-// 				break;
-// 			}
-// 		}
-// 	}
-// }
-
-// void Client::readFromFd()
-// {
-// 	char buffer[10];
-// 	while(1)
-// 	{
-// 		int rd = read(_fd, buffer, 10);
-// 		if(rd > 0)
-// 		{
-// 			_str_buffer.append(buffer, rd);
-// 			_request_len += rd;
-// 			checkStep();
-// 			if(_request_len == ERROR)
-// 				;
-// 			//std::cout << "Read " << rd << " bytes: " << _str_buffer.substr(_request_len - rd) << std::endl;
-// 		}
-// 		else if(rd == -1)
-// 			return ;
-// 		else if(rd == 0)
-// 		{
-// 			std::cout << "Client closed connection on fd: " << _fd << std::endl;
-// 			break ;
-// 		}
-// 	}
-// 	std::cout << "Client on fd [" << _fd << "] recieved a total of " << _request_len << " bytes:" << std::endl
-// 	<< _str_buffer << std::endl;
-// }

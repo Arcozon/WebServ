@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/30 14:58:35 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/01 15:49:10 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,7 +199,7 @@ Server::Server(std::vector<IpPort> &servers): _server_configs(servers)
 	// _ports.push_back(8083);
 	for(size_t i = 0; i < _server_configs.size(); i++)
 	{
-		std::cout << "test" << std::endl;
+		// std::cout << "test" << std::endl;
 		initSockets(&_server_configs[i]);
 	}
 	initEpoll();

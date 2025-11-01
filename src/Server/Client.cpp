@@ -131,6 +131,14 @@ bool	Client::_checkHeader(void)	// Add IpPort (to check )
 	{
 		std::cout  << "\e[1:31m"<< "	-- End Of Header --" << "\e[0m" << std::endl;
 		_request_step = BODY;
+
+		if (_headers.find("Content-Length") == _headers.end() &&
+			_headers.find("content-length") == _headers.end())
+		{
+			_request_step = FIN;
+			std::cout << "\e[1;31m" << "	-- No Body Expected --" << "\e[0m" << std::endl;
+		}
+
 		return (true);
 	}
 
@@ -194,6 +202,13 @@ void Client::checkStep()
 	}
 	std::cout  << "\e[1:31m"<< "	-- End Of Body --" << "\e[0m" << std::endl;
 	_request_step = FIN;
+	if(_request_step == FIN)
+	{
+		_response.setBody("");
+		_response.prepare();
+		_done = 1;
+		std::cout << "\033[1;34m" << "\t-- Response ready to be built --" << "\033[0m" << std::endl;
+	}
 }
 
 void Client::readFromFd()
@@ -204,6 +219,20 @@ void Client::readFromFd()
 	}
 }
 
+void Client::sendResponse()
+{
+	_response.send(_fd);
+}
+
+bool Client::responseSent()
+{
+	return _response.isResponseFullySent();
+}
+
+bool Client::finishedReading()
+{
+	return _request_step == FIN;
+}
 // void Client::checkStep()
 // {
 // 	while (_request_step != FIN && _request_step != ERROR)

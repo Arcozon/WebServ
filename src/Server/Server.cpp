@@ -130,6 +130,16 @@ void Server::readFromClient(int client_fd)
 {
 	Client *cl = _clients[client_fd];
 	cl->readFromFd();
+	if(cl->finishedReading())
+	{
+		std::cout << "\033[1;34m" << "\t-- IN EPOLLOUT SWITCH CONDITION --" << "\033[0m" << std::endl;
+		epoll_event ev;
+		std::memset(&ev, 0, sizeof(ev));
+		ev.events = EPOLLOUT | EPOLLET;
+		ev.data.fd = client_fd;
+		epoll_ctl(_epoll_instance, EPOLL_CTL_MOD, client_fd, &ev);
+	}
+
 }
 
 void Server::start()
@@ -174,7 +184,7 @@ void Server::start()
 			}
 			else if (ev & EPOLLOUT)
 			{
-				
+				writeToClient(ev_fd);
 			}
 		}
 	}
@@ -215,4 +225,24 @@ IpPort *Server::getConfig(int fd)
 	if(it != _fd_config.end())
 		return it->second;
 	return NULL;
+}
+
+void Server::writeToClient(int client_fd)
+{
+	Client *cl = _clients[client_fd];
+	cl->sendResponse();
+	if(cl->responseSent())
+		removeClient(client_fd);
+}
+
+void Server::removeClient(int client_fd)
+{
+	epoll_ctl(_epoll_instance, EPOLL_CTL_DEL, client_fd, NULL);
+	std::map<int, Client*>::iterator it = _clients.find(client_fd);
+	if(it != _clients.end())
+	{
+		delete it->second;
+		_clients.erase(it);
+	}
+	std::cout << "\e[1;33mClient " << client_fd << " removed from epoll events\e[0m" << std::endl;
 }

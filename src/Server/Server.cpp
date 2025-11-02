@@ -198,10 +198,7 @@ Server::Server(std::vector<IpPort> &servers): _server_configs(servers)
 	// _ports.push_back(8181);
 	// _ports.push_back(8083);
 	for(size_t i = 0; i < _server_configs.size(); i++)
-	{
-		std::cout << "test" << std::endl;
 		initSockets(&_server_configs[i]);
-	}
 	initEpoll();
 	signal(SIGINT, Server::sigHandler);
 	signal(SIGTERM, Server::sigHandler);

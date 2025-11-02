@@ -6,6 +6,9 @@
 #include <map>
 #include <unistd.h>
 
+#define HTTP_VERSION "HTTP/1.1"
+#define SERVER "TURBOINTGAEUDESPOPPYTOPLANEMAINOTP/1.0"
+
 class Client;
 class IpPort;
 
@@ -13,8 +16,10 @@ class Response
 {
 private:
 	std::map<std::string, std::string> _headers;
+	std::string _status_line;
 	std::string _body;
 	std::string _response_buffer;
+	
 	short int _response_code;
 	unsigned int _send_count;
 	bool _fully_sent;

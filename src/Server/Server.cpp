@@ -194,9 +194,6 @@ void Server::start()
 
 Server::Server(std::vector<IpPort> &servers): _server_configs(servers)
 {
-	// _ports.push_back(8080);
-	// _ports.push_back(8181);
-	// _ports.push_back(8083);
 	for(size_t i = 0; i < _server_configs.size(); i++)
 		initSockets(&_server_configs[i]);
 	initEpoll();

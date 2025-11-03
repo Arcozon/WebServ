@@ -62,6 +62,7 @@ public:
 
 	void	setHeaders(const std::map<std::string, std::string> &map);
 	void	catResponse(void);
+	void	mkRepFromLoc(void);
 
 	void	send(int fd);
 	void	prepare();

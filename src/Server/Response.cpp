@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 16:29:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/03 15:52:51 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/03 16:41:05 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,3 +122,11 @@ bool Response::isResponseFullySent()	const
 {
 	return (_fully_sent);
 }
+
+
+// void	Response::mkRepFromLoc(void)
+// {
+// 	if (!_location)
+// 		return ;
+// 	if ()
+// }

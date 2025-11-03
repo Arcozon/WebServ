@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/01 17:12:24 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/03 11:16:55 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ Client::Client(int fd, const IpPort &config)
 	_config(config),
 	_request_len(0),
 	_requestStep(REQUEST_LINE),
+	_location(NULL),
 	_response(NULL)
 {
 	_response = new Response(this);
@@ -41,6 +42,7 @@ Client::~Client()
 {
 	close(_fd);
 	delete(_response);
+	(void)_location;
 }
 
 bool	Client::_makeExtractLine(void)

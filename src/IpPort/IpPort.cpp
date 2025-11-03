@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/01 17:49:06 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/03 11:17:30 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,4 +97,10 @@ bool	IpPort::isValidLocation(const std::string &location)	const
 const Location	&IpPort::getLocation(const std::string &location)	const
 {
 	return (*_getLocation(location));
+}
+
+const Location	*IpPort::getLocation1(const std::string &path)	const
+{
+	return (NULL);
+	(void)path;
 }

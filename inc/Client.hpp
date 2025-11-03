@@ -11,6 +11,7 @@
 
 class IpPort;
 class Response;
+class Location;
 
 class Client
 {
@@ -51,6 +52,7 @@ private:
 	std::string	_HTTPVersion;
 	std::map<std::string, std::string> _headers;
 	
+	Location *_location;
 	Response *_response;
 	
 private:

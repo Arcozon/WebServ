@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/01 17:38:45 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/03 13:00:05 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,20 @@ void	Location::ParsLocation::_addLocationLine(void)
 	else
 		throw (MyException("Unknown key" + _inLocation(),
 			MyException::ELVL_WARNING, splitLineFront));	
+}
+
+void	Location::ParsLocation::_setLocation(void)
+{
+	std::string	loca = _parsLine.getSplitLine().at(1);
+
+	if (loca[0] != '/')
+		throw (MyException("Location must be a relative path"  + _inLocation(), MyException::ELVL_ERROR, loca));
+	if (loca.find("/../") != std::string::npos
+		|| (loca.find("../") != std::string::npos && loca.find("../") == loca.size() - 3))
+		throw (MyException("No directory traversal"  + _inLocation(), MyException::ELVL_ERROR, loca));
+	std::cout << "Before: " << loca ;
+	_location = Location::simplifyPath(loca);
+	std::cout << "	After: " << _location << std::endl << std::endl;
 }
 
 void	Location::ParsLocation::_addRoot(void)
@@ -202,7 +216,8 @@ Location::ParsLocation::ParsLocation(ParsLine &parsLine)
 	_allow( GET_MASK(s_GET) | GET_MASK(s_POST) | GET_MASK(s_DELETE) ),
 	_valid(true)
 {
-	_location = _parsLine.getSplitLine().at(1);
+	_setLocation();
+
 	while (_parsLine.readLine(_nTabLocation))
 	{
 		if (_valid)

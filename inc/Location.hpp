@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:18:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/03 10:53:42 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/03 12:58:09 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ class Location
 		bool			_valid;
 		unsigned long	_flags;
 
-		// std::string		_guard;	??
 		std::string		_location;
 		std::string		_root;
 		std::vector<std::string>	_index;
@@ -68,6 +67,8 @@ class Location
 
 		const std::string	&getLocation(void) const;
 
+
+		static std::string	simplifyPath(const std::string &basePath);
 };
 
 #endif

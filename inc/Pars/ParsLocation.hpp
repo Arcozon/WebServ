@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:03:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/03 10:55:35 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/03 11:21:33 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,8 @@ class Location::ParsLocation
 		bool	_isAllowed(sAllowedMethods toTest) const;
 		bool	_isDefined(sDefined toTest) const;
 		void	_addDefined(sDefined toTest);
+
+		void	_setLocation(void);
 
 		void	_addLocationLine(void);
 		void	_addRoot(void);

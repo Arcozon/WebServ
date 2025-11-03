@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:18:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/01 17:22:32 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/03 10:53:42 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,9 +63,8 @@ class Location
 
 		bool	isValid(void) const;
 
-		bool	_isAllowedGET(void) const;
-		bool	_isAllowedPOST(void) const;
-		bool	_isAllowedDELETE(void) const;
+		bool	isMethodAllowed(const sAllowedMethods &method) const;
+		bool	isMethodAllowed(const std::string &method) const;
 
 		const std::string	&getLocation(void) const;
 

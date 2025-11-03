@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:37:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/01 17:38:34 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/03 11:00:24 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,4 +53,22 @@ bool	Location::isValid(void) const
 const std::string	&Location::getLocation(void) const
 {
 	return (_location);
+}
+
+bool	Location::isMethodAllowed(const sAllowedMethods &method) const
+{
+	if (method >= s_METHODS_MAX)
+		return (false);
+	return (_flags & (1 << method));
+}
+
+bool	Location::isMethodAllowed(const std::string &method) const
+{
+	if (method == "GET")
+		return (_flags & (1 << s_GET));
+	else if (method == "POST")
+		return (_flags & (1 << s_POST));
+	else if (method == "DELETE")
+		return (_flags & (1 << s_DELETE));
+	return (false);
 }

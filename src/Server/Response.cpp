@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 16:29:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/01 17:42:17 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/03 15:52:51 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,18 @@
 const std::string	Response::endOfLine = "\r\n";
 const std::string	Response::sepNameContent = ": ";
 
-Response::Response(Client *cl)
+Response::Response(Client *cl, const IpPort &ipPort)
 :	_responseCode(201),
 	_reasonPhrase("OK"),
 	_send_count(0),
 	_fully_sent(false),
-	_cl(cl)
+	_cl(cl),
+	_ipPort(ipPort),
+	_location(ipPort.getLocation(cl->getTargetLocation()))
 {
-	(void)_cl;
 	_body = "<html><body><h1>";
-	_body += "Je suis Martin ";
-	_body += _cl->getConfig().getIpPortStr();
+	_body += "Je suis ";
+	_body += _ipPort.getIpPortStr();
 	_body += "</h1></body></html>";
 }
 
@@ -73,14 +74,17 @@ void	Response::catResponse(void)
 void	Response::prepare(const std::string &body)
 {
 	_body = body;
-	if (_cl->getConfig().isValidLocation(_cl->getTargetLocation()))
+	_body += "<html><body><h2>";
+	if (_location)
 	{
-		Location loc = _cl->getConfig().getLocation(_cl->getTargetLocation());
-		_body += loc.getLocation() + " Est une location valide";
+		_body += "Est une location valide: "+ _location->getLocation() + endOfLine;
+		_body +=  "Reste: " + _cl->getTargetLocation().substr(_location->getLocation().size()) + endOfLine; 
+
 	}
 	else
-		_body += "Je connais pas cette location";
-	catResponse();	
+		_body += "Je connais pas [" + _cl->getTargetLocation() + "]" + endOfLine;
+	_body += "</h2></body></html>";
+	catResponse();
 }
 
 void Response::prepare()

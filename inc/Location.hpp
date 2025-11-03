@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:18:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/03 12:58:09 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/03 14:31:14 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,8 @@ class Location
 		const std::string	&getLocation(void) const;
 
 
-		static std::string	simplifyPath(const std::string &basePath);
+		static std::string	simplifyLocationPath(const std::string &basePath);
+		static bool	isLocationPathValid(const std::string &path);
 };
 
 #endif

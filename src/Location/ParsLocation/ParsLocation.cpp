@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/03 13:00:05 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/03 14:37:10 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,10 +85,10 @@ void	Location::ParsLocation::_setLocation(void)
 	if (loca[0] != '/')
 		throw (MyException("Location must be a relative path"  + _inLocation(), MyException::ELVL_ERROR, loca));
 	if (loca.find("/../") != std::string::npos
-		|| (loca.find("../") != std::string::npos && loca.find("../") == loca.size() - 3))
+		|| (loca.find("/..") != std::string::npos && loca.find("/..") == loca.size() - 3))
 		throw (MyException("No directory traversal"  + _inLocation(), MyException::ELVL_ERROR, loca));
 	std::cout << "Before: " << loca ;
-	_location = Location::simplifyPath(loca);
+	_location = Location::simplifyLocationPath(loca);
 	std::cout << "	After: " << _location << std::endl << std::endl;
 }
 

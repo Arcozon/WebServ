@@ -9,6 +9,8 @@
 
 class Client;
 class IpPort;
+class Location;
+class Return;
 
 class Response
 {
@@ -26,7 +28,9 @@ private:
 	unsigned int	_send_count;
 	bool			_fully_sent;
 	
-	Client	*_cl;
+	Client			*_cl;
+	const IpPort	&_ipPort;
+	const Location	*_location;
 
 private:
 	inline void	catLine(const std::string &line)
@@ -52,7 +56,8 @@ private:
 	void	catBody(void);
 	
 public:
-	Response(Client *cl);
+	Response(Client *cl, const IpPort &ipPort);
+	// Response(Client *cl);
 	~Response();
 
 	void	setHeaders(const std::map<std::string, std::string> &map);

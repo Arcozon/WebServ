@@ -6,26 +6,17 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/03 11:16:55 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/03 15:47:25 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
+#include "Response.hpp"
 
 const std::string	Client::_supportedHTTPVersion = "HTTP/1.1";
 const std::string	Client::_sepLine = "\r\n";
 const std::size_t	Client::_sepLineLen = _sepLine.size();
 const std::size_t	Client::_bufferSize = 1024;
-
-// Client::Client(int fd, IpPort *config)
-// :	_fd(fd),
-// 	_config(config),
-// 	_request_len(0),
-// 	_requestStep(REQUEST_LINE),
-// 	_response(NULL)
-// {
-// 	_response = new Response(this);
-// }
 
 Client::Client(int fd, const IpPort &config)
 :	_fd(fd),
@@ -35,7 +26,7 @@ Client::Client(int fd, const IpPort &config)
 	_location(NULL),
 	_response(NULL)
 {
-	_response = new Response(this);
+	// _response = new Response(this, config);
 }
 
 Client::~Client()
@@ -107,9 +98,12 @@ bool	Client::_checkRequestLine(void)	// Add IpPort (to check )
 
 	if (splitReqLine.empty())
 		return (false);
-	
+		
+	std::cout << "\e[32m[" << splitReqLine.at(0) << "]\e[33m[";
+	std::cout << splitReqLine.at(1) << "]\e[34m[" << splitReqLine.at(2) << "]\e[0m" << std::endl;
+
 	_method = splitReqLine.at(0);
-	_requestTarget = splitReqLine.at(1);
+	_requestTarget = Location::simplifyLocationPath(splitReqLine.at(1));
 	_HTTPVersion = splitReqLine.at(2);
 
 	if (!(_method == "GET" || _method == "POST" || _method == "DELETE"))
@@ -119,6 +113,7 @@ bool	Client::_checkRequestLine(void)	// Add IpPort (to check )
 	if (_HTTPVersion != _supportedHTTPVersion)
 		return (false);
 	std::cout << "\e[32m[" << _method << "]\e[33m[" << _requestTarget << "]\e[34m[" << _HTTPVersion << "]\e[0m" << std::endl;
+	_response = new Response(this, _config);
 	return (true);
 }
 
@@ -135,7 +130,6 @@ bool	Client::_checkHeader(void)	// Add IpPort (to check )
 			_requestStep = FIN;
 			std::cout << "\e[1;31m" << "	-- No Body Expected --" << "\e[0m" << std::endl;
 		}
-
 		return (true);
 	}
 
@@ -144,7 +138,7 @@ bool	Client::_checkHeader(void)	// Add IpPort (to check )
 	if (_nameVal.first.empty())
 		return (false);
 	_headers.insert(_nameVal);
-	std::cout  << "\e[35m["<< _nameVal.first << "]\e[34m[" << _nameVal.second  << "]\e[0m" << std::endl;
+	// std::cout  << "\e[35m["<< _nameVal.first << "]\e[34m[" << _nameVal.second  << "]\e[0m" << std::endl;
 	return (true);
 }
 

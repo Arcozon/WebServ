@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/03 11:17:30 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/03 16:01:41 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,32 +75,43 @@ const unsigned short &IpPort::getPort(void) const
 {
 	return (_port);
 }
-
-const Location	*IpPort::_getLocation(const std::string &location)	const
+static inline bool	_isLocationMatchingWPath(const std::string& loc, const std::string &path)
 {
-	typedef std::vector<Location>::const_iterator	CItVecLoc;
-
-	for (CItVecLoc it = _locations.begin(); it != _locations.end(); ++it)
+	if (loc.find(path) == 0)
 	{
-		// std::cout << '<' << it->getLocation() << ">\n";
-		if (it->getLocation() == location)
-			return (&*it);
+		if (path.size() == loc.size())
+			return (true);
+		else if (loc[path.size()] == '/')
+			return (true);
+	}
+	return (false);
+}
+
+const Location	*IpPort::getLocation(const std::string &cPath)	const
+{
+	typedef std::vector<Location>::const_iterator	VecLocConstIt;
+
+	std::string	path = Location::simplifyLocationPath(cPath);
+	
+	while (!path.empty())
+	{
+		for (VecLocConstIt it = _locations.begin(); it != _locations.end(); ++it)
+		{
+			if (_isLocationMatchingWPath(it->getLocation(), path))
+				return (it.base());
+		}
+		if (path[path.size() - 1] == '/')
+		{
+			path.erase(path.size() - 1);
+		}
+		else
+		{
+			std::size_t	lastSlash = path.find_last_of('/');
+			if (lastSlash == std::string::npos)
+				path.clear();
+			else
+				path.erase(lastSlash + 1);
+		}
 	}
 	return (NULL);
-}
-
-bool	IpPort::isValidLocation(const std::string &location)	const
-{
-	return (_getLocation(location) != 0);
-}
-
-const Location	&IpPort::getLocation(const std::string &location)	const
-{
-	return (*_getLocation(location));
-}
-
-const Location	*IpPort::getLocation1(const std::string &path)	const
-{
-	return (NULL);
-	(void)path;
 }

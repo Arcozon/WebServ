@@ -2,7 +2,6 @@
 # define CLIENT_HPP
 
 # include "Server.hpp"
-# include "Response.hpp"
 
 # include <string>
 # include <map>
@@ -76,7 +75,7 @@ public:
 	bool responseSent() const;
 	bool finishedReading() const;
 
-	const IpPort	&getConfig(void)	const;
+	const IpPort		&getConfig(void)	const;
 	const std::string	&getMethod(void)	const;
 	const std::string	&getTargetLocation(void)	const;
 };

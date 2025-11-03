@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:37:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/03 12:57:50 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/03 14:37:59 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ bool	Location::isMethodAllowed(const std::string &method) const
 	return (false);
 }
 
-std::string	Location::simplifyPath(const std::string &basePath)
+std::string	Location::simplifyLocationPath(const std::string &basePath)
 {
 	static std::string	slashSlash("//");
 	static std::string	slashDotSlash("/./");
@@ -97,4 +97,17 @@ std::string	Location::simplifyPath(const std::string &basePath)
 	}	while (iSlashDotSlash != std::string::npos);
 
 	return (finalPath);	
+}
+
+bool	Location::isLocationPathValid(const std::string &path)
+{
+	if (path.empty() || path.at(0) != '/')
+		return (false);
+	if (path.find("/../") != std::string::npos)
+		return (false);
+
+	const std::size_t	indexSlashDotDot = path.find("/..");
+	if (indexSlashDotDot != std::string::npos && indexSlashDotDot == path.size() - 3)
+		return (false);
+	return (true);
 }

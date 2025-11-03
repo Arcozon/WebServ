@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:37:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/03 14:37:59 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/03 17:44:28 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,11 @@ const std::string	&Location::getLocation(void) const
 	return (_location);
 }
 
+const std::string	&Location::getRoot(void) const
+{
+	return (_root);
+}
+
 bool	Location::isMethodAllowed(const sAllowedMethods &method) const
 {
 	if (method >= s_METHODS_MAX)
@@ -95,7 +100,8 @@ std::string	Location::simplifyLocationPath(const std::string &basePath)
 		if (iSlashDotSlash != std::string::npos)
 			finalPath.erase(iSlashDotSlash, slashDotSlash.size() - 1);
 	}	while (iSlashDotSlash != std::string::npos);
-
+	if (finalPath.find("./") == 0)
+		finalPath.erase(0, 2);
 	return (finalPath);	
 }
 
@@ -106,7 +112,7 @@ bool	Location::isLocationPathValid(const std::string &path)
 	if (path.find("/../") != std::string::npos)
 		return (false);
 
-	const std::size_t	indexSlashDotDot = path.find("/..");
+	const std::size_t	indexSlashDotDot = path.rfind("/..");
 	if (indexSlashDotDot != std::string::npos && indexSlashDotDot == path.size() - 3)
 		return (false);
 	return (true);

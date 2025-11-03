@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/03 14:37:10 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/03 17:45:12 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,7 @@ void	Location::ParsLocation::_setLocation(void)
 
 	if (loca[0] != '/')
 		throw (MyException("Location must be a relative path"  + _inLocation(), MyException::ELVL_ERROR, loca));
-	if (loca.find("/../") != std::string::npos
-		|| (loca.find("/..") != std::string::npos && loca.find("/..") == loca.size() - 3))
+	if (!Location::isLocationPathValid(loca))
 		throw (MyException("No directory traversal"  + _inLocation(), MyException::ELVL_ERROR, loca));
 	std::cout << "Before: " << loca ;
 	_location = Location::simplifyLocationPath(loca);
@@ -98,7 +97,7 @@ void	Location::ParsLocation::_addRoot(void)
 
 	if (_isDefined(s_root))
 		throw (MyException("Already defined"  + _inLocation(), MyException::ELVL_WARNING, splitLine.front()));
-	_root = splitLine.at(1);
+	_root = splitLine.at(1);	// TODO CHECK REVERSE TRAVERSAL
 	_addDefined(s_root);
 }
 
@@ -106,7 +105,7 @@ void	Location::ParsLocation::_addIndex(void)
 {
 	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
 
-	if (splitLine.size() == 1)
+	if (splitLine.size() == 1)// TODO CHECK REVERSE TRAVERSAL
 		throw (MyException("Needs arguments", MyException::ELVL_WARNING, splitLine.front()));
 	for (std::vector<std::string>::size_type i = 1; i < splitLine.size(); ++i)
 		_index.push_back(splitLine.at(i));
@@ -161,7 +160,7 @@ void	Location::ParsLocation::_addUploadLocation(void)
 {
 	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
 
-	if (_isDefined(s_upload_store))
+	if (_isDefined(s_upload_store))// TODO CHECK REVERSE TRAVERSAL
 		throw (MyException("Already defined" + _inLocation(), MyException::ELVL_WARNING, splitLine.front()));
 	else if (splitLine.size() != 2)
 		throw (MyException("Needs one argument", MyException::ELVL_WARNING, splitLine.front()));

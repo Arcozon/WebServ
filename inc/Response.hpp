@@ -5,6 +5,7 @@
 # include <string>
 # include <map>
 # include <sstream>
+
 # include <unistd.h>
 
 class Client;
@@ -22,7 +23,7 @@ private:
 	unsigned short	_responseCode;
 	std::string		_reasonPhrase;
 	std::map<std::string, std::string> _header;
-	std::string	_body;
+	std::string		_body;
 
 	std::string		_response_buffer;
 	unsigned int	_send_count;
@@ -31,6 +32,7 @@ private:
 	Client			*_cl;
 	const IpPort	&_ipPort;
 	const Location	*_location;
+	std::string		_URI;
 
 private:
 	inline void	catLine(const std::string &line)

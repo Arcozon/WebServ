@@ -37,7 +37,7 @@ D_WEBSERV	=  WebServ/
 SRC_WEBSERV =  $(addprefix $(D_WEBSERV), $(S_WEBSERV))
 
 SRC   =  $(SRC_WEBSERV)  $(SRC_SERVER)  $(SRC_IPPORT)  $(SRC_LOCATION)  $(SRC_RETURN)  $(SRC_CGIHANDLER)
-SRC  +=  main.cpp  MyException.cpp  ParsLine.cpp
+SRC  +=  main.cpp  MyException.cpp  ParsLine.cpp  FileDir.cpp
 D_SRC =  src/
 
 D_BUILD =  .build/

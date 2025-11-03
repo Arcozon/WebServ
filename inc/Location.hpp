@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:18:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/03 14:31:14 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/03 17:34:56 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,9 @@ class Location
 		bool	isMethodAllowed(const sAllowedMethods &method) const;
 		bool	isMethodAllowed(const std::string &method) const;
 
+		const std::string	&getRoot(void) const;
 		const std::string	&getLocation(void) const;
+		// bool				&isRoot(void) const;
 
 
 		static std::string	simplifyLocationPath(const std::string &basePath);

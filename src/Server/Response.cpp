@@ -6,12 +6,13 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 16:29:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/03 16:41:05 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/03 17:56:23 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Response.hpp"
 #include "Client.hpp"
+#include "FileDir.hpp"
 
 const std::string	Response::endOfLine = "\r\n";
 const std::string	Response::sepNameContent = ": ";
@@ -25,6 +26,8 @@ Response::Response(Client *cl, const IpPort &ipPort)
 	_ipPort(ipPort),
 	_location(ipPort.getLocation(cl->getTargetLocation()))
 {
+	if (_location)
+		_URI = _cl->getTargetLocation().substr(_location->getLocation().size());
 	_body = "<html><body><h1>";
 	_body += "Je suis ";
 	_body += _ipPort.getIpPortStr();
@@ -77,13 +80,14 @@ void	Response::prepare(const std::string &body)
 	_body += "<html><body><h2>";
 	if (_location)
 	{
-		_body += "Est une location valide: "+ _location->getLocation() + endOfLine;
-		_body +=  "Reste: " + _cl->getTargetLocation().substr(_location->getLocation().size()) + endOfLine; 
+		_body += "Location: "+ _location->getLocation() + endOfLine;
+		_body +=  "URI: " + _URI + endOfLine; 
 
 	}
 	else
-		_body += "Je connais pas [" + _cl->getTargetLocation() + "]" + endOfLine;
+		_body += "Unknown Location [" + _cl->getTargetLocation() + "]" + endOfLine;
 	_body += "</h2></body></html>";
+	mkRepFromLoc();
 	catResponse();
 }
 
@@ -124,9 +128,31 @@ bool Response::isResponseFullySent()	const
 }
 
 
-// void	Response::mkRepFromLoc(void)
-// {
-// 	if (!_location)
-// 		return ;
-// 	if ()
-// }
+void	Response::mkRepFromLoc(void)
+{
+	if (!_location)
+		return ;
+	FileDir	file(_location->getRoot(), _URI);
+	std::cout << file.getPathCStr() << std::endl;
+	if (file.isFile())
+	{
+		int fd = open(file.getPathCStr(), 0);
+		if (fd < 0)
+		{
+			close (fd);
+			return ;
+		}
+		_body.clear();
+		const int	toRead = 1024;		
+		char		buffer[toRead];
+		int			br(toRead);
+		while (br)
+		{
+			br = read(fd, buffer, toRead);
+			if (br < 0)
+				return ;
+			_body.append(buffer, br);
+		}
+		close(fd);
+	}
+}

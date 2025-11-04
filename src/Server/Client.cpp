@@ -136,8 +136,7 @@ bool	Client::_checkHeader(void)	// Add IpPort (to check )
 		std::cout  << "\e[1:31m"<< "	-- End Of Header --" << "\e[0m" << std::endl;
 		_request_step = BODY;
 
-		if (_headers.find("Content-Length") == _headers.end() &&
-			_headers.find("content-length") == _headers.end())
+		if (_headers.find("Content-Length") == _headers.end())
 		{
 			_request_step = FIN;
 			std::cout << "\e[1;31m" << "	-- No Body Expected --" << "\e[0m" << std::endl;

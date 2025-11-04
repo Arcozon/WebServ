@@ -1,47 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   FileDir.hpp                                        :+:      :+:    :+:   */
+/*   ReadDir.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/03 16:59:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/03 17:50:54 by gaeudes          ###   ########.fr       */
+/*   Created: 2025/11/04 13:14:33 by gaeudes           #+#    #+#             */
+/*   Updated: 2025/11/04 14:28:50 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FILEDIR_HPP
-# define FILEDIR_HPP
+#ifndef READDIR_HPP
+# define READDIR_HPP
 
 # include <string>
 
-# include <sys/stat.h>
-# include <unistd.h>
+# include <sys/types.h>
+# include <dirent.h>
 
-class FileDir
+# include "FStat.hpp"
+
+class ReadDir
 {
 	private:
-		enum FILETYPE
-		{
-			DIRECTORY,
-			REG_FILE,
-			UNKMOWN
-		};
+		DIR		*_dir;
+		dirent	*_dirEnt;
 
-	private:
-		const std::string	_path;		
-		enum FILETYPE		_fType;
-		bool				_readable;
-		
 	public:
-		FileDir(const std::string &path, const std::string &URI = "");
-		~FileDir(void);
+		ReadDir(const std::string str);
+		ReadDir(const char cStr[]);
+		~ReadDir(void);
 
+		std::string	getNextFile(void);
+		FStat::FILETYPE		getFileType(void) const;
+		
 		bool	fail(void) const;
-		bool	isDir(void) const;
-		bool	isFile(void) const;
-		bool	isAccesible(void) const;
-		const char	*getPathCStr(void) const;
+
 };
+
 
 #endif

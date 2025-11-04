@@ -24,7 +24,7 @@ S_IPPORT   =  $(SRC_PARSIPPORT)  IpPort.cpp
 D_IPPORT   =  IpPort/
 SRC_IPPORT =  $(addprefix $(D_IPPORT), $(S_IPPORT))
 
-S_SERVER   =  Server.cpp Client.cpp Response.cpp
+S_SERVER   =  Server.cpp Client.cpp Response.cpp  ResponseAutoIndex.cpp
 D_SERVER   =  Server/
 SRC_SERVER =  $(addprefix $(D_SERVER), $(S_SERVER))
 
@@ -37,7 +37,7 @@ D_WEBSERV	=  WebServ/
 SRC_WEBSERV =  $(addprefix $(D_WEBSERV), $(S_WEBSERV))
 
 SRC   =  $(SRC_WEBSERV)  $(SRC_SERVER)  $(SRC_IPPORT)  $(SRC_LOCATION)  $(SRC_RETURN)  $(SRC_CGIHANDLER)
-SRC  +=  main.cpp  MyException.cpp  ParsLine.cpp  FileDir.cpp
+SRC  +=  main.cpp  MyException.cpp  ParsLine.cpp  FStat.cpp  ReadDir.cpp
 D_SRC =  src/
 
 D_BUILD =  .build/

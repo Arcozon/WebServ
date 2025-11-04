@@ -6,13 +6,15 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 16:29:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/03 17:56:23 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/04 14:01:56 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Response.hpp"
+
 #include "Client.hpp"
-#include "FileDir.hpp"
+#include "FStat.hpp"
+#include "ReadDir.hpp"
 
 const std::string	Response::endOfLine = "\r\n";
 const std::string	Response::sepNameContent = ": ";
@@ -61,9 +63,9 @@ void	Response::catBody(void)
 
 void	Response::catHeader(void)
 {
-	typedef	std::map<std::string, std::string>::const_iterator CIttMapHeader;
+	typedef	std::map<std::string, std::string>::const_iterator MapStrStrConstIt;
 
-	for (CIttMapHeader it = _header.begin(); it != _header.end(); ++it)
+	for (MapStrStrConstIt it = _header.begin(); it != _header.end(); ++it)
 		this->catHeaderLine(it->first, it->second);
 }
 
@@ -127,32 +129,64 @@ bool Response::isResponseFullySent()	const
 	return (_fully_sent);
 }
 
+void	Response::fileToBody(char const fName[])
+{
+	int fd = open(fName, 0);
+	if (fd < 0)
+		return ;	//Err
+	_body.clear();
+	const int	toRead = 1024;		
+	char		buffer[toRead];
+	int			br(toRead);
+	while (br)
+	{
+		br = read(fd, buffer, toRead);
+		if (br < 0)
+			return ;
+		_body.append(buffer, br);
+	}
+	close(fd);
+}
+
+bool	Response::lookForIndex(const char dName[])	// Returns true if one index was found
+{
+	typedef	std::vector<std::string>::const_iterator	VecStrConstIt;
+	const std::vector<std::string> indexs = _location->getIndexs();
+
+	FStat	fileStat;
+
+	for (VecStrConstIt it = indexs.begin(); it != indexs.end(); ++it)
+	{
+		fileStat.open(dName, *it);
+		if (fileStat.isFile())
+		{
+			fileToBody(fileStat.getPathCStr());
+			return (true);
+		}
+	}
+	return (false);
+}
 
 void	Response::mkRepFromLoc(void)
 {
 	if (!_location)
 		return ;
-	FileDir	file(_location->getRoot(), _URI);
-	std::cout << file.getPathCStr() << std::endl;
-	if (file.isFile())
+	//	Handle return
+	FStat	fileStat(_location->getRoot(), _URI);
+	// std::cout << fileStat.getPathCStr() << std::endl;
+	if (fileStat.isFile())
+		fileToBody(fileStat.getPathCStr());
+	else if (fileStat.isDir())
 	{
-		int fd = open(file.getPathCStr(), 0);
-		if (fd < 0)
+		if (!lookForIndex(fileStat.getPathCStr()))
 		{
-			close (fd);
-			return ;
+			if (_location->autoIndexOn())
+			{
+				generateAutoIndex(fileStat.getPathCStr());
+			}
+			//err
 		}
-		_body.clear();
-		const int	toRead = 1024;		
-		char		buffer[toRead];
-		int			br(toRead);
-		while (br)
-		{
-			br = read(fd, buffer, toRead);
-			if (br < 0)
-				return ;
-			_body.append(buffer, br);
-		}
-		close(fd);
 	}
+	else
+		;	// Err
 }

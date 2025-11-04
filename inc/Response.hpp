@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Response.hpp                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/04 13:05:09 by gaeudes           #+#    #+#             */
+/*   Updated: 2025/11/04 14:25:51 by gaeudes          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef RESPONSE_HPP
 # define RESPONSE_HPP
 
@@ -8,10 +20,13 @@
 
 # include <unistd.h>
 
+# include "FStat.hpp"
+
 class Client;
 class IpPort;
 class Location;
 class Return;
+class ReadDir;
 
 class Response
 {
@@ -57,6 +72,14 @@ private:
 	void	catContentLenght(void);
 	void	catBody(void);
 	
+	void	fileToBody(char const fName[]);
+
+	bool	lookForIndex(const char dName[]);	// Returns true if one index was found
+
+	void	generateAutoIndex(ReadDir rDir);
+
+	void	_addHTMLElement(const std::string &elemName, const std::string &elemContent);
+	void	_AI_addLink(const std::string &fName, const FStat::FILETYPE &fType);
 public:
 	Response(Client *cl, const IpPort &ipPort);
 	// Response(Client *cl);

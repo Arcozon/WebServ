@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/03 15:47:25 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/04 13:51:48 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,9 +99,6 @@ bool	Client::_checkRequestLine(void)	// Add IpPort (to check )
 	if (splitReqLine.empty())
 		return (false);
 		
-	std::cout << "\e[32m[" << splitReqLine.at(0) << "]\e[33m[";
-	std::cout << splitReqLine.at(1) << "]\e[34m[" << splitReqLine.at(2) << "]\e[0m" << std::endl;
-
 	_method = splitReqLine.at(0);
 	_requestTarget = Location::simplifyLocationPath(splitReqLine.at(1));
 	_HTTPVersion = splitReqLine.at(2);

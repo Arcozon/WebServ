@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/03 17:45:12 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/04 13:52:10 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,9 +86,9 @@ void	Location::ParsLocation::_setLocation(void)
 		throw (MyException("Location must be a relative path"  + _inLocation(), MyException::ELVL_ERROR, loca));
 	if (!Location::isLocationPathValid(loca))
 		throw (MyException("No directory traversal"  + _inLocation(), MyException::ELVL_ERROR, loca));
-	std::cout << "Before: " << loca ;
+	// std::cout << "Before: " << loca ;
 	_location = Location::simplifyLocationPath(loca);
-	std::cout << "	After: " << _location << std::endl << std::endl;
+	// std::cout << "	After: " << _location << std::endl << std::endl;
 }
 
 void	Location::ParsLocation::_addRoot(void)

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:18:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/03 17:34:56 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/04 13:11:23 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,9 @@ class Location
 
 		const std::string	&getRoot(void) const;
 		const std::string	&getLocation(void) const;
+		const std::vector<std::string>	&getIndexs(void) const;
 		// bool				&isRoot(void) const;
+		bool				autoIndexOn(void) const;
 
 
 		static std::string	simplifyLocationPath(const std::string &basePath);

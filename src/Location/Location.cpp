@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:37:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/03 17:44:28 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/04 13:11:57 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,16 @@ bool	Location::isMethodAllowed(const std::string &method) const
 	else if (method == "DELETE")
 		return (_flags & (1 << s_DELETE));
 	return (false);
+}
+
+const std::vector<std::string>	&Location::getIndexs(void) const
+{
+	return (_index);
+}
+
+bool	Location::autoIndexOn(void) const
+{
+	return (_flags & GET_MASK(s_autoindex));
 }
 
 std::string	Location::simplifyLocationPath(const std::string &basePath)

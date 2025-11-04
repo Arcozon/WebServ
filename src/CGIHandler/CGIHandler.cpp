@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 14:31:00 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/22 16:12:57 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/04 12:57:00 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,10 @@ void	CGIHandler::copyEnv(char *env[])
 
 const char	**CGIHandler::getEnv(void)
 {
-	typedef std::vector<std::string>::iterator	vsit_t;
+	typedef std::vector<std::string>::const_iterator	VecStrConstIt;
 
 	_cEnv.clear();
-	for (vsit_t it = _strEnv.begin(); it != _strEnv.end(); ++it)
+	for (VecStrConstIt it = _strEnv.begin(); it != _strEnv.end(); ++it)
 		_cEnv.push_back(it->c_str());
 	_cEnv.push_back(NULL);
 	return (_cEnv.data());
@@ -35,11 +35,11 @@ const char	**CGIHandler::getEnv(void)
 
 void	CGIHandler::_unset(const std::string &toUnset)
 {
-	typedef std::vector<std::string>::iterator	vsit_t;
+	typedef std::vector<std::string>::iterator	VecStrIt;
 
 	const std::string toUnsetEq(toUnset + "=");
 
-	for (vsit_t	it = _strEnv.begin(); it != _strEnv.end(); ++it)
+	for (VecStrIt	it = _strEnv.begin(); it != _strEnv.end(); ++it)
 	{
 		if (it->compare(0, toUnsetEq.length(), toUnsetEq) == 0)
 		{

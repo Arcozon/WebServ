@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 14:01:01 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/04 14:29:56 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/04 15:45:01 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ void	Response::_AI_addLink(const std::string &fName, const FStat::FILETYPE &fTyp
 	}
 	else
 	{
-		_addHTMLElement("a", fName);
-		// _addHTMLElement("h", "- " + fName);
+		// _addHTMLElement("a", fName);
+		_addHTMLElement("h", "- " + fName);
 	}
 }
 

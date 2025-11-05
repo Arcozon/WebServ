@@ -49,7 +49,14 @@ private:
 	REQUEST_STEP	_request_step;
 	bool			_done;
 	Response *_response;
-	
+
+	bool	_is_upload;
+	std::string _method;
+	std::string _target_uri;
+	size_t _content_length;
+	size_t _body_rd_bytes;
+	std::string _body_data;
+
 private:
 	static const std::vector<std::string>	_splitRequestLine(const std::string &reqLine);
 	static const std::pair<std::string, std::string>	_splitHeaderLine(const std::string &reqLine);
@@ -71,6 +78,8 @@ public:
 	void sendResponse();
 	bool responseSent();
 	bool finishedReading();
+	void fileHandler();
+
 };
 
 

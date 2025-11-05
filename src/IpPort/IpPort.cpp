@@ -76,3 +76,8 @@ const unsigned short &IpPort::getPort(void) const
 {
 	return (_port);
 }
+
+size_t IpPort::getClientMaxBodySize(void) const
+{
+	return (_clientMaxBodySize);
+}

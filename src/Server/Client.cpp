@@ -24,7 +24,9 @@ Client::Client(int fd, IpPort *config)
 	_last_pos(0),
 	_request_step(REQUEST_LINE),
 	_done(false),
-	_response(NULL)
+	_response(NULL),
+	_is_upload(0),
+	_body_rd_bytes(0)
 {
 	_response = new Response(this);
 }
@@ -114,50 +116,109 @@ bool	Client::_checkRequestLine(void)	// Add IpPort (to check )
 	if (splitReqLine.empty())
 		return (false);
 	
-	std::string	method = splitReqLine.at(0);
-	std::string	requestTarget = splitReqLine.at(1);
+	_method = splitReqLine.at(0);
+	_target_uri = splitReqLine.at(1);
 	std::string	HTTPVersion = splitReqLine.at(2);
 
-	if (!(method == "GET" || method == "POST" || method == "DELETE"))
+	if (!(_method == "GET" || _method == "POST" || _method == "DELETE"))
 		return (false);
 	// Check if method is in IpPort / location
 	// check if request target is in IoPort / if [Root]/[RequestTarget] is a dir
 	if (HTTPVersion != _supportedHTTPVersion)
 		return (false);
-	std::cout << "\e[32m[" << method << "]\e[33m[" << requestTarget << "]\e[34m[" << HTTPVersion << "]\e[0m" << std::endl;
+	std::cout << "\e[32m[" << _method << "]\e[33m[" << _target_uri << "]\e[34m[" << HTTPVersion << "]\e[0m" << std::endl;
 	return (true);
-	(void) requestTarget;
+	(void) _target_uri;
 }
 
-bool	Client::_checkHeader(void)	// Add IpPort (to check )
+bool Client::_checkHeader(void)
 {
 	if (_extract_line.empty())
 	{
-		std::cout  << "\e[1:31m"<< "	-- End Of Header --" << "\e[0m" << std::endl;
-		_request_step = BODY;
+		std::cout << "\e[1;31m" << "	-- End Of Header --" << "\e[0m" << std::endl;
+		std::map<std::string, std::string>::iterator it = _headers.find("Content-Length");
+		if (it == _headers.end())
+			it = _headers.find("content-length");
 
-		if (_headers.find("Content-Length") == _headers.end())
+		if (it != _headers.end())
+		{
+			_content_length = std::atol(it->second.c_str());
+			if (_content_length > _config->getClientMaxBodySize())
+			{
+				_response->setStartLine(413);
+				_request_step = ERROR;
+				return false;
+			} 
+			if ((_method == "POST") && _target_uri.find("/files") == 0) // à changer si l'upload dir match l'url
+			{
+				_is_upload = true;
+				std::cout << "\033[1;36m[Upload of size: " << _content_length << " bytes]\033[0m" << std::endl;
+			}
+			else
+			{
+				// A traiter comme simple GET plus tard
+				;
+			}
+			_request_step = BODY;
+		}
+		else
 		{
 			_request_step = FIN;
 			std::cout << "\e[1;31m" << "	-- No Body Expected --" << "\e[0m" << std::endl;
 		}
-
-		return (true);
+		return true;
 	}
 
-	std::pair<std::string, std::string>	_nameVal = _splitHeaderLine(_extract_line);
-
+	std::pair<std::string, std::string> _nameVal = _splitHeaderLine(_extract_line);
 	if (_nameVal.first.empty())
-		return (false);
+		return false;
+
 	_headers.insert(_nameVal);
-	std::cout  << "\e[35m["<< _nameVal.first << "]\e[34m[" << _nameVal.second  << "]\e[0m" << std::endl;
-	return (true);
+	std::cout << "\e[35m[" << _nameVal.first << "]\e[34m[" << _nameVal.second << "]\e[0m" << std::endl;
+	return true;
 }
 
-bool	Client::_checkBody(void)	// Add IpPort (to check )
+bool Client::_checkBody(void) // IpPort + setting correct StatusLine on error
 {
-	std::cout  << "\e[1;37m"<< _extract_line << "\e[0m" << std::endl;
-	return (true);
+	char buffer[_bufferSize];
+	int rd;
+	do
+	{
+		size_t curr_data = _str_buffer.length() - _last_pos;
+		if (curr_data > 0)
+		{
+			size_t left_to_read = _content_length - _body_rd_bytes;
+			size_t to_copy = (curr_data < left_to_read) ? curr_data : left_to_read;
+
+			_body_data.append(_str_buffer, _last_pos, to_copy);
+			_body_rd_bytes += to_copy;
+			_last_pos += to_copy;
+			
+			if (_body_rd_bytes == _content_length)
+			{
+				_request_step = FIN;
+				std::cout << "\e[1;37m-- Received body payload (" << _body_rd_bytes << " bytes) --\e[0m" << std::endl;
+				return true;
+			}
+		}
+		rd = read(_fd, buffer, _bufferSize);
+		if (rd > 0)
+		{
+			_str_buffer.append(buffer, rd);
+			_request_len += rd;
+		}
+		else if (rd < 0)
+			return false;
+	} 
+	while (rd != 0 && _body_rd_bytes < _content_length);
+
+	if (rd == 0 && _body_rd_bytes < _content_length)
+	{
+		std::cout << "\e[1;37m-- Client closed connection while body data was being processed --\e[0m" << std::endl;
+		_done = true;
+		return false;
+	}
+	return true;
 }
 
 bool Client::_checkCurrentLine(const Client::REQUEST_STEP &reqSection)
@@ -195,22 +256,26 @@ void Client::checkStep()
 			return ;
 		}
 	}
-	while (_request_step == BODY)
+	if (_request_step == BODY)
 	{
-		if (!_checkCurrentLine(REQUEST_LINE))
+		if (!_checkBody())
 		{
 			_request_step = ERROR;
 			return ;
 		}
 	}
-	std::cout  << "\e[1:31m"<< "	-- End Of Body --" << "\e[0m" << std::endl;
-	_request_step = FIN;
-	if(_request_step == FIN)
+	if (_request_step == FIN)
 	{
-		_response->setBody("");
-		_response->prepare();
-		_done = 1;
-		std::cout << "\033[1;34m" << "\t-- Response ready to be built --" << "\033[0m" << std::endl;
+		std::cout << "\e[1;31m" << "	-- End Of Body --" << "\e[0m" << std::endl;
+		if (_is_upload)
+			fileHandler();
+		else
+		{
+			_response->setBody("");
+			_response->prepare();
+		}
+		_done = true;
+		std::cout << "\033[1;34m" << "\t-- Response ready to be sent --" << "\033[0m" << std::endl;
 	}
 }
 
@@ -236,6 +301,29 @@ bool Client::finishedReading()
 {
 	return _request_step == FIN;
 }
+
+void Client::fileHandler()
+{
+	std::string dir = "testupload/";
+	std::string path = dir + _target_uri.substr(std::string("/files/").length());
+
+	std::ofstream file(path.c_str(), std::ios::binary);
+	if (!file.is_open())
+	{
+		_response->setStartLine(500);
+		_response->setBody("");
+		_response->prepare();
+		return ;
+	}
+	file.write(_body_data.c_str(), _body_data.size());
+	file.close();
+
+	std::cout << "\033[1;32mFile " << path << " created\033[0m\n";
+	_response->setStartLine(201);
+	_response->setBody("");
+	_response->prepare();
+}
+
 // void Client::checkStep()
 // {
 // 	while (_request_step != FIN && _request_step != ERROR)

@@ -4,7 +4,7 @@ std::map<int, std::string> Response::_reason_phrases;
 
 Response::Response(Client *cl): _response_code(200), _send_count(0), _fully_sent(0), _cl(cl)
 {
-	_body = "<html><body><h1>Hello</h1></body></html>";
+	_body = "";
 	if(_reason_phrases.empty())
 	{
 		_reason_phrases[200] = "OK";
@@ -15,6 +15,7 @@ Response::Response(Client *cl): _response_code(200), _send_count(0), _fully_sent
 		_reason_phrases[403] = "Forbidden";
 		_reason_phrases[404] = "Not Found";
 		_reason_phrases[405] = "Method Not Allowed";
+		_reason_phrases[413] = "Payload Too Large";
 
 		_reason_phrases[500] = "Internal Server Error";
 		_reason_phrases[501] = "Not Implemented";
@@ -49,7 +50,7 @@ void Response::setBody(const std::string &body)
 	// _response_buffer += "\r\n";
 	if(!body.empty())
 	{	
-		_body += body;
+		_body = body;
 		std::ostringstream len;
 		len << _body.length();
 		setHeader("Content-Length", len.str());
@@ -70,7 +71,7 @@ void Response::prepare()
 		headers << it->first << ": " << it->second << "\r\n";
 	headers << "\r\n";
 
-	setStartLine(200);
+	setStartLine(_response_code);
 	_response_buffer += _status_line;
 	_response_buffer += headers.str();
 	_response_buffer += _body;

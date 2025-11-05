@@ -64,6 +64,7 @@ class IpPort
 		const std::string &getPortStr(void) const;
 		const unsigned long &getHost(void) const;
 		const unsigned short &getPort(void) const;
+		size_t getClientMaxBodySize(void) const;
 
 };
 

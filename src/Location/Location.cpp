@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:37:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/05 15:11:30 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/05 15:21:59 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,12 @@
 
 Location::Location(void)
 :	_valid(false),
-	_flags(0),
-	_autoindex(false)
+	_flags(0)
 {}
 
 Location::Location(ParsLine &parsLine)
 :	_valid(true),
-	_flags(0),
-	_autoindex(false)
+	_flags(0)
 {
 	ParsLocation	parsLocation(parsLine);
 
@@ -36,7 +34,6 @@ Location::Location(ParsLine &parsLine)
 	_location = parsLocation.getLocation();
 	_root = parsLocation.getRoot();
 	_index = parsLocation.getIndex();
-	_autoindex = parsLocation.getAutoIndex();
 	_cgiHandler = parsLocation.getCGIHandler();
 	_errPages = parsLocation.getErrPages();
 	_return = parsLocation.getReturn();	
@@ -84,9 +81,34 @@ const std::vector<std::string>	&Location::getIndexs(void) const
 	return (_index);
 }
 
-bool	Location::autoIndexOn(void) const
+bool	Location::isRootDefined(void) const
+{
+	return (_flags & GET_MASK(s_root));
+}
+
+bool	Location::isIndexDefined(void) const
+{
+	return (_index.size() != 0);
+}
+
+bool	Location::isAutoIndexOn(void) const
 {
 	return (_flags & GET_MASK(s_autoindex));
+}
+
+bool	Location::isUploadDefined(void) const
+{
+	return (_flags & GET_MASK(s_upload_store));
+}
+
+bool	Location::isCGIDefined(void) const
+{
+	return (_cgiHandler.size() != 0);
+}
+
+bool	Location::isReturnDefined(void) const
+{
+	return (_flags & GET_MASK(s_return));
 }
 
 std::string	Location::simplifyLocationPath(const std::string &basePath)

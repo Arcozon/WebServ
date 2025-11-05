@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:03:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/05 15:10:17 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/05 15:20:12 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,6 @@ class Location::ParsLocation
 		const std::string	&getRoot(void) const;
 		const std::string	&getUploadLocation(void) const;
 		const std::vector<std::string>	&getIndex(void) const;
-		const bool			&getAutoIndex(void) const;
 		const std::map<std::string, std::string>	&getCGIHandler(void) const;
 		const std::map<std::string, std::string>	&getErrPages(void) const;
 		const Return		&getReturn(void) const;

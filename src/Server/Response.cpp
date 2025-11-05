@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 16:29:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/05 15:07:03 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/05 15:14:14 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,7 +180,7 @@ void	Response::mkRepFromLoc(void)
 	{
 		if (!lookForIndex(fileStat.getPathCStr()))
 		{
-			if (_location->autoIndexOn())
+			if (_location->isAutoIndexOn())
 			{
 				generateAutoIndex(fileStat.getPathCStr());
 			}
@@ -189,73 +189,4 @@ void	Response::mkRepFromLoc(void)
 	}
 	else
 		;	// Err
-}
-
-
-#include <fcntl.h>
-#include <unistd.h>
-
-void    ft_putstr(char *str)
-{
-    int    i;
-
-    i = 0;
-    while (str[i])
-        i++;
-    write(1, str, i);
-}
-
-int    ft_putstr_error(char *str)
-{
-    int    i;
-
-    i = 0;
-    while (str[i])
-        i++;
-    write(2, str, i);
-    write(2, "\n", 1);
-    return (2);
-}
-
-void    erase_buf(char buf[51])
-{
-    int    i;
-
-    i = 0;
-    while (buf[i])
-    {
-        buf[i] = '\0';
-        i++;
-    }
-}
-
-int    display_file(int fd)
-{
-    char    buf[51];
-
-    buf[50] = '\0';
-    while (read(fd, buf, 50) > 0)
-    {
-        ft_putstr(buf);
-        erase_buf(buf);
-    }
-    if (read(fd, buf, 50 == -1))
-        return (ft_putstr_error("Cannot read file."));
-    return (1);
-}
-
-int    main(int argc, char **argv)
-{
-    int    fd;
-
-    if (argc == 1)
-        return (ft_putstr_error("File name missing."));
-    if (argc > 2)
-        return (ft_putstr_error("Too many arguments."));
-    fd = open(argv[1], O_RDONLY);
-    if (fd == -1)
-        return (ft_putstr_error("Cannot read file."));
-    display_file(fd);
-    close(fd);
-    return (0);
 }

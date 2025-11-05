@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:18:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/05 15:09:57 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/05 15:20:43 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ class Location
 
 		std::string		_root;
 		std::vector<std::string>	_index;
-		bool			_autoindex;
 
 		std::string		_uploadLocation;
 		std::map<std::string, std::string>	_cgiHandler;
@@ -67,12 +66,17 @@ class Location
 
 		bool	isMethodAllowed(const sAllowedMethods &method) const;
 		bool	isMethodAllowed(const std::string &method) const;
+		
+		bool	isRootDefined(void) const;
+		bool	isIndexDefined(void) const;
+		bool	isAutoIndexOn(void) const;
+		bool	isUploadDefined(void) const;
+		bool	isCGIDefined(void) const;
+		bool	isReturnDefined(void) const;
 
 		const std::string	&getRoot(void) const;
 		const std::string	&getLocation(void) const;
 		const std::vector<std::string>	&getIndexs(void) const;
-		// bool				&isRoot(void) const;
-		bool				autoIndexOn(void) const;
 
 
 		static std::string	simplifyLocationPath(const std::string &basePath);

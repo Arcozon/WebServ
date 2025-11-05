@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/05 15:10:55 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/05 15:20:04 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,7 +285,12 @@ bool	Location::ParsLocation::isParsLocationValid(void) const
 
 unsigned long	Location::ParsLocation::getLocationFlags(void) const
 {
-	return (_allow | _fDefined);
+	unsigned long	flags = _allow | _fDefined;
+
+	flags &= ~(GET_MASK(s_allow) | GET_MASK(s_autoindex));
+	if (_autoindex)
+		flags |= GET_MASK(s_autoindex);
+	return (flags);
 }
 
 const std::string	&Location::ParsLocation::getLocation(void) const
@@ -301,11 +306,6 @@ const std::string	&Location::ParsLocation::getRoot(void) const
 const std::vector<std::string>	&Location::ParsLocation::getIndex(void) const
 {
 	return (_index);
-}
-
-const bool			&Location::ParsLocation::getAutoIndex(void) const
-{
-	return (_autoindex);
 }
 
 const std::map<std::string, std::string>	&Location::ParsLocation::getCGIHandler(void) const

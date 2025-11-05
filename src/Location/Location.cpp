@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:37:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/05 15:21:59 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/05 15:36:53 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,16 +48,6 @@ bool	Location::isValid(void) const
 	return (_valid);
 }
 
-const std::string	&Location::getLocation(void) const
-{
-	return (_location);
-}
-
-const std::string	&Location::getRoot(void) const
-{
-	return (_root);
-}
-
 bool	Location::isMethodAllowed(const sAllowedMethods &method) const
 {
 	if (method >= s_METHODS_MAX)
@@ -76,40 +66,30 @@ bool	Location::isMethodAllowed(const std::string &method) const
 	return (false);
 }
 
+bool	Location::isRootDefined(void)	const	{	return (_flags & GET_MASK(s_root));	}
+bool	Location::isIndexDefined(void)	const	{	return (_index.size() != 0);	}
+bool	Location::isAutoIndexOn(void)	const	{	return (_flags & GET_MASK(s_autoindex));	}
+bool	Location::isUploadDefined(void)	const	{	return (_flags & GET_MASK(s_upload_store));	}
+bool	Location::isCGIDefined(void)	const	{	return (_cgiHandler.size() != 0);	}
+bool	Location::isReturnDefined(void)	const	{	return (_flags & GET_MASK(s_return));	}
+
+const std::string	&Location::getLocation(void) const
+{	return (_location);	}
+
+const std::string	&Location::getRoot(void) const
+{	return (_root);	}
+
 const std::vector<std::string>	&Location::getIndexs(void) const
-{
-	return (_index);
-}
+{	return (_index);	}
 
-bool	Location::isRootDefined(void) const
-{
-	return (_flags & GET_MASK(s_root));
-}
+const std::string	&Location::getUploadLocation(void) const
+{	return (_uploadLocation);	}
 
-bool	Location::isIndexDefined(void) const
-{
-	return (_index.size() != 0);
-}
+const std::map<std::string, std::string>	&Location::getCgiHandler(void) const
+{	return (_cgiHandler);	}
 
-bool	Location::isAutoIndexOn(void) const
-{
-	return (_flags & GET_MASK(s_autoindex));
-}
-
-bool	Location::isUploadDefined(void) const
-{
-	return (_flags & GET_MASK(s_upload_store));
-}
-
-bool	Location::isCGIDefined(void) const
-{
-	return (_cgiHandler.size() != 0);
-}
-
-bool	Location::isReturnDefined(void) const
-{
-	return (_flags & GET_MASK(s_return));
-}
+const Return		&Location::getReturn(void) const
+{	return (_return);	}
 
 std::string	Location::simplifyLocationPath(const std::string &basePath)
 {

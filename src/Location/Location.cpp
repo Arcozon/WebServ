@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:37:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/04 13:11:57 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/05 15:11:30 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ Location::Location(ParsLine &parsLine)
 	_cgiHandler = parsLocation.getCGIHandler();
 	_errPages = parsLocation.getErrPages();
 	_return = parsLocation.getReturn();	
+	_uploadLocation = parsLocation.getUploadLocation();
 }
 
 Location::~Location(void)

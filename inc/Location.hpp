@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:18:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/04 13:11:23 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/05 15:09:57 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,12 @@ class Location
 		unsigned long	_flags;
 
 		std::string		_location;
+
 		std::string		_root;
 		std::vector<std::string>	_index;
 		bool			_autoindex;
+
+		std::string		_uploadLocation;
 		std::map<std::string, std::string>	_cgiHandler;
 		std::map<std::string, std::string>	_errPages;
 		Return								_return;

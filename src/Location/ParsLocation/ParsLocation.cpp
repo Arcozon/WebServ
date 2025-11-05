@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/04 13:52:10 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/05 15:10:55 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -323,3 +323,7 @@ const Return		&Location::ParsLocation::getReturn(void) const
 	return (_return);
 }
 
+const std::string	&Location::ParsLocation::getUploadLocation(void) const
+{
+	return (_uploadLocation);
+}

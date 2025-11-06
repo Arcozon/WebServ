@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:18:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/25 15:19:41 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/05 15:35:56 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,12 @@ class Location
 		bool			_valid;
 		unsigned long	_flags;
 
-		// std::string		_guard;	??
 		std::string		_location;
+
 		std::string		_root;
 		std::vector<std::string>	_index;
-		bool			_autoindex;
+
+		std::string		_uploadLocation;
 		std::map<std::string, std::string>	_cgiHandler;
 		std::map<std::string, std::string>	_errPages;
 		Return								_return;
@@ -63,10 +64,26 @@ class Location
 
 		bool	isValid(void) const;
 
-		bool	_isAllowedGET(void) const;
-		bool	_isAllowedPOST(void) const;
-		bool	_isAllowedDELETE(void) const;
+		bool	isMethodAllowed(const sAllowedMethods &method) const;
+		bool	isMethodAllowed(const std::string &method) const;
+		
+		bool	isRootDefined(void) const;
+		bool	isIndexDefined(void) const;
+		bool	isAutoIndexOn(void) const;
+		bool	isUploadDefined(void) const;
+		bool	isCGIDefined(void) const;
+		bool	isReturnDefined(void) const;
 
+		const std::string	&getRoot(void) const;
+		const std::string	&getLocation(void) const;
+		const std::vector<std::string>	&getIndexs(void) const;
+		const std::string	&getUploadLocation(void) const;
+		const std::map<std::string, std::string>	&getCgiHandler(void) const;
+		const Return		&getReturn(void) const;
+
+
+		static std::string	simplifyLocationPath(const std::string &basePath);
+		static bool	isLocationPathValid(const std::string &path);
 };
 
 #endif

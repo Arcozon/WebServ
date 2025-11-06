@@ -81,3 +81,44 @@ size_t IpPort::getClientMaxBodySize(void) const
 {
 	return (_clientMaxBodySize);
 }
+
+static inline bool	_isLocationMatchingWPath(const std::string& loc, const std::string &path)
+{
+	if (loc.find(path) == 0)
+	{
+		if (path.size() == loc.size())
+			return (true);
+		else if (loc[path.size()] == '/')
+			return (true);
+	}
+	return (false);
+}
+
+const Location	*IpPort::getLocation(const std::string &cPath)	const
+{
+	typedef std::vector<Location>::const_iterator	VecLocConstIt;
+
+	std::string	path = Location::simplifyLocationPath(cPath);
+	
+	while (!path.empty())
+	{
+		for (VecLocConstIt it = _locations.begin(); it != _locations.end(); ++it)
+		{
+			if (_isLocationMatchingWPath(it->getLocation(), path))
+				return (it.base());
+		}
+		if (path[path.size() - 1] == '/')
+		{
+			path.erase(path.size() - 1);
+		}
+		else
+		{
+			std::size_t	lastSlash = path.find_last_of('/');
+			if (lastSlash == std::string::npos)
+				path.clear();
+			else
+				path.erase(lastSlash + 1);
+		}
+	}
+	return (NULL);
+}

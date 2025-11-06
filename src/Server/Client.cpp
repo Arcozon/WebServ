@@ -149,14 +149,25 @@ bool Client::_checkHeader(void)
 				_request_step = ERROR;
 				return false;
 			} 
-			if ((_method == "POST") && _target_uri.find("/files") == 0) // à changer si l'upload dir match l'url
+			if ((_method == "POST"))
 			{
-				_is_upload = true;
-				std::cout << "\033[1;36m[Upload of size: " << _content_length << " bytes]\033[0m" << std::endl;
+				const Location *loc = _config->getLocation(_target_uri);
+				if(loc && !loc->getUploadLocation().empty())
+				{
+					_upload_dir = loc->getUploadLocation();
+					_is_upload = true;
+					std::cout << "\033[1;36m[Upload of size: " << _content_length << " bytes]\033[0m" << std::endl;
+				}
+				else
+				{
+					_response->setStartLine(403);
+					_response->prepare();
+					_request_step = ERROR;
+					return false;
+				}
 			}
 			else
 			{
-				// A traiter comme simple GET plus tard
 				;
 			}
 			_request_step = BODY;
@@ -304,8 +315,9 @@ bool Client::finishedReading()
 
 void Client::fileHandler()
 {
-	std::string dir = "testupload/";
-	std::string path = dir + _target_uri.substr(std::string("/files/").length());
+	std::string dir = _upload_dir;
+	//std::string filename = _target_uri.substr(_target_uri.find_last_of('/'));
+	std::string path = dir + _target_uri.substr(_target_uri.find_last_of('/'));
 
 	std::ofstream file(path.c_str(), std::ios::binary);
 	if (!file.is_open())

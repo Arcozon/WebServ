@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/29 14:37:22 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/05 15:20:04 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	Location::ParsLocation::_addDefined(sDefined toTest)
 
 Location::ParsLocation::~ParsLocation(void)
 {
-	printfLocation();
+	// printfLocation();
 }
 
 void	Location::ParsLocation::_addLocationLine(void)
@@ -78,13 +78,26 @@ void	Location::ParsLocation::_addLocationLine(void)
 			MyException::ELVL_WARNING, splitLineFront));	
 }
 
+void	Location::ParsLocation::_setLocation(void)
+{
+	std::string	loca = _parsLine.getSplitLine().at(1);
+
+	if (loca[0] != '/')
+		throw (MyException("Location must be a relative path"  + _inLocation(), MyException::ELVL_ERROR, loca));
+	if (!Location::isLocationPathValid(loca))
+		throw (MyException("No directory traversal"  + _inLocation(), MyException::ELVL_ERROR, loca));
+	// std::cout << "Before: " << loca ;
+	_location = Location::simplifyLocationPath(loca);
+	// std::cout << "	After: " << _location << std::endl << std::endl;
+}
+
 void	Location::ParsLocation::_addRoot(void)
 {
 	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
 
 	if (_isDefined(s_root))
 		throw (MyException("Already defined"  + _inLocation(), MyException::ELVL_WARNING, splitLine.front()));
-	_root = splitLine.at(1);
+	_root = splitLine.at(1);	// TODO CHECK REVERSE TRAVERSAL
 	_addDefined(s_root);
 }
 
@@ -92,7 +105,7 @@ void	Location::ParsLocation::_addIndex(void)
 {
 	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
 
-	if (splitLine.size() == 1)
+	if (splitLine.size() == 1)// TODO CHECK REVERSE TRAVERSAL
 		throw (MyException("Needs arguments", MyException::ELVL_WARNING, splitLine.front()));
 	for (std::vector<std::string>::size_type i = 1; i < splitLine.size(); ++i)
 		_index.push_back(splitLine.at(i));
@@ -147,7 +160,7 @@ void	Location::ParsLocation::_addUploadLocation(void)
 {
 	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
 
-	if (_isDefined(s_upload_store))
+	if (_isDefined(s_upload_store))// TODO CHECK REVERSE TRAVERSAL
 		throw (MyException("Already defined" + _inLocation(), MyException::ELVL_WARNING, splitLine.front()));
 	else if (splitLine.size() != 2)
 		throw (MyException("Needs one argument", MyException::ELVL_WARNING, splitLine.front()));
@@ -202,7 +215,8 @@ Location::ParsLocation::ParsLocation(ParsLine &parsLine)
 	_allow( GET_MASK(s_GET) | GET_MASK(s_POST) | GET_MASK(s_DELETE) ),
 	_valid(true)
 {
-	_location = _parsLine.getSplitLine().at(1);
+	_setLocation();
+
 	while (_parsLine.readLine(_nTabLocation))
 	{
 		if (_valid)
@@ -254,6 +268,9 @@ bool	Location::ParsLocation::_checkRedirs(void) const
 		++count;
 	if (_isDefined(s_return))
 		++count;
+	if (_isDefined(s_root))
+		++count;
+	return (true);
 	return (count == 1);
 }
 
@@ -268,7 +285,12 @@ bool	Location::ParsLocation::isParsLocationValid(void) const
 
 unsigned long	Location::ParsLocation::getLocationFlags(void) const
 {
-	return (_allow | _fDefined);
+	unsigned long	flags = _allow | _fDefined;
+
+	flags &= ~(GET_MASK(s_allow) | GET_MASK(s_autoindex));
+	if (_autoindex)
+		flags |= GET_MASK(s_autoindex);
+	return (flags);
 }
 
 const std::string	&Location::ParsLocation::getLocation(void) const
@@ -286,11 +308,6 @@ const std::vector<std::string>	&Location::ParsLocation::getIndex(void) const
 	return (_index);
 }
 
-const bool			&Location::ParsLocation::getAutoIndex(void) const
-{
-	return (_autoindex);
-}
-
 const std::map<std::string, std::string>	&Location::ParsLocation::getCGIHandler(void) const
 {
 	return (_cgiHandler);
@@ -306,3 +323,7 @@ const Return		&Location::ParsLocation::getReturn(void) const
 	return (_return);
 }
 
+const std::string	&Location::ParsLocation::getUploadLocation(void) const
+{
+	return (_uploadLocation);
+}

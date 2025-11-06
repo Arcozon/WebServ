@@ -56,7 +56,7 @@ private:
 	size_t _content_length;
 	size_t _body_rd_bytes;
 	std::string _body_data;
-
+	std::string _upload_dir;
 private:
 	static const std::vector<std::string>	_splitRequestLine(const std::string &reqLine);
 	static const std::pair<std::string, std::string>	_splitHeaderLine(const std::string &reqLine);

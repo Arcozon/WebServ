@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 14:20:21 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 15:46:04 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/05 15:43:01 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ class	Return
 	private:
 		enum typeReturn
 		{
-			RET_TEXT,
+			RET_ERR,
 			RET_ERR_URL,
 			UNDEF
 		};

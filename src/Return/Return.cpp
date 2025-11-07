@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 14:25:40 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/25 14:48:39 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/05 15:43:20 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,12 @@ Return::Return(const std::string &code, const std::string &url)
 {
 	if (!_isHTTPErrorCode(code))
 		throw (MyException("is not a valid HTTP error", MyException::ELVL_ERROR, code));
-	// Check URL
 	_argOne = code;
 	_argTwo = url;
 }
 
 Return::Return(const std::string &text)
-:	_type(Return::RET_TEXT)
+:	_type(Return::RET_ERR)
 {
 	_argOne = text;
 	(void)_type;
@@ -49,7 +48,7 @@ Return	&Return::operator=(const Return &other)
 
 void	Return::_printInfo(void) const
 {
-	if (_type == RET_TEXT)
+	if (_type == RET_ERR)
 		std::cout << "Text: " << _argOne << "\n";
 	else if (_type == RET_ERR_URL)
 		std::cout << "Err: " << _argOne << ", URL: " << _argTwo << "\n";

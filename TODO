@@ -1,29 +1,20 @@
-Config:
-	`server`				| 1–N
-Server:
-	`host`					| 1
-	`port`					| 1
-	`server_name`			| 0–N
-	`client_max_body_size`	| 0–1
-	`error_page`			| 0–N
-	`location`				| 0–N
-	`return`				| 0–1
-Location:
-	`root`					| 0–1
-	`index`					| 0–N
-	`allow`					| 0–1
-	`autoindex`				| 0–1
-	`upload_store`			| 0–1
-	`return`				| 0–1
-	`cgi_handler`			| 0–N
-	`error_page`			| 0–N
-
-
-Check if server Direcctive are valid (HTTP error, name already set, location existing ...)
-Do multiple servers
-
 -	CGI
 	- Unset var before adding them
 	- Add vars ?
 	- Cd
 	- execve
+
+
+- HTTP Status Code:
+	- 200 OK
+	- 201 Created		: POST worked
+	- 204 No Content	: DELETE worked
+
+	- 301 Moved Permanently:	Perma redirect
+
+	- 400 Bad Request			: invalid syntax 
+	- 404 Forbiden Access		: No right for this file
+	- 404 Not Found				: Unknown file/route
+	- 405 Method Not Allowed	: Forbiden method
+
+	- 500 Internal Server Error	: Serv Error

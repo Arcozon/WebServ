@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:37:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/05 15:36:53 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/07 16:19:32 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,22 +48,18 @@ bool	Location::isValid(void) const
 	return (_valid);
 }
 
-bool	Location::isMethodAllowed(const sAllowedMethods &method) const
+bool	Location::isMethodAllowed(const sAllowedMethods &methodCode) const
 {
-	if (method >= s_METHODS_MAX)
+	if (methodCode >= s_METHODS_MAX)
 		return (false);
-	return (_flags & (1 << method));
+	return (_flags & (1 << methodCode));
 }
 
 bool	Location::isMethodAllowed(const std::string &method) const
 {
-	if (method == "GET")
-		return (_flags & (1 << s_GET));
-	else if (method == "POST")
-		return (_flags & (1 << s_POST));
-	else if (method == "DELETE")
-		return (_flags & (1 << s_DELETE));
-	return (false);
+	sAllowedMethods methodCode = getMethodCode(method);
+
+	return (methodCode);
 }
 
 bool	Location::isRootDefined(void)	const	{	return (_flags & GET_MASK(s_root));	}
@@ -129,4 +125,15 @@ bool	Location::isLocationPathValid(const std::string &path)
 	if (indexSlashDotDot != std::string::npos && indexSlashDotDot == path.size() - 3)
 		return (false);
 	return (true);
+}
+
+Location::sAllowedMethods	Location::getMethodCode(const std::string &method)
+{
+	if (method == "GET")
+		return (s_GET);
+	else if (method == "POST")
+		return (s_POST);
+	else if (method == "DELETE")
+		return (s_DELETE);
+	return (s_METHODS_MAX);
 }

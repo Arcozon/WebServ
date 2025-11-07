@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 16:29:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/05 15:14:14 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/07 16:29:13 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void	Response::prepare(const std::string &body)
 	else
 		_body += "Unknown Location [" + _cl->getTargetLocation() + "]" + endOfLine;
 	_body += "</h2></body></html>";
-	mkRepFromLoc();
+	makeRep();
 	catResponse();
 }
 
@@ -129,64 +129,29 @@ bool Response::isResponseFullySent()	const
 	return (_fully_sent);
 }
 
-void	Response::fileToBody(char const fName[])
+void	Response::makeRep(void)
 {
-	int fd = open(fName, 0);
-	if (fd < 0)
-		return ;	//Err
-	_body.clear();
-	const int	toRead = 1024;		
-	char		buffer[toRead];
-	int			br(toRead);
-	while (br)
+	Location::sAllowedMethods	methodCode = Location::getMethodCode(_cl->getMethod());
+	
+	
+	if (methodCode == Location::s_METHODS_MAX)
+		; // err 405
+	else if (_location)
 	{
-		br = read(fd, buffer, toRead);
-		if (br < 0)
-			return ;
-		_body.append(buffer, br);
-	}
-	close(fd);
-}
-
-bool	Response::lookForIndex(const char dName[])	// Returns true if one index was found
-{
-	typedef	std::vector<std::string>::const_iterator	VecStrConstIt;
-	const std::vector<std::string> indexs = _location->getIndexs();
-
-	FStat	fileStat;
-
-	for (VecStrConstIt it = indexs.begin(); it != indexs.end(); ++it)
-	{
-		fileStat.open(dName, *it);
-		if (fileStat.isFile())
+		if (!_location->isMethodAllowed(methodCode))
+			; // err 405
+		else
 		{
-			fileToBody(fileStat.getPathCStr());
-			return (true);
-		}
-	}
-	return (false);
-}
+			if (methodCode == Location::s_GET)
+				_handleGET();
+			else if (methodCode == Location::s_POST)
+				_handlePOST();
+			else if (methodCode == Location::s_DELETE)
+				_handleDELETE();
 
-void	Response::mkRepFromLoc(void)
-{
-	if (!_location)
-		return ;
-	//	Handle return
-	FStat	fileStat(_location->getRoot(), _URI);
-	// std::cout << fileStat.getPathCStr() << std::endl;
-	if (fileStat.isFile())
-		fileToBody(fileStat.getPathCStr());
-	else if (fileStat.isDir())
-	{
-		if (!lookForIndex(fileStat.getPathCStr()))
-		{
-			if (_location->isAutoIndexOn())
-			{
-				generateAutoIndex(fileStat.getPathCStr());
-			}
-			//err
 		}
 	}
 	else
-		;	// Err
+		; // err 404
+	
 }

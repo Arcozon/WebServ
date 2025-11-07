@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 13:05:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/04 14:25:51 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/07 16:24:38 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,10 +76,14 @@ private:
 
 	bool	lookForIndex(const char dName[]);	// Returns true if one index was found
 
-	void	generateAutoIndex(ReadDir rDir);
-
-	void	_addHTMLElement(const std::string &elemName, const std::string &elemContent);
 	void	_AI_addLink(const std::string &fName, const FStat::FILETYPE &fType);
+	void	generateAutoIndex(ReadDir rDir);
+	void	_addHTMLElement(const std::string &elemName, const std::string &elemContent);
+
+
+	void	_handleGET(void);
+	void	_handlePOST(void);
+	void	_handleDELETE(void);
 public:
 	Response(Client *cl, const IpPort &ipPort);
 	// Response(Client *cl);
@@ -87,7 +91,7 @@ public:
 
 	void	setHeaders(const std::map<std::string, std::string> &map);
 	void	catResponse(void);
-	void	mkRepFromLoc(void);
+	void	makeRep(void);
 
 	void	send(int fd);
 	void	prepare();

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/03 16:59:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/04 13:35:33 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/07 19:06:09 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ class FStat
 		{
 			DIRECTORY,
 			REG_FILE,
-			UNKNOWN
+			UNKNOWN,
+			ERR_STAT
 		}	FILETYPE;
 
 	private:
@@ -43,7 +44,7 @@ class FStat
 		bool	fail(void) const;
 		bool	isDir(void) const;
 		bool	isFile(void) const;
-		bool	isAccesible(void) const;
+		bool	isReadable(void) const;
 		const char	*getPathCStr(void) const;
 };
 

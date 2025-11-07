@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 16:29:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/07 16:29:13 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/07 19:14:57 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ const std::string	Response::endOfLine = "\r\n";
 const std::string	Response::sepNameContent = ": ";
 
 Response::Response(Client *cl, const IpPort &ipPort)
-:	_responseCode(201),
+:	_responseCode(200),
 	_reasonPhrase("OK"),
 	_send_count(0),
 	_fully_sent(false),
@@ -59,6 +59,11 @@ void	Response::catBody(void)
 		catLine("");
 		catLine(_body);	// remplacer les \n par des \r\n ?
 	}
+	{
+		std::ostringstream oss;
+		oss << _responseCode;
+		catLine(oss.str() + " " + _reasonPhrase);
+	}
 }
 
 void	Response::catHeader(void)
@@ -90,6 +95,28 @@ void	Response::prepare(const std::string &body)
 		_body += "Unknown Location [" + _cl->getTargetLocation() + "]" + endOfLine;
 	_body += "</h2></body></html>";
 	makeRep();
+	{
+		if (_responseCode == 200)
+			_reasonPhrase = "OK";
+		else if (_responseCode == 201)
+			_reasonPhrase = "Created";
+		else if (_responseCode == 204)
+			_reasonPhrase = "No Content";
+		else if (_responseCode == 301)
+			_reasonPhrase = "Moved Permanently";
+		else if (_responseCode == 400)
+			_reasonPhrase = "Bad Request";
+		else if (_responseCode == 403)
+			_reasonPhrase = "Forbiden Access";
+		else if (_responseCode == 404)
+			_reasonPhrase = "Not Found";
+		else if (_responseCode == 405)
+			_reasonPhrase = "Method Not Allowed";
+		else if (_responseCode == 500)
+			_reasonPhrase = "Internal Server Error";
+		else
+			_reasonPhrase = "WTF";
+	}
 	catResponse();
 }
 
@@ -133,13 +160,12 @@ void	Response::makeRep(void)
 {
 	Location::sAllowedMethods	methodCode = Location::getMethodCode(_cl->getMethod());
 	
-	
 	if (methodCode == Location::s_METHODS_MAX)
-		; // err 405
+		_responseCode = 405;
 	else if (_location)
 	{
 		if (!_location->isMethodAllowed(methodCode))
-			; // err 405
+			_responseCode = 405;
 		else
 		{
 			if (methodCode == Location::s_GET)
@@ -152,6 +178,5 @@ void	Response::makeRep(void)
 		}
 	}
 	else
-		; // err 404
-	
+		_responseCode = 404;
 }

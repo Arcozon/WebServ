@@ -14,12 +14,12 @@
 #include "Location.hpp"
 
 FStat::FStat(void)
-:	_fType(UNKNOWN),
+:	_fType(ERR_STAT),
 	_readable(false)
 {}
 
 FStat::FStat(const std::string &path, const std::string &URI)
-:	_fType(UNKNOWN),
+:	_fType(ERR_STAT),
 	_readable(false)
 {
 	this->open(path, URI);
@@ -33,27 +33,25 @@ bool	FStat::open(const std::string &path, const std::string &URI)
 	struct stat	bufStat = {};
 
 	_path = Location::simplifyLocationPath(path + "/" +URI);
-	_fType = UNKNOWN;
+	_fType = ERR_STAT;
 	_readable = false;
 	if (stat(_path.c_str(), &bufStat) == 0)
 	{
+		_fType = UNKNOWN;
 		mode_t	bufMode = bufStat.st_mode & S_IFMT;
 		if (bufMode == S_IFDIR)
 			_fType = DIRECTORY;
 		else if (bufMode == S_IFREG)
 			_fType = REG_FILE;
-		if (_fType != UNKNOWN)
-		{
-			if (access(_path.c_str(), R_OK) == 0)
-				_readable = true;
-		}
+		if (access(_path.c_str(), R_OK) == 0)
+			_readable = true;
 	}
 	return ( this->fail() );
 }
 
 bool	FStat::fail(void) const
 {
-	return (_fType == UNKNOWN || !_readable);
+	return (_fType == ERR_STAT);
 }
 
 bool	FStat::isDir(void) const
@@ -66,7 +64,7 @@ bool	FStat::isFile(void) const
 	return (_readable && _fType == REG_FILE);
 }
 
-bool	FStat::isAccesible(void) const
+bool	FStat::isReadable(void) const
 {
 	return (_readable);
 }

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 16:12:22 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/07 16:13:57 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/07 19:09:23 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,21 +17,24 @@
 
 void	Response::fileToBody(char const fName[])
 {
-	int fd = open(fName, 0);
+	int fd = open(fName, O_RDONLY);
 	if (fd < 0)
-		return ;	//Err
-	_body.clear();
-	const int	toRead = 1024;		
-	char		buffer[toRead];
-	int			br(toRead);
-	while (br)
+		_responseCode = 404;
+	else
 	{
-		br = read(fd, buffer, toRead);
-		if (br < 0)
-			return ;
-		_body.append(buffer, br);
+		_body.clear();
+		const int	toRead = 1024;		
+		char		buffer[toRead];
+		int			br(toRead);
+		while (br)
+		{
+			br = read(fd, buffer, toRead);
+			if (br < 0)
+				return ;
+			_body.append(buffer, br);
+		}
+		close(fd);
 	}
-	close(fd);
 }
 
 bool	Response::lookForIndex(const char dName[])	// Returns true if one index was found
@@ -56,7 +59,7 @@ bool	Response::lookForIndex(const char dName[])	// Returns true if one index was
 void	Response::_handleGET(void)
 {
 	FStat	fileStat(_location->getRoot(), _URI);
-	// std::cout << fileStat.getPathCStr() << std::endl;
+	// std::cout << fileStat.getPa thCStr() << std::endl;
 	if (fileStat.isFile())
 		fileToBody(fileStat.getPathCStr());
 	else if (fileStat.isDir())
@@ -67,9 +70,12 @@ void	Response::_handleGET(void)
 			{
 				generateAutoIndex(fileStat.getPathCStr());
 			}
-			//err
+			else
+				_responseCode = 404;
 		}
 	}
+	else if (!fileStat.isReadable())
+		_responseCode = 403;
 	else
-		;	// Err
+		_responseCode = 404;
 }

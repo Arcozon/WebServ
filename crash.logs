@@ -1,0 +1,94 @@
+[H[2J[3Jmake[1]: Nothing to be done for 'all'.
+[H[2J[3J	./webserv test.config
+Host: 127.0.0.1
+Port: 3001
+ServerNames: hubert  jean  pierre  
+ClientMaxSizeBody: 1073741824
+ErrorPages: 
+	400: ./static_pages/error_pages/400.html
+	404: ./static_pages/error_pages/404.html
+	500: ./static_pages/error_pages/500.html
+Locations: 
+	not added
+	not added
+	not added
+	not added
+	not added
+	not added
+	not added
+	not added
+	not added
+Return: Undef
+
+Host: 127.0.0.1
+Port: 8080
+ServerNames: gaby  pierre  
+ClientMaxSizeBody: 1073741824
+ErrorPages: 
+	400: ./static_pages/error_pages/400.html
+	404: ./static_pages/error_pages/404.html
+	500: ./static_pages/error_pages/500.html
+Locations: 
+	Empty
+Return: Undef
+
+Host: 0.0.1.1
+Port: 
+ServerNames: 	None
+ClientMaxSizeBody: Not defined
+ErrorPages: 
+	Empty
+Locations: 
+	Empty
+Return: Undef
+
+0: 127.0.0.1:3001
+1: 127.0.0.1:8080
+Host: 127.0.0.1
+Port: 3001
+ServerNames: hubert  jean  pierre  
+ClientMaxSizeBody: 1073741824
+ErrorPages: 
+	400: ./static_pages/error_pages/400.html
+	404: ./static_pages/error_pages/404.html
+	500: ./static_pages/error_pages/500.html
+Locations: 
+	not added
+	not added
+	not added
+	not added
+	not added
+	not added
+	not added
+	not added
+	not added
+Return: Undef
+
+Host: 127.0.0.1
+Port: 8080
+ServerNames: gaby  pierre  
+ClientMaxSizeBody: 1073741824
+ErrorPages: 
+	400: ./static_pages/error_pages/400.html
+	404: ./static_pages/error_pages/404.html
+	500: ./static_pages/error_pages/500.html
+Locations: 
+	Empty
+Return: Undef
+
+Host: 0.0.1.1
+Port: 
+ServerNames: 	None
+ClientMaxSizeBody: Not defined
+ErrorPages: 
+	Empty
+Locations: 
+	Empty
+Return: Undef
+
+0: 127.0.0.1:3001
+1: 127.0.0.1:8080
+Webserv started, awaiting for incoming connections
+
+Recieved SIGINT
+Bonne nuit!

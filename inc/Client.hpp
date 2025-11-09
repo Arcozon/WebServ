@@ -57,6 +57,10 @@ private:
 	size_t _body_rd_bytes;
 	std::string _body_data;
 	std::string _upload_dir;
+
+	time_t _last_activity;
+	time_t _read_timer;
+    time_t _write_timer;
 private:
 	static const std::vector<std::string>	_splitRequestLine(const std::string &reqLine);
 	static const std::pair<std::string, std::string>	_splitHeaderLine(const std::string &reqLine);
@@ -79,7 +83,9 @@ public:
 	bool responseSent();
 	bool finishedReading();
 	void fileHandler();
-
+	void updateTimer();
+	bool checkTimers();
+	bool timedOut();
 };
 
 

@@ -132,7 +132,7 @@ void Server::readFromClient(int client_fd)
 	cl->readFromFd();
 	if(cl->finishedReading())
 	{
-		std::cout << "\033[1;34m" << "\t-- IN EPOLLOUT SWITCH CONDITION --" << "\033[0m" << std::endl;
+		//std::cout << "\033[1;34m" << "\t-- IN EPOLLOUT SWITCH CONDITION --" << "\033[0m" << std::endl;
 		epoll_event ev;
 		std::memset(&ev, 0, sizeof(ev));
 		ev.events = EPOLLOUT | EPOLLET;
@@ -153,7 +153,7 @@ void Server::start()
 		if (n_fds == -1)
 		{
 			if (errno == EINTR)
-				continue ;
+			continue ;
 			throw std::runtime_error("Failed to register epoll events (epoll_wait");
 		}
 		for (int i = 0; i < n_fds; i++)
@@ -187,6 +187,7 @@ void Server::start()
 				writeToClient(ev_fd);
 			}
 		}
+		checkTimeouts();
 	}
 	std::cout << "Bonne nuit!" << std::endl;
 }
@@ -239,4 +240,19 @@ void Server::removeClient(int client_fd)
 		_clients.erase(it);
 	}
 	std::cout << "\e[1;33mClient " << client_fd << " removed from epoll events\e[0m" << std::endl;
+}
+
+void Server::checkTimeouts()
+{
+	std::vector<int> timeout_list;
+	for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if (it->second && it->second->timedOut())
+		{
+			std::cout << "\033[1;31mClient " << it->first << " timed out and was added to the timeout list\033[0m" << std::endl;
+			timeout_list.push_back(it->first);
+		}
+	}
+	for (size_t i = 0; i < timeout_list.size(); i++)
+		removeClient(timeout_list[i]);
 }

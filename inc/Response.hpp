@@ -8,7 +8,7 @@
 #include <sstream>
 
 #define HTTP_VERSION "HTTP/1.0"
-#define SERVER_HEADER "TURBOINTGAEUDES 1.0 (Unix/Summoner's rift/top lane)"
+#define SERVER_HEADER "TURBOINTGAEUDES 1.0 (Unix)"
 
 class Client;
 class IpPort;
@@ -40,7 +40,6 @@ private:
 	std::string getReasonPhrase(int code) const;
 
 };
-
 
 
 

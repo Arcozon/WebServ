@@ -48,12 +48,12 @@ S_INC =  . Pars
 INC	  =  $(addprefix $(D_INC), $(S_INC))
 
 CPP		=  c++
-FLAGS	=  -Wall -Wextra -Werror -MMD -g -std=c++98
+FLAGS	=  -Wall -Wextra -Werror -MMD -g3 -std=c++98
 IFLAGS	=  $(addprefix "-I", $(INC)) 
 
 RM =  rm -rf
 
-VAL = valgrind --leak-check=full --show-leak-kinds=all -q
+VAL = valgrind --track-origins=yes --leak-check=full --show-leak-kinds=all -q
 MAKE += --no-print-directory
 .DEFAULT_GOAL := test
 

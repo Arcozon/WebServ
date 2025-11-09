@@ -12,7 +12,7 @@
 
 #include "Client.hpp"
 
-const std::string	Client::_supportedHTTPVersion = "HTTP/1.1";
+const std::string	Client::_supportedHTTPVersion = "HTTP/1.0";
 const std::string	Client::_sepLine = "\r\n";
 const std::size_t	Client::_sepLineLen = _sepLine.size();
 const std::size_t	Client::_bufferSize = 1024;
@@ -26,7 +26,10 @@ Client::Client(int fd, IpPort *config)
 	_done(false),
 	_response(NULL),
 	_is_upload(0),
-	_body_rd_bytes(0)
+	_body_rd_bytes(0),
+	_last_activity(time(0)),
+	_read_timer(5),
+	_write_timer(5)
 {
 	_response = new Response(this);
 }
@@ -51,11 +54,24 @@ bool	Client::_makeExtractLine(void)
 	// 	_last_pos = _pos + _sepLineLen;
 	// 	return (true);
 	// }
+	
 	char	buffer[_bufferSize];
 	int		rd;
 
-	do
+	_pos = _str_buffer.find(_sepLine, _last_pos);
+	if (_pos != std::string::npos)
 	{
+		_extract_line = _str_buffer.substr(_last_pos, _pos - _last_pos);
+		_last_pos = _pos + _sepLineLen;
+		// std::cout << "line: " << _extract_line << '\n';
+		return (true);
+	}
+	rd = read(_fd, buffer, _bufferSize);
+	if (rd > 0)
+	{
+		updateTimer();
+		_str_buffer.append(buffer, rd);
+		_request_len += rd;
 		_pos = _str_buffer.find(_sepLine, _last_pos);
 		if (_pos != std::string::npos)
 		{
@@ -64,17 +80,15 @@ bool	Client::_makeExtractLine(void)
 			// std::cout << "line: " << _extract_line << '\n';
 			return (true);
 		}
-		rd = read(_fd, buffer, _bufferSize);
-		if(rd > 0)
-		{
-			_str_buffer.append(buffer, rd);
-			_request_len += rd;
-		}
-		else if(rd < 0)
-			return (false);
-	}	while (rd != 0);
-	_done = true;
-	return (true);
+		return false;
+	}
+	else if (rd == 0)
+	{
+		_done = true;
+		return (false);
+	}
+	else
+		return (false);
 }
 
 const std::vector<std::string>	Client::_splitRequestLine(const std::string &reqLine)
@@ -165,7 +179,7 @@ bool Client::_checkHeader(void)
 					_request_step = ERROR;
 					return false;
 				}
-			}
+			} 
 			else
 			{
 				;
@@ -193,43 +207,52 @@ bool Client::_checkBody(void) // IpPort + setting correct StatusLine on error
 {
 	char buffer[_bufferSize];
 	int rd;
-	do
+	size_t curr_data = _str_buffer.length() - _last_pos;
+	if (curr_data > 0)
 	{
+		size_t left_to_read = _content_length - _body_rd_bytes;
+		size_t to_copy = (curr_data < left_to_read) ? curr_data : left_to_read;
+
+		_body_data.append(_str_buffer, _last_pos, to_copy);
+		_body_rd_bytes += to_copy;
+		_last_pos += to_copy;
+
+		if (_body_rd_bytes == _content_length)
+		{
+			_request_step = FIN;
+			std::cout << "\e[1;37m-- Received body payload (" << _body_rd_bytes << " bytes) --\e[0m" << std::endl;
+			return true;
+		}
+	}
+	rd = read(_fd, buffer, _bufferSize);
+	if (rd > 0)
+	{
+		updateTimer();
+		_str_buffer.append(buffer, rd);
+		_request_len += rd;
 		size_t curr_data = _str_buffer.length() - _last_pos;
-		if (curr_data > 0)
-		{
-			size_t left_to_read = _content_length - _body_rd_bytes;
-			size_t to_copy = (curr_data < left_to_read) ? curr_data : left_to_read;
+		size_t left_to_read = _content_length - _body_rd_bytes;
+		size_t to_copy = (curr_data < left_to_read) ? curr_data : left_to_read;
 
-			_body_data.append(_str_buffer, _last_pos, to_copy);
-			_body_rd_bytes += to_copy;
-			_last_pos += to_copy;
-			
-			if (_body_rd_bytes == _content_length)
-			{
-				_request_step = FIN;
-				std::cout << "\e[1;37m-- Received body payload (" << _body_rd_bytes << " bytes) --\e[0m" << std::endl;
-				return true;
-			}
-		}
-		rd = read(_fd, buffer, _bufferSize);
-		if (rd > 0)
+		_body_data.append(_str_buffer, _last_pos, to_copy);
+		_body_rd_bytes += to_copy;
+		_last_pos += to_copy;
+		if (_body_rd_bytes == _content_length)
 		{
-			_str_buffer.append(buffer, rd);
-			_request_len += rd;
+			_request_step = FIN;
+			std::cout << "\e[1;37m-- Received body payload (" << _body_rd_bytes  << " bytes) --\e[0m" << std::endl;
+			return true;
 		}
-		else if (rd < 0)
-			return false;
-	} 
-	while (rd != 0 && _body_rd_bytes < _content_length);
-
-	if (rd == 0 && _body_rd_bytes < _content_length)
+		return true;
+	}
+	else if (rd == 0)
 	{
 		std::cout << "\e[1;37m-- Client closed connection while body data was being processed --\e[0m" << std::endl;
 		_done = true;
 		return false;
 	}
-	return true;
+	else
+		return false;
 }
 
 bool Client::_checkCurrentLine(const Client::REQUEST_STEP &reqSection)
@@ -250,34 +273,71 @@ bool Client::_checkCurrentLine(const Client::REQUEST_STEP &reqSection)
 	}
 }
 
+// void Client::checkStep()
+// {
+// 	if (!_checkCurrentLine(REQUEST_LINE))
+// 	{
+// 		_request_step = ERROR;
+// 		return ;
+// 	}
+// 	std::cout  << "\e[1:31m"<< "	-- Start Of Header --" << "\e[0m" << std::endl;
+// 	_request_step = HEADERS;
+// 	while (_request_step == HEADERS)
+// 	{
+// 		if (!_checkCurrentLine(HEADERS))
+// 		{
+// 			_request_step = ERROR;
+// 			return ;
+// 		}
+// 	}
+// 	if (_request_step == BODY)
+// 	{
+// 		if (!_checkBody())
+// 		{
+// 			_request_step = ERROR;
+// 			return ;
+// 		}
+// 	}
+// 	if (_request_step == FIN)
+// 	{
+// 		std::cout << "\e[1;31m" << "	-- End Of Body --" << "\e[0m" << std::endl;
+// 		if (_is_upload)
+// 			fileHandler();
+// 		else
+// 		{
+// 			_response->setBody("");
+// 			_response->prepare();
+// 		}
+// 		_done = true;
+// 		std::cout << "\033[1;34m" << "\t-- Response ready to be sent --" << "\033[0m" << std::endl;
+// 	}
+// }
+
 void Client::checkStep()
 {
-	if (!_checkCurrentLine(REQUEST_LINE))
+	if (_request_step == REQUEST_LINE)
 	{
-		_request_step = ERROR;
-		return ;
+		if (!_checkCurrentLine(REQUEST_LINE))
+			return ;
+		_request_step = HEADERS;
+		std::cout << "\e[1;31m\t-- Start Of Header --\e[0m" << std::endl;
 	}
-	std::cout  << "\e[1:31m"<< "	-- Start Of Header --" << "\e[0m" << std::endl;
-	_request_step = HEADERS;
-	while (_request_step == HEADERS)
+
+	if (_request_step == HEADERS)
 	{
 		if (!_checkCurrentLine(HEADERS))
-		{
-			_request_step = ERROR;
 			return ;
-		}
 	}
+
 	if (_request_step == BODY)
 	{
 		if (!_checkBody())
-		{
-			_request_step = ERROR;
 			return ;
-		}
 	}
+
 	if (_request_step == FIN)
 	{
-		std::cout << "\e[1;31m" << "	-- End Of Body --" << "\e[0m" << std::endl;
+		std::cout << "\e[1;31m\t-- End Of Body --\e[0m" << std::endl;
 		if (_is_upload)
 			fileHandler();
 		else
@@ -286,16 +346,14 @@ void Client::checkStep()
 			_response->prepare();
 		}
 		_done = true;
-		std::cout << "\033[1;34m" << "\t-- Response ready to be sent --" << "\033[0m" << std::endl;
+		std::cout << "\033[1;34m\t-- Response ready to be sent --\033[0m" << std::endl;
 	}
 }
 
 void Client::readFromFd()
 {
-	while(!_done && (_request_step != ERROR))
-	{
+	if(!_done && (_request_step != ERROR))
 		checkStep();
-	}
 }
 
 void Client::sendResponse()
@@ -335,6 +393,39 @@ void Client::fileHandler()
 	_response->setBody("");
 	_response->prepare();
 }
+
+void Client::updateTimer()
+{
+	_last_activity = time(0);
+}
+
+bool Client::checkTimers()
+{
+	time_t diff = time(0) - _last_activity;
+	if (_request_step == REQUEST_LINE || _request_step == HEADERS || _request_step == BODY)
+	{
+		if (diff > _read_timer)
+		{
+			std::cout << "\033[1;31mClient timed out reading(+"<< diff << "second(s))\033[0m" << std::endl;
+			return true;
+		}
+	}
+	else if (_done && !_response->isResponseFullySent())
+	{
+		if (diff > _write_timer)
+		{
+			std::cout << "\033[1;31m[Client timed out writing (+"<< diff << "second(s))]\033[0m" << std::endl;
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Client::timedOut()
+{
+	return checkTimers();
+}
+
 
 // void Client::checkStep()
 // {

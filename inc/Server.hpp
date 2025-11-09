@@ -54,7 +54,7 @@ class Server
 		static void sigHandler(int signum);
 		IpPort *getConfig(int fd);
 		void removeClient(int client_fd);
-
+		void checkTimeouts();
 
 		Server(void);
 

@@ -1,4 +1,5 @@
 #include "Response.hpp"
+#include "Client.hpp"
 
 std::map<int, std::string> Response::_reason_phrases;
 
@@ -88,6 +89,7 @@ void Response::send(int fd)
 			_send_count += sent;
 			std::cout << "\e[1;32mSent " << sent << " bytes (Remaining: " << _response_buffer.length() -_send_count 
 										<< ")\e[0m" << std::endl;
+			_cl->updateTimer();
 		}
 		else
 		{

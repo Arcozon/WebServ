@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/10 18:48:37 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/10 19:32:22 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,7 @@ const Return	&IpPort::getReturn(void) const
 
 static inline bool	_isLocationMatchingWPath(const std::string& loc, const std::string &path)
 {
+	return (path == loc);
 	if (loc.find(path) == 0)
 	{
 		if (path.size() == loc.size())

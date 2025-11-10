@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 10:55:15 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/10 18:42:27 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/10 19:35:10 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	Response::_handleError(void)
 
 		if (fileStat.isFile() && fileStat.isReadable())
 		{
-			std::cout << fileStat.getPathCStr() << std::endl; 
+			// std::cout << fileStat.getPathCStr() << std::endl; 
 			fileToBody(fileStat.getPathCStr());
 		}
 		else

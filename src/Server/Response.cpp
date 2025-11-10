@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 16:29:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/10 18:59:39 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/10 19:24:16 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,11 +60,11 @@ void	Response::catBody(void)
 		catLine("");
 		catLine(_body);	// remplacer les \n par des \r\n ?
 	}
-	{
-		std::ostringstream oss;
-		oss << _responseCode;
-		catLine(oss.str() + " " + _reasonPhrase);
-	}
+	// {
+	// 	std::ostringstream oss;
+	// 	oss << _responseCode;
+	// 	catLine(oss.str() + " " + _reasonPhrase);
+	// }
 }
 
 void	Response::catHeader(void)
@@ -116,7 +116,7 @@ void	Response::prepare(const std::string &body)
 		else if (_responseCode == 500)
 			_reasonPhrase = "Internal Server Error";
 		else
-			_reasonPhrase = "WTF";
+			_reasonPhrase = "Unknown Error";
 	}
 	catResponse();
 }
@@ -169,6 +169,7 @@ void	Response::makeRep(void)
 			_responseCode = 405;
 		else
 		{
+			std::cout << _location->getLocation();
 			if (_location->hasReturn())
 				_handleReturn(_location->getReturn());
 			else if (methodCode == Location::s_GET)

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 13:05:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/10 11:48:57 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/10 18:43:22 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ private:
 	std::string		_reasonPhrase;
 	std::map<std::string, std::string> _header;
 	std::string		_body;
+	bool			_isReturn;
 
 	std::string		_response_buffer;
 	unsigned int	_send_count;
@@ -87,6 +88,7 @@ private:
 	void	_handlePOST(void);
 	void	_handleDELETE(void);
 	void	_handleError(void);
+	void	_handleReturn(const Return &ret);
 
 public:
 	Response(Client *cl, const IpPort &ipPort);

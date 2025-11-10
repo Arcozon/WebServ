@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 12:03:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/10 18:00:57 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/10 18:48:42 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,9 @@ class IpPort
 		const std::string	&getErrorPage(const std::string &errCode) const;
 		const std::string	&getErrorPage(const std::size_t &errCode) const;
 		
+		bool	hasReturn(void) const;
+		const Return	&getReturn(void) const;
+
 		const Location	*getLocation(const std::string &cPath)	const;
 };
 

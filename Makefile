@@ -25,7 +25,8 @@ D_IPPORT   =  IpPort/
 SRC_IPPORT =  $(addprefix $(D_IPPORT), $(S_IPPORT))
 
 S_SERVER   =  Server.cpp Client.cpp
-S_SERVER  +=  Response.cpp  ResponseAutoIndex.cpp  ResponseGet.cpp  ResponsePost.cpp  ResponseDelete.cpp  ResponseError.cpp
+S_SERVER  +=  Response.cpp  ResponseGet.cpp  ResponsePost.cpp  ResponseDelete.cpp
+S_SERVER  +=  ResponseAutoIndex.cpp  ResponseError.cpp  ResponseReturn.cpp
 D_SERVER   =  Server/
 SRC_SERVER =  $(addprefix $(D_SERVER), $(S_SERVER))
 
@@ -59,7 +60,7 @@ MAKE += --no-print-directory
 .DEFAULT_GOAL := test
 
 test:
-	@clear && $(MAKE) all && clear && echo '	'./$(NAME) test.config && $(VAL) ./$(NAME) test.config
+	@clear && $(MAKE) all && clear && echo '\t./$(NAME)' test.config && $(VAL) ./$(NAME) test.config
 # curl -X POST localhost:8080 -H "Le G le : Eudes" -d "le eudes le g"
 
 all:	$(NAME)
@@ -68,7 +69,7 @@ $(NAME):	$(OBJ)
 	$(CPP) -o$@ $^
 
 $(OBJ): $(D_BUILD)%.o:	$(D_SRC)%.cpp
-	@mkdir -p $(@D)
+	@mkdir -p $(@D) $(@D)
 	$(CPP) $(FLAGS) $(IFLAGS) -c $< -o $@ 
 
 clean:

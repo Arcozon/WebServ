@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 14:25:40 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/10 18:23:25 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/10 18:38:07 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,11 @@ const std::string	&Return::getArgTwo(void) const
 	return (_argTwo);
 }
 
+bool	Return::isDefined(void) const
+{
+	return (_type != UNDEF);
+}
+
 bool	Return::isCode(void) const
 {
 	return (_type == CODE);
@@ -80,24 +85,6 @@ bool	Return::isBody(void) const
 {
 	return (_type == CODE_BODY);
 }
-
-// void	Return::_fixUrlWithDomainName(const std::string &domain, const std::string &location)
-// {
-// 	if (_type != CODE_URL)
-// 		return ;
-// 	if (_argTwo.find("http://") == 0 || _argTwo.find("https://") == 0)
-// 		return ;
-// 	if (_argTwo[0] == '/')
-// 		_argTwo = "http://" + domain + _argTwo;
-// 	else
-// 	{
-// 		std::string newArgTwo = "http://" + domain + location;
-// 		if (location.at(location.size() - 1) != '/')
-// 			newArgTwo += '/';
-// 		newArgTwo += _argTwo;
-// 		_argTwo = newArgTwo;
-// 	}
-// }
 
 void	Return::_fixUrlWithDomainName(const std::string &domain)
 {

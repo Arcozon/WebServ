@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 14:20:21 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/10 18:09:29 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/10 18:37:58 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ class	Return
 		int					getCode(void) const;
 		const std::string	&getArgTwo(void) const;
 
+		bool	isDefined(void) const;
 		bool	isCode(void) const;
 		bool	isRedirect(void) const;
 		bool	isBody(void) const;

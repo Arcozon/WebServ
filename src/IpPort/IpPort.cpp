@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/10 18:17:20 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/10 18:48:37 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,17 @@ const unsigned short &IpPort::getPort(void) const
 {
 	return (_port);
 }
+
+bool	IpPort::hasReturn(void) const
+{
+	return (_return.isDefined());
+}
+
+const Return	&IpPort::getReturn(void) const
+{
+	return (_return);
+}
+
 static inline bool	_isLocationMatchingWPath(const std::string& loc, const std::string &path)
 {
 	if (loc.find(path) == 0)

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:18:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/10 18:16:25 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/10 18:55:15 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ class Location
 		bool	isAutoIndexOn(void) const;
 		bool	isUploadDefined(void) const;
 		bool	isCGIDefined(void) const;
-		bool	isReturnDefined(void) const;
+		bool	hasReturn(void) const;
 
 		const std::string	&getRoot(void) const;
 		const std::string	&getLocation(void) const;

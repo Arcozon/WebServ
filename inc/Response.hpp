@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 13:05:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/10 11:07:14 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/10 11:48:57 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ private:
 	static const std::string	endOfLine;
 	static const std::string	sepNameContent;
 
-	class	makeHTML;
+	class	MakeHTML;
 
 private:
 	unsigned short	_responseCode;
@@ -78,9 +78,8 @@ private:
 
 	bool	lookForIndex(const char dName[]);	// Returns true if one index was found
 
-	void	_AI_addLink(const std::string &fName, const FStat::FILETYPE &fType);
+	void	_AI_addLink(const std::string &fName, const FStat::FILETYPE &fType, MakeHTML &maker);
 	void	generateAutoIndex(ReadDir rDir);
-	void	_addHTMLElement(const std::string &elemName, const std::string &elemContent);
 
 	void	_makeErrPage();
 

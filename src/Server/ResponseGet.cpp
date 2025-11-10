@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 16:12:22 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/10 10:59:08 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/10 12:15:32 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ bool	Response::fileToBody(char const fName[])
 	int fd = open(fName, O_RDONLY);
 	if (fd < 0)
 	{
-		_responseCode = 404;
+		_responseCode = 403;
 		return (false);
 	}
 	else
@@ -66,7 +66,6 @@ bool	Response::lookForIndex(const char dName[])	// Returns true if one index was
 void	Response::_handleGET(void)
 {
 	FStat	fileStat(_location->getRoot(), _URI);
-	// std::cout << fileStat.getPa thCStr() << std::endl;
 	if (fileStat.isFile())
 		fileToBody(fileStat.getPathCStr());
 	else if (fileStat.isDir())
@@ -81,8 +80,8 @@ void	Response::_handleGET(void)
 				_responseCode = 404;
 		}
 	}
-	else if (!fileStat.isReadable())
-		_responseCode = 403;
-	else
+	else if (fileStat.fail())
 		_responseCode = 404;
+	else
+		_responseCode = 403;
 }

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/10 10:48:27 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/10 12:41:30 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ IpPort::IpPort(ParsLine &parsLine)
 	_strHostPort = _StrHost + ':' + _StrPort;
 	_clientMaxBodySize = parsIpPort.getClientMaxBodySize();
 	_locations = parsIpPort.getLocations();
+	_errPages = parsIpPort.getErrorPages();
 }
 
 IpPort::~IpPort(void)

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 16:29:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/07 19:14:57 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/10 12:45:08 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,9 +174,13 @@ void	Response::makeRep(void)
 				_handlePOST();
 			else if (methodCode == Location::s_DELETE)
 				_handleDELETE();
-
 		}
 	}
 	else
 		_responseCode = 404;
+	if (_responseCode != 200)
+	{
+		std::cout << "Err" << std::endl;
+		_handleError();
+	}
 }

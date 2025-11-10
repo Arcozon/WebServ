@@ -63,12 +63,12 @@ bool	FStat::fail(void) const
 
 bool	FStat::isDir(void) const
 {
-	return (_readable && _fType == DIRECTORY);
+	return (_fType == DIRECTORY);
 }
 
 bool	FStat::isFile(void) const
 {
-	return (_readable && _fType == REG_FILE);
+	return (_fType == REG_FILE);
 }
 
 bool	FStat::isReadable(void) const
@@ -80,3 +80,4 @@ const char	*FStat::getPathCStr(void) const
 {
 	return (_path.c_str());
 }
+

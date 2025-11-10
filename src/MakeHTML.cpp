@@ -6,26 +6,26 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 11:17:41 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/10 11:39:44 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/10 11:42:14 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "makeHTML.hpp"
+#include "MakeHTML.hpp"
 
-Response::makeHTML::makeHTML(std::string &body)
+Response::MakeHTML::MakeHTML(std::string &body)
 :	_body(body)
 {
 	_body = "<!DOCTYPE html>";
 }
 
-Response::makeHTML::~makeHTML(void)
+Response::MakeHTML::~MakeHTML(void)
 {
 	while (closeMarkup())
 		;
 }
 
 
-void	Response::makeHTML::addMarkup(const std::string &markupName, const std::string &bonusContext, const bool &toClose)
+void	Response::MakeHTML::addMarkup(const std::string &markupName, const std::string &bonusContext, const bool &toClose)
 {
 	_body += "<" + markupName;
 	if (!bonusContext.empty())
@@ -37,7 +37,7 @@ void	Response::makeHTML::addMarkup(const std::string &markupName, const std::str
 		_markups.push(markupName);
 }
 
-bool	Response::makeHTML::closeMarkup(void)
+bool	Response::MakeHTML::closeMarkup(void)
 {
 	if (_markups.empty())
 		return (false);
@@ -48,12 +48,12 @@ bool	Response::makeHTML::closeMarkup(void)
 }
 
 
-void	Response::makeHTML::addText(const std::string &text)
+void	Response::MakeHTML::addText(const std::string &text)
 {
 	_body += text;
 }
 
-void	Response::makeHTML::addMarkupWithText(const std::string &markupName,
+void	Response::MakeHTML::addMarkupWithText(const std::string &markupName,
 							const std::string &bonusContext,
 							const std::string &text)
 {
@@ -62,7 +62,7 @@ void	Response::makeHTML::addMarkupWithText(const std::string &markupName,
 	closeMarkup();
 }
 
-void	Response::makeHTML::addMarkupWithText(const std::string &markupName,
+void	Response::MakeHTML::addMarkupWithText(const std::string &markupName,
 							const std::string &text)
 {
 	addMarkup(markupName);

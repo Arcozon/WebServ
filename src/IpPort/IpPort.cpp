@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/10 19:32:22 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/10 19:40:45 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,19 +95,6 @@ const Return	&IpPort::getReturn(void) const
 	return (_return);
 }
 
-static inline bool	_isLocationMatchingWPath(const std::string& loc, const std::string &path)
-{
-	return (path == loc);
-	if (loc.find(path) == 0)
-	{
-		if (path.size() == loc.size())
-			return (true);
-		else if (loc[path.size()] == '/')
-			return (true);
-	}
-	return (false);
-}
-
 const Location	*IpPort::getLocation(const std::string &cPath)	const
 {
 	typedef std::vector<Location>::const_iterator	VecLocConstIt;
@@ -118,7 +105,7 @@ const Location	*IpPort::getLocation(const std::string &cPath)	const
 	{
 		for (VecLocConstIt it = _locations.begin(); it != _locations.end(); ++it)
 		{
-			if (_isLocationMatchingWPath(it->getLocation(), path))
+			if (it->getLocation() == path)
 				return (it.base());
 		}
 		if (path[path.size() - 1] == '/')

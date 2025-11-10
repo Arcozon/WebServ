@@ -1,21 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.hpp                                          :+:      :+:    :+:   */
+/*   ResponseRedirect.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/15 15:24:56 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/10 17:37:42 by gaeudes          ###   ########.fr       */
+/*   Created: 2025/11/10 15:57:54 by gaeudes           #+#    #+#             */
+/*   Updated: 2025/11/10 15:58:02 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef UTILS_HPP
-# define UTILS_HPP
+#include "Response.hpp"
 
-# include <string>
-# include <vector>
 
-# define GET_MASK(SHIFT)	(1 << SHIFT)
-
-#endif

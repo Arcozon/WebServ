@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 12:03:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/10 10:44:58 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/10 18:00:57 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ class IpPort
 		unsigned short	_port;
 		std::string		_strHostPort;
 
+		Return			_return;
+		
 		std::map<std::string, std::string>	_errPages;
 
 		unsigned long	_clientMaxBodySize;

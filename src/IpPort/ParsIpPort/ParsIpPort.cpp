@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:24 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/01 17:50:36 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/10 17:54:02 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,7 +201,7 @@ void	IpPort::ParsIpPort::_addErrorPage(void)
 
 	if (splitLine.size() != 3)
 		throw (MyException("Needs two arguments", MyException::ELVL_WARNING, splitLine.front()));
-	else if (!_isHTTPErrorCode(splitLine.at(1)))
+	else if (!Return::_isHTTPErrorCode(splitLine.at(1)))
 		throw (MyException("Not a valid HTTP error code", MyException::ELVL_WARNING, splitLine.at(1)));
 	else if (_errorPages.find(splitLine.at(1)) != _errorPages.end())
 		throw (MyException("Error page is already defined", MyException::ELVL_WARNING, splitLine.at(1)));
@@ -229,12 +229,18 @@ void	IpPort::ParsIpPort::_addReturn(void)
 
 	if (_isDefined(s_return))
 		throw (MyException("Already defined" + _inIpPort(), MyException::ELVL_WARNING, splitLine.front()));
-	else if (splitLine.size() != 2 && splitLine.size() != 3)
-		throw (MyException("Needs one or two arguments", MyException::ELVL_WARNING, splitLine.front()));
+	else if (splitLine.size() < 2)
+		throw (MyException("Needs one or more arguments", MyException::ELVL_WARNING, splitLine.front()));
 	else if (splitLine.size() == 2)
 		_return = Return(splitLine.at(1));
-	else if (splitLine.size() == 3) 
-		_return = Return(splitLine.at(1), splitLine.at(2));
+	else
+	{
+		const std::string	&line = _parsLine.getLine();
+		const std::size_t	endWord1 = line.find(splitLine.at(1)) + splitLine.at(1).size();
+		const std::size_t	startRest = line.find_first_not_of(' ', endWord1);
+
+		_return = Return(splitLine.at(1), line.substr(startRest));
+	}
 	_addDefined(s_return);
 }
 

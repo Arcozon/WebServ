@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/10 12:41:30 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/10 18:17:20 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,14 @@ IpPort::IpPort(ParsLine &parsLine)
 	_clientMaxBodySize = parsIpPort.getClientMaxBodySize();
 	_locations = parsIpPort.getLocations();
 	_errPages = parsIpPort.getErrorPages();
+
+	_return = parsIpPort.getReturn();
+	_return._fixUrlWithDomainName(_strHostPort);
+
+	typedef std::vector<Location>::iterator	VecLocIt;
+
+	for (VecLocIt it = _locations.begin(); it != _locations.end(); ++it)	
+		it->fixReturn(_strHostPort);
 }
 
 IpPort::~IpPort(void)

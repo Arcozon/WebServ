@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:18:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/07 16:15:55 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/10 18:16:25 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,8 @@ class Location
 		Location(void);
 		Location(ParsLine &parsLine);
 		~Location(void);
+
+		void	fixReturn(const std::string &domainName);
 
 		bool	isValid(void) const;
 

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:37:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/07 16:19:32 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/10 18:17:09 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ Location::Location(ParsLine &parsLine)
 	_index = parsLocation.getIndex();
 	_cgiHandler = parsLocation.getCGIHandler();
 	_errPages = parsLocation.getErrPages();
-	_return = parsLocation.getReturn();	
+	_return = parsLocation.getReturn();
 	_uploadLocation = parsLocation.getUploadLocation();
 }
 
@@ -136,4 +136,10 @@ Location::sAllowedMethods	Location::getMethodCode(const std::string &method)
 	else if (method == "DELETE")
 		return (s_DELETE);
 	return (s_METHODS_MAX);
+}
+
+
+void	Location::fixReturn(const std::string &domainName)
+{
+	_return._fixUrlWithDomainName(domainName);
 }

@@ -61,6 +61,8 @@ private:
 	time_t _last_activity;
 	time_t _read_timer;
     time_t _write_timer;
+	time_t _client_spawn;
+	time_t _max_req_duration;
 private:
 	static const std::vector<std::string>	_splitRequestLine(const std::string &reqLine);
 	static const std::pair<std::string, std::string>	_splitHeaderLine(const std::string &reqLine);

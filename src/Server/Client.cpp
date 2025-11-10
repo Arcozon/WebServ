@@ -28,9 +28,11 @@ Client::Client(int fd, IpPort *config)
 	_is_upload(0),
 	_body_rd_bytes(0),
 	_last_activity(time(0)),
-	_read_timer(5),
-	_write_timer(5)
-{
+	_read_timer(3),
+	_write_timer(3),
+	_client_spawn(time(0)),
+	_max_req_duration(5)
+	{
 	_response = new Response(this);
 }
 
@@ -402,11 +404,17 @@ void Client::updateTimer()
 bool Client::checkTimers()
 {
 	time_t diff = time(0) - _last_activity;
+	time_t elapsed = time(0) - _client_spawn;
 	if (_request_step == REQUEST_LINE || _request_step == HEADERS || _request_step == BODY)
 	{
 		if (diff > _read_timer)
 		{
 			std::cout << "\033[1;31mClient timed out reading(+"<< diff << "second(s))\033[0m" << std::endl;
+			return true;
+		}
+		else if(elapsed > _max_req_duration)
+		{
+			std::cout << "\033[1;31mClient timed out reading(+"<< elapsed << "second(s))\033[0m" << std::endl;
 			return true;
 		}
 	}

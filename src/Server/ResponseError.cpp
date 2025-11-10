@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 10:55:15 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/10 12:43:48 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/10 13:40:39 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ void	Response::_handleError(void)
 		std::string	errPageFile = _ipPort.getErrorPage(_responseCode);
 		FStat	fileStat(errPageFile);
 
-		std::cout << "defined " << _responseCode << std::endl;
 		if (fileStat.isFile() && fileStat.isReadable())
 		{
 			std::cout << fileStat.getPathCStr() << std::endl; 
@@ -72,7 +71,6 @@ void	Response::_handleError(void)
 	}
 	else
 	{
-		std::cout << "not defined " << _responseCode << std::endl;
 		_makeErrPage();
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 13:05:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/07 16:24:38 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/10 11:07:14 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ class Response
 private:
 	static const std::string	endOfLine;
 	static const std::string	sepNameContent;
+
+	class	makeHTML;
 
 private:
 	unsigned short	_responseCode;
@@ -72,7 +74,7 @@ private:
 	void	catContentLenght(void);
 	void	catBody(void);
 	
-	void	fileToBody(char const fName[]);
+	bool	fileToBody(char const fName[]);
 
 	bool	lookForIndex(const char dName[]);	// Returns true if one index was found
 
@@ -80,10 +82,13 @@ private:
 	void	generateAutoIndex(ReadDir rDir);
 	void	_addHTMLElement(const std::string &elemName, const std::string &elemContent);
 
+	void	_makeErrPage();
 
 	void	_handleGET(void);
 	void	_handlePOST(void);
 	void	_handleDELETE(void);
+	void	_handleError(void);
+
 public:
 	Response(Client *cl, const IpPort &ipPort);
 	// Response(Client *cl);

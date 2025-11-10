@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 16:12:22 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/07 19:09:23 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/10 10:59:08 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,14 @@
 #include "FStat.hpp"
 #include "ReadDir.hpp"
 
-void	Response::fileToBody(char const fName[])
+bool	Response::fileToBody(char const fName[])
 {
 	int fd = open(fName, O_RDONLY);
 	if (fd < 0)
+	{
 		_responseCode = 404;
+		return (false);
+	}
 	else
 	{
 		_body.clear();
@@ -30,11 +33,15 @@ void	Response::fileToBody(char const fName[])
 		{
 			br = read(fd, buffer, toRead);
 			if (br < 0)
-				return ;
+			{
+				_responseCode = 500;
+				return (false);
+			}
 			_body.append(buffer, br);
 		}
 		close(fd);
 	}
+	return (true);
 }
 
 bool	Response::lookForIndex(const char dName[])	// Returns true if one index was found

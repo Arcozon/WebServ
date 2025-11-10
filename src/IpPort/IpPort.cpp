@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/03 16:01:41 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/10 10:48:27 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,4 +114,36 @@ const Location	*IpPort::getLocation(const std::string &cPath)	const
 		}
 	}
 	return (NULL);
+}
+
+bool IpPort::errorPageDefined(const std::string &errCode) const
+{
+	typedef std::map<std::string, std::string>::const_iterator	mapStrStrCIt;
+
+	mapStrStrCIt	itErr = _errPages.find(errCode);
+	return (itErr != _errPages.end());
+}
+
+bool IpPort::errorPageDefined(const std::size_t &errCode) const
+{
+	std::stringstream	sStrCode;
+
+	sStrCode << errCode;
+	return (errorPageDefined(sStrCode.str()));
+}
+
+const std::string	&IpPort::getErrorPage(const std::string &errCode) const
+{
+	typedef std::map<std::string, std::string>::const_iterator	mapStrStrCIt;
+
+	mapStrStrCIt	itErr = _errPages.find(errCode);
+	return (itErr->second);
+}
+
+const std::string	&IpPort::getErrorPage(const std::size_t &errCode) const
+{
+	std::stringstream	sStrCode;
+
+	sStrCode << errCode;
+	return (getErrorPage(sStrCode.str()));
 }

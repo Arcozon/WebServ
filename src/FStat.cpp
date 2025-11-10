@@ -32,9 +32,16 @@ bool	FStat::open(const std::string &path, const std::string &URI)
 {
 	struct stat	bufStat = {};
 
-	_path = Location::simplifyLocationPath(path + "/" +URI);
-	_fType = ERR_STAT;
 	_readable = false;
+	_fType = ERR_STAT;
+	{
+		std::string catPath = path;
+
+		if (!URI.empty())
+			catPath += "/" + URI;
+		catPath = Location::simplifyLocationPath(catPath);
+		_path = catPath;
+	}
 	if (stat(_path.c_str(), &bufStat) == 0)
 	{
 		_fType = UNKNOWN;

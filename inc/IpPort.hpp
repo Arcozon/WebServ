@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 12:03:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/03 14:50:34 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/10 10:44:58 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 # include <string>
 # include <vector>
 # include <map>
+# include <sstream>
+# include <algorithm>
 
 # include "Location.hpp"
 # include "Return.hpp"
@@ -65,6 +67,11 @@ class IpPort
 		const unsigned long &getHost(void) const;
 		const unsigned short &getPort(void) const;
 
+		bool errorPageDefined(const std::string &errCode) const;
+		bool errorPageDefined(const std::size_t &errCode) const;
+		const std::string	&getErrorPage(const std::string &errCode) const;
+		const std::string	&getErrorPage(const std::size_t &errCode) const;
+		
 		const Location	*getLocation(const std::string &cPath)	const;
 };
 

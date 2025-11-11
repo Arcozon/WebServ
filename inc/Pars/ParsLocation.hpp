@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:03:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/05 15:20:12 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/11 15:20:35 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ class Location::ParsLocation
 		static const bool			_defaultAutoIndex = false;
 
 		static const std::string	_keyRoot;
+		static const std::string	_keyAlias;
 		static const std::string	_keyIndex;
 		static const std::string	_keyAutoIndex;
 		static const std::string	_keyAllow;
@@ -75,7 +76,7 @@ class Location::ParsLocation
 		void	_setLocation(void);
 
 		void	_addLocationLine(void);
-		void	_addRoot(void);
+		void	_addRootAlias(void);
 		void	_addIndex(void);
 		void	_addAutoIndex(void);
 		void	_addAllow(void);
@@ -84,7 +85,7 @@ class Location::ParsLocation
 		void	_addCGIHandler(void);
 		void	_addErrPages(void);
 
-		bool _checkRedirs(void) const;
+		bool	_checkRedirs(void) const;
 
 	public:
 		ParsLocation(ParsLine &parsLine);

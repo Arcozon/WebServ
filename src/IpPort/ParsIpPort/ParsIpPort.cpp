@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:24 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/10 17:54:02 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/11 12:05:35 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,7 +191,7 @@ void	IpPort::ParsIpPort::_addClientBodySize(void)
 	for (std::string::iterator it = strCMBS.begin(); it != strCMBS.end(); ++it)
 		if (!std::isdigit(*it))
 			throw (MyException("Invalid client_max_body_size format", MyException::ELVL_ERROR, strCMBS));
-	_clientMaxBodySize = std::atol(strCMBS.c_str());	// TODO: check if 0?
+	_clientMaxBodySize = std::atol(strCMBS.c_str());
 	_addDefined(s_clientBodySize);
 }
 

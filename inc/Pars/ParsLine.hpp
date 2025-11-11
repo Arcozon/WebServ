@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 12:22:31 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 16:07:46 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/11 15:33:57 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,9 @@
 class ParsLine
 {
 	private:
+		static const char	_cComment = '#';
+
+		const bool		_skipComments;
 		std::ifstream	_file;
 		std::string		_line;
 		std::vector<std::string>		_splitLine;
@@ -31,12 +34,12 @@ class ParsLine
 		std::size_t	_tabDepth;
 	
 	private:
-		bool	_isLineEmpty(void);
-
+		bool	_isLineEmpty(void)	const;
+		bool	_isLineComment(void)	const;
 		void	splitLine(const char sep = ' ', const bool skipTabs = true);
 
 	public:
-		ParsLine(const std::string &fileName);
+		ParsLine(const std::string &fileName, const bool &skipComments = true);
 		ParsLine(void);
 		~ParsLine(void);
 		

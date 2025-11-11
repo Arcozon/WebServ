@@ -6,13 +6,14 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/10 17:58:10 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/11 15:26:29 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ParsLocation.hpp"
 
 const std::string	Location::ParsLocation::_keyRoot("root");
+const std::string	Location::ParsLocation::_keyAlias("alias");
 const std::string	Location::ParsLocation::_keyIndex("index");
 const std::string	Location::ParsLocation::_keyAutoIndex("autoindex");
 const std::string	Location::ParsLocation::_keyAllow("allow");
@@ -57,8 +58,8 @@ void	Location::ParsLocation::_addLocationLine(void)
 	
 	const std::string	&splitLineFront( _parsLine.getSplitLine().front() );
 
-	if (splitLineFront ==_keyRoot)
-		_addRoot();
+	if (splitLineFront ==_keyRoot || splitLineFront ==_keyAlias)
+		_addRootAlias();
 	else if (splitLineFront ==_keyIndex)
 		_addIndex();
 	else if (splitLineFront ==_keyAutoIndex)
@@ -80,35 +81,49 @@ void	Location::ParsLocation::_addLocationLine(void)
 
 void	Location::ParsLocation::_setLocation(void)
 {
-	std::string	loca = _parsLine.getSplitLine().at(1);
+	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine());
+	
+	if (splitLine.size() != 2)
+		throw (MyException("Needs one argument", MyException::ELVL_WARNING, splitLine.front()));
 
-	if (loca[0] != '/')
-		throw (MyException("Location must be a relative path"  + _inLocation(), MyException::ELVL_ERROR, loca));
+	const std::string	loca = splitLine.at(1);
+
 	if (!Location::isLocationPathValid(loca))
 		throw (MyException("No directory traversal"  + _inLocation(), MyException::ELVL_ERROR, loca));
-	// std::cout << "Before: " << loca ;
 	_location = Location::simplifyLocationPath(loca);
-	// std::cout << "	After: " << _location << std::endl << std::endl;
 }
 
-void	Location::ParsLocation::_addRoot(void)
+void	Location::ParsLocation::_addRootAlias(void)
 {
-	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
+	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine());
 
 	if (_isDefined(s_root))
 		throw (MyException("Already defined"  + _inLocation(), MyException::ELVL_WARNING, splitLine.front()));
-	_root = splitLine.at(1);	// TODO CHECK REVERSE TRAVERSAL
+	if (splitLine.size() != 2)
+		throw (MyException("Needs one argument", MyException::ELVL_WARNING, splitLine.front()));
+	if (!Location::isLocationPathValid(splitLine.at(1)))
+		throw (MyException("No directory traversal"  + _inLocation(), MyException::ELVL_ERROR, splitLine.at(1)));
+	if (splitLine.front() == _keyRoot)
+		_root = splitLine.at(1) + _location;
+	else if (splitLine.front() == _keyAlias)
+		_root = splitLine.at(1);
+	_root = Location::simplifyLocationPath(_root);
 	_addDefined(s_root);
 }
 
 void	Location::ParsLocation::_addIndex(void)
 {
+	typedef std::vector<std::string>::const_iterator	VecStrConstIt;
 	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
 
-	if (splitLine.size() == 1)// TODO CHECK REVERSE TRAVERSAL
+	if (splitLine.size() == 1)
 		throw (MyException("Needs arguments", MyException::ELVL_WARNING, splitLine.front()));
-	for (std::vector<std::string>::size_type i = 1; i < splitLine.size(); ++i)
-		_index.push_back(splitLine.at(i));
+	for (VecStrConstIt it = splitLine.begin() + 1; it != splitLine.end(); ++it)
+	{
+		if (!Location::isLocationPathValid(*it))
+			throw (MyException("No directory traversal"  + _inLocation(), MyException::ELVL_ERROR, *it));
+		_index.push_back(*it);
+	}
 }
 
 void	Location::ParsLocation::_addAutoIndex(void)
@@ -120,7 +135,7 @@ void	Location::ParsLocation::_addAutoIndex(void)
 	else if (splitLine.size() != 2)
 		throw (MyException("Needs one argument", MyException::ELVL_WARNING, splitLine.front()));
 	else if (!_isOnOff(splitLine.at(1)))
-		throw (MyException("Needs to be [on] or [off]", MyException::ELVL_WARNING, splitLine.at(1)));
+		throw (MyException("Needs to be <on|off>", MyException::ELVL_WARNING, splitLine.at(1)));
 
 	_autoindex = (splitLine.at(1) == "on");
 	_addDefined(s_autoindex);
@@ -164,6 +179,8 @@ void	Location::ParsLocation::_addUploadLocation(void)
 		throw (MyException("Already defined" + _inLocation(), MyException::ELVL_WARNING, splitLine.front()));
 	else if (splitLine.size() != 2)
 		throw (MyException("Needs one argument", MyException::ELVL_WARNING, splitLine.front()));
+	if (!Location::isLocationPathValid(splitLine.at(1)))
+		throw (MyException("No directory traversal"  + _inLocation(), MyException::ELVL_ERROR, splitLine.at(1)));
 	_uploadLocation = splitLine.at(1);
 	_addDefined(s_upload_store);
 }

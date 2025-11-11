@@ -6,19 +6,21 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 12:28:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/01 17:38:21 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/11 15:37:08 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ParsLine.hpp"
 
 ParsLine::ParsLine(void)
-:	_needNewline(true),
+:	_skipComments(true),
+	_needNewline(true),
 	_tabDepth(0)
 {}
 
-ParsLine::ParsLine(const std::string &fileName)
-:	_needNewline(true),
+ParsLine::ParsLine(const std::string &fileName, const bool &skipComments)
+:	_skipComments(skipComments),
+	_needNewline(true),
 	_tabDepth(0)
 {
 	_file.open(fileName.c_str());
@@ -35,7 +37,12 @@ void	ParsLine::open(const std::string &fileName, std::ios_base::openmode mode)
 	_file.open(fileName.c_str(), mode);
 }
 
-bool	ParsLine::_isLineEmpty(void)
+bool	ParsLine::_isLineComment(void) const
+{
+	return (_skipComments && !_line.empty() && _line[0] == _cComment);
+}
+
+bool	ParsLine::_isLineEmpty(void) const
 {
 	return (_line.empty() || getTabDepth(_line) == std::string::npos);
 }
@@ -52,7 +59,7 @@ bool	ParsLine::readLine(const std::size_t expectedTab)
 		{
 			if (!std::getline(_file, _line))
 				return (false);
-		}	while (_isLineEmpty());
+		}	while (_isLineEmpty() || _isLineComment());
 		_tabDepth = getTabDepth(_line);
 		splitLine();
 	}

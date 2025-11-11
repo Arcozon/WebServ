@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:24 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/11 12:05:35 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/11 17:15:35 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,6 +248,14 @@ bool	IpPort::ParsIpPort::_isIpPortValid(void) const
 {
 	if (!_isDefined(s_host) || !_isDefined(s_port))
 		return (false);
+	
+	typedef std::vector<Location>::const_iterator	VecLocConstIt;
+	for (VecLocConstIt it = _locations.begin(); it != _locations.end(); ++it)
+	{
+		for (VecLocConstIt it2 = it + 1; it2 != _locations.end(); ++it2)
+			if (it->getLocation() == it2->getLocation())
+				return (false);
+	}
 	return (true);
 }
 

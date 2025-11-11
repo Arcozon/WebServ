@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:37:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/11 15:25:17 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/11 17:09:05 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ std::string	Location::simplifyLocationPath(const std::string &basePath)
 
 bool	Location::isLocationPathValid(const std::string &path)
 {
-	if (path.empty() || path.find("/../") != std::string::npos)
+	if (path.empty() || path.find("/../") != std::string::npos || path.find("../") == 0)
 		return (false);
 
 	const std::size_t	indexSlashDotDot = path.rfind("/..");

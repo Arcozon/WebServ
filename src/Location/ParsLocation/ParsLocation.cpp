@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/11 15:26:29 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/11 17:06:32 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,10 +104,11 @@ void	Location::ParsLocation::_addRootAlias(void)
 	if (!Location::isLocationPathValid(splitLine.at(1)))
 		throw (MyException("No directory traversal"  + _inLocation(), MyException::ELVL_ERROR, splitLine.at(1)));
 	if (splitLine.front() == _keyRoot)
-		_root = splitLine.at(1) + _location;
+		_root = splitLine.at(1) + '/' + _location;
 	else if (splitLine.front() == _keyAlias)
 		_root = splitLine.at(1);
 	_root = Location::simplifyLocationPath(_root);
+	std::cout << "FRoot:<" << _root << ">\n";
 	_addDefined(s_root);
 }
 

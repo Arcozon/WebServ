@@ -30,10 +30,11 @@
 #include <csignal>
 #include "Client.hpp"
 #include "WebServ.hpp"
-
+#include "Sessions.hpp"
 #define EVENT_SIZE 100
 
 class Client;
+class Sessions;
 
 class Server
 {
@@ -44,6 +45,7 @@ class Server
 		std::map<int, IpPort*>	_fd_config;
 		int	_epoll_instance;
 		static int _stop_signal;
+		Sessions _sessions;
 
 		void initSockets(IpPort *config);
 		void initEpoll();

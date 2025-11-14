@@ -114,7 +114,7 @@ void Server::registerNewClient(int server_fd)
 		accept_event.events = EPOLLIN | EPOLLET;
 		accept_event.data.fd = client_fd;
 
-		Client *client = new Client(client_fd, getConfig(server_fd));
+		Client *client = new Client(client_fd, getConfig(server_fd), &_sessions);
 		_clients[client_fd] = client;
 
 		if(epoll_ctl(_epoll_instance, EPOLL_CTL_ADD, client_fd, &accept_event) == -1)

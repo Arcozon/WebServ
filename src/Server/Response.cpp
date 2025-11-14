@@ -1,5 +1,6 @@
 #include "Response.hpp"
 #include "Client.hpp"
+#include "Cookies.hpp"
 
 std::map<int, std::string> Response::_reason_phrases;
 
@@ -70,8 +71,11 @@ void Response::prepare()
 
 	for (std::map<std::string, std::string>::iterator it = _headers.begin(); it != _headers.end(); ++it)
 		headers << it->first << ": " << it->second << "\r\n";
-	headers << "\r\n";
 
+	for (size_t i = 0; i < _cookies.size(); i++)
+		headers << "Set-Cookie: " << _cookies[i].setCookieHeader() << "\r\n";
+
+	headers << "\r\n";
 	setStartLine(_response_code);
 	_response_buffer += _status_line;
 	_response_buffer += headers.str();
@@ -114,4 +118,9 @@ std::string Response::getReasonPhrase(int code) const
 		return it->second;
 	else
 		return "GAEUDES";
+}
+
+void Response::addCookie(const Cookies &cookie)
+{
+	_cookies.push_back(cookie);
 }

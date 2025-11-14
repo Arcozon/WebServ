@@ -11,6 +11,8 @@
 
 class IpPort;
 class Response;
+class Cookies;
+class Sessions;
 
 class Client
 {
@@ -63,6 +65,10 @@ private:
     time_t _write_timer;
 	time_t _client_spawn;
 	time_t _max_req_duration;
+
+	std::map<std::string, std::string> _cookies;
+	Sessions *_session_ptr;
+
 private:
 	static const std::vector<std::string>	_splitRequestLine(const std::string &reqLine);
 	static const std::pair<std::string, std::string>	_splitHeaderLine(const std::string &reqLine);
@@ -75,7 +81,7 @@ private:
 	
 public:
 	Client(/* args */);
-	Client(int fd, IpPort *config);
+	Client(int fd, IpPort *config, Sessions *instance);
 	~Client();
 
 	void readFromFd();
@@ -88,6 +94,9 @@ public:
 	void updateTimer();
 	bool checkTimers();
 	bool timedOut();
+	std::string getCookie(const std::string &name) const;
+	const std::map<std::string, std::string> &getCookies() const;
+
 };
 
 

@@ -11,13 +11,14 @@
 /* ************************************************************************** */
 
 #include "Client.hpp"
+#include "Cookies.hpp"
 
-const std::string	Client::_supportedHTTPVersion = "HTTP/1.0";
+const std::string	Client::_supportedHTTPVersion = "HTTP/1.1";
 const std::string	Client::_sepLine = "\r\n";
 const std::size_t	Client::_sepLineLen = _sepLine.size();
 const std::size_t	Client::_bufferSize = 1024;
 
-Client::Client(int fd, IpPort *config)
+Client::Client(int fd, IpPort *config, Sessions *instance)
 :	_fd(fd),
 	_config(config),
 	_request_len(0),
@@ -31,7 +32,8 @@ Client::Client(int fd, IpPort *config)
 	_read_timer(3),
 	_write_timer(3),
 	_client_spawn(time(0)),
-	_max_req_duration(5)
+	_max_req_duration(5),
+	_session_ptr(instance)
 	{
 	_response = new Response(this);
 }
@@ -201,6 +203,9 @@ bool Client::_checkHeader(void)
 		return false;
 
 	_headers.insert(_nameVal);
+	if (_nameVal.first == "Cookie")
+		_cookies = Cookies::parseCookie(_nameVal.second);
+
 	std::cout << "\e[35m[" << _nameVal.first << "]\e[34m[" << _nameVal.second << "]\e[0m" << std::endl;
 	return true;
 }
@@ -325,10 +330,23 @@ void Client::checkStep()
 		std::cout << "\e[1;31m\t-- Start Of Header --\e[0m" << std::endl;
 	}
 
+	// if (_request_step == HEADERS)
+	// {
+	// 	if (!_checkCurrentLine(HEADERS))
+	// 		return ;
+	// }
 	if (_request_step == HEADERS)
 	{
-		if (!_checkCurrentLine(HEADERS))
-			return ;
+		while (_makeExtractLine())
+		{
+			if (!_checkHeader())
+			{
+				_request_step = ERROR;
+				return ;
+			}
+			if (_extract_line.empty())
+				break ;
+		}
 	}
 
 	if (_request_step == BODY)
@@ -340,6 +358,92 @@ void Client::checkStep()
 	if (_request_step == FIN)
 	{
 		std::cout << "\e[1;31m\t-- End Of Body --\e[0m" << std::endl;
+
+		if (_target_uri == "/session_new" && _method == "GET")
+		{
+			std::map<std::string, std::string>::iterator it = _cookies.find("session_id");
+
+			if (it == _cookies.end())
+			{
+				std::string session_id = _session_ptr->createSession();
+
+				_session_ptr->set(session_id, "id", "gaeudes");
+				Cookies session_cookie("session_id", session_id);
+				session_cookie.setDuration(1200);
+				_response->addCookie(session_cookie);
+
+				_response->setStartLine(200);
+				std::string res = "Session:" + session_id + " created\n";
+				_response->setBody(res);
+				_response->prepare();
+			}
+			else
+			{
+				_response->setStartLine(403);
+				std::string res = "Session:" + it->second + " already set\n";
+				_response->setBody(res);
+				_response->prepare();
+			}
+		}
+		else if(_target_uri == "/session_destroy" && _method == "GET")
+		{
+			std::map<std::string, std::string>::iterator it = _cookies.find("session_id");
+			if (it != _cookies.end())
+			{
+				std::string session_id = it->second;
+				_session_ptr->erase(session_id);
+
+				Cookies cookie("session_id", "");
+				cookie.setDuration(0);
+				_response->addCookie(cookie);
+				_response->setStartLine(200);
+				_response->setBody("Session destroyed\n");
+				_response->prepare();
+			}
+			else
+			{
+				_response->setStartLine(403);
+				_response->setBody("No cookie present to be destroyed\n");
+				_response->prepare();
+			}
+		}
+		else if(_target_uri == "/session_info" && _method == "GET")
+		{
+			std::map<std::string, std::string>::iterator it = _cookies.find("session_id");
+			if (it == _cookies.end())
+			{
+				_response->setStartLine(403);
+				_response->setBody("No cookie set, unauthorized\n");
+			}
+			else
+			{
+				std::string session_id = it->second;
+
+				if (!_session_ptr->exists(session_id))
+				{
+					_response->setStartLine(403);
+					_response->setBody("Session id not present on server\n");
+				}
+				else
+				{
+					std::string id = _session_ptr->get(session_id, "id");
+
+					if (id == "gaeudes")
+					{
+						_response->setStartLine(200);
+						std::string body = "Le goat " + id + "\n";
+						_response->setBody(body);
+					}
+					else
+					{
+						_response->setStartLine(403);
+						_response->setBody("Nope");
+					}
+				}
+			}
+			_response->prepare();
+		}
+
 		if (_is_upload)
 			fileHandler();
 		else

@@ -6,12 +6,14 @@
 #include <map>
 #include <unistd.h>
 #include <sstream>
+#include <vector>
 
 #define HTTP_VERSION "HTTP/1.0"
 #define SERVER_HEADER "TURBOINTGAEUDES 1.0 (Unix)"
 
 class Client;
 class IpPort;
+class Cookies;
 
 class Response
 {
@@ -26,6 +28,7 @@ private:
 	unsigned int _send_count;
 	bool _fully_sent;
 	Client *_cl;
+	std::vector<Cookies> _cookies;
 
 	public:
 	Response(Client *cl);
@@ -38,6 +41,8 @@ private:
 	void setStartLine(int code);
 	void setReasonPhrases();
 	std::string getReasonPhrase(int code) const;
+	void addCookie(const Cookies &cookie);
+
 
 };
 

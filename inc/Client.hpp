@@ -9,6 +9,8 @@
 # include <vector>
 # include <algorithm>
 
+#define MAX_HEADER_SIZE 8192
+
 class IpPort;
 class Response;
 class Cookies;

@@ -157,6 +157,14 @@ bool	Client::_checkRequestLine(void)	// Add IpPort (to check )
 	_target_uri = splitReqLine.at(1);
 	std::string	HTTPVersion = splitReqLine.at(2);
 
+	if (!validVerbSyntax(_method))
+	{
+		_response->setStartLine(400);
+		_response->prepare();
+		_request_step = ERROR;
+		return false;
+	}
+
 	if (!(_method == "GET" || _method == "POST" || _method == "DELETE" || _method == "PUT"))
 	{
 		_response->setStartLine(400); // or 501
@@ -164,19 +172,70 @@ bool	Client::_checkRequestLine(void)	// Add IpPort (to check )
 		_request_step = ERROR;
 		return (false);
 	}
+
+	if (_target_uri.length() > 1024)
+	{
+		_response->setStartLine(414);
+		_response->prepare();
+		_request_step = ERROR;
+		return false;
+	}
+
 	// Check if method is in IpPort / location
 	// check if request target is in IoPort / if [Root]/[RequestTarget] is a dir
 	if (HTTPVersion != _supportedHTTPVersion)
 	{
-		_response->setStartLine(505);
-		_response->setBody("HTTP Version Not Supported\n");
+		if (HTTPVersion.substr(0, 5) == "HTTP/")
+			_response->setStartLine(505);
+		else
+			_response->setStartLine(400);
 		_response->prepare();
 		return (false);
+	}
+
+	if (!ValidURI(_target_uri))
+	{
+		_response->setStartLine(400);
+		_response->prepare();
+		_request_step = ERROR;
+		return false;
 	}
 	std::cout << "\e[32m[" << _method << "]\e[33m[" << _target_uri << "]\e[34m[" << HTTPVersion << "]\e[0m" << std::endl;
 	return (true);
 	(void) _target_uri;
 }
+
+bool Client::validVerbSyntax(const std::string &method)
+{
+	if (method.empty())
+		return false;
+
+	for (size_t i = 0; i < method.length(); i++)
+	{
+		if (!std::isupper(static_cast<unsigned char>(method[i])))
+			return false;
+	}
+	return true;
+}
+
+bool Client::ValidURI(const std::string &uri)
+{
+	if (uri.empty())
+	return false;
+
+	if (uri[0] != '/')
+	return false;
+	
+	for (size_t i = 0; i < uri.length(); i++)
+	{
+		unsigned char c = uri[i];
+		
+		if (c <= ' ' || c == 127)
+			return false;
+	}
+	return true;
+}
+
 
 bool Client::_checkHeader(void)
 {

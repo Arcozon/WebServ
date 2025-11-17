@@ -81,6 +81,12 @@ private:
 	bool	_checkBody(void);	// Add IoPort (to check )
 	bool	_checkCurrentLine(const Client::REQUEST_STEP &reqSection);
 	
+
+	bool validVerbSyntax(const std::string &method);
+	bool ValidURI(const std::string &uri);
+
+
+
 public:
 	Client(/* args */);
 	Client(int fd, IpPort *config, Sessions *instance);

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 10:51:19 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/03 14:57:59 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/17 12:05:49 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	main(int ac, char **av, char **env)
 		WebServ	MyWebServ(ac, av, env);
 		Server server(MyWebServ.getServers());
 		//server.print_fds();
-		server.start();
+		// server.start();
 	}
 	catch (std::exception &e)
 	{

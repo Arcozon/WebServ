@@ -1,6 +1,6 @@
 NAME =  webserv
 
-S_CGIHANDLER	=  CGIHandler.cpp
+S_CGIHANDLER	=  CGI.cpp  CGI_Env.cpp
 D_CGIHANDLER	=  CGIHandler/
 SRC_CGIHANDLER	=  $(addprefix $(D_CGIHANDLER), $(S_CGIHANDLER))
 
@@ -46,7 +46,7 @@ D_BUILD =  .build/
 OBJ		=  $(addprefix $(D_BUILD), $(SRC:.cpp=.o))
 
 D_INC =  inc/
-S_INC =  . Pars
+S_INC =  . Pars  CGI
 INC	  =  $(addprefix $(D_INC), $(S_INC))
 
 CPP		=  c++

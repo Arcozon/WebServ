@@ -6,15 +6,12 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 15:24:56 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/10 17:37:42 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/17 12:06:42 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef UTILS_HPP
 # define UTILS_HPP
-
-# include <string>
-# include <vector>
 
 # define GET_MASK(SHIFT)	(1 << SHIFT)
 

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   CGIHandler.hpp                                     :+:      :+:    :+:   */
+/*   CGIEnv.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 14:31:25 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/22 16:07:01 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/17 11:42:56 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,9 @@
 #include <string>
 #include <vector>
 
-class CGIHandler
+#include "CGI.hpp"
+
+class CGI::CGIEnv
 {
 	private:
 		static std::vector<std::string>		_strEnv;

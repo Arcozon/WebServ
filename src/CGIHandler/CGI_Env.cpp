@@ -1,28 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   CGIHandler.cpp                                     :+:      :+:    :+:   */
+/*   CGI_Env.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 14:31:00 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/04 12:57:00 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/17 11:43:52 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "CGIHandler.hpp"
+# include "CGIEnv.hpp"
 
-std::vector<std::string>	CGIHandler::_strEnv;
-std::vector<const char *>	CGIHandler::_cEnv;
+std::vector<std::string>	CGI::CGIEnv::_strEnv;
+std::vector<const char *>	CGI::CGIEnv::_cEnv;
 
-void	CGIHandler::copyEnv(char *env[])
+void	CGI::CGIEnv::copyEnv(char *env[])
 {
 	_strEnv.clear();
 	for (int i = 0; env[i]; ++i)
 		_strEnv.push_back(std::string(env[i]));
 }
 
-const char	**CGIHandler::getEnv(void)
+const char	**CGI::CGIEnv::getEnv(void)
 {
 	typedef std::vector<std::string>::const_iterator	VecStrConstIt;
 
@@ -33,7 +33,7 @@ const char	**CGIHandler::getEnv(void)
 	return (_cEnv.data());
 }
 
-void	CGIHandler::_unset(const std::string &toUnset)
+void	CGI::CGIEnv::_unset(const std::string &toUnset)
 {
 	typedef std::vector<std::string>::iterator	VecStrIt;
 
@@ -50,7 +50,7 @@ void	CGIHandler::_unset(const std::string &toUnset)
 	}
 }
 
-void	CGIHandler::_addVar(const std::string &vName, const std::string &vContent)
+void	CGI::CGIEnv::_addVar(const std::string &vName, const std::string &vContent)
 {
 	if (vName.empty())
 		return ;
@@ -60,12 +60,12 @@ void	CGIHandler::_addVar(const std::string &vName, const std::string &vContent)
 	_strEnv.push_back(envVar);
 }
 
-void	CGIHandler::addVar(const std::string &vName, const std::string &vContent)
+void	CGI::CGIEnv::addVar(const std::string &vName, const std::string &vContent)
 {
 	_addVar(vName, vContent);
 }
 
-void	CGIHandler::printEnv(void)
+void	CGI::CGIEnv::printEnv(void)
 {
 	const char	**cEnv = getEnv();
 

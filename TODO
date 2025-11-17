@@ -4,6 +4,15 @@
 	- Cd
 	- execve
 
+	- Match handler
+	- pipe for CGI to READ
+	- pipe for CGI to WRITE
+	- Fork
+	- chdir
+	- Export ENV
+	- 
+
+
 
 - HTTP Status Code:
 	- 200 OK

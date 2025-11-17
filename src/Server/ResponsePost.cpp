@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 16:29:42 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/17 17:18:05 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/17 20:00:06 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	Response::_handleCGI(void)
 		std::string	bin = _location->getCgiHandler(scriptName);
 		std::cout << "Handler: " << bin << '\n';
 		CGI	handler(bin, _location->getRoot(), scriptName, pathInfo, queryString, _cl->getMethod(),
-			_cl->getHeader());
+			_cl->getHeader(), _ipPort, _location, _body);
 	}
 }
 

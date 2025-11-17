@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 14:31:00 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/17 16:13:23 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/17 20:05:11 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	CGI::CGIEnv::copyEnv(char *env[])
 		_strEnv.push_back(std::string(env[i]));
 }
 
-const char	**CGI::CGIEnv::getEnv(void)
+const char **CGI::CGIEnv::getEnv(void)
 {
 	typedef std::vector<std::string>::const_iterator	VecStrConstIt;
 
@@ -31,6 +31,15 @@ const char	**CGI::CGIEnv::getEnv(void)
 		_cEnv.push_back(it->c_str());
 	_cEnv.push_back(NULL);
 	return (_cEnv.data());
+}
+
+char **CGI::CGIEnv::getCEnv(void)
+{
+	// typedef std::vector<std::string>::const_iterator	VecStrConstIt;
+
+	char	**cEnv = new char *[_strEnv.size() + 1];
+	std::cerr << cEnv[0] << '\n';
+	return (cEnv);
 }
 
 void	CGI::CGIEnv::_unset(const std::string &toUnset)
@@ -50,14 +59,19 @@ void	CGI::CGIEnv::_unset(const std::string &toUnset)
 	}
 }
 
-void	CGI::CGIEnv::_addVar(const std::string &vName, const std::string &vContent)
+void	CGI::CGIEnv::_addVar(std::string vName, const std::string &vContent)
 {
 	if (vName.empty())
 		return ;
-	
-	std::string envVar = vName + "=" + vContent;
+	for (int i = 0; vName[i]; ++i)
+	{
+		if (std::islower(vName[i]))
+			vName[i] = std::toupper(vName[i]);
+		else if (vName[i] == '-')
+			vName[i] = '_';
+	}
 	_unset(vName);
-	_strEnv.push_back(envVar);
+	_strEnv.push_back(vName + "=" + vContent);
 }
 
 void	CGI::CGIEnv::addVar(const std::string &vName, const std::string &vContent)
@@ -81,16 +95,5 @@ void	CGI::CGIEnv::addHeader(const std::map<std::string, std::string> &header)
 	std::string vName, vContent;
 
 	for (MapStrStrConstIt it = header.begin(); it != header.end(); ++it)
-	{
-		vName = it->first;
-		vContent = it->second;
-		for (int i = 0; vName[i]; ++i)
-		{
-			if (std::isupper(vName[i]))
-				vName[i] = std::toupper(vName[i]);
-			else if (vName[i] == '-')
-				vName[i] = '_';
-			_addVar(vName, vContent);
-		}
-	}
+		_addVar("HTTP_" + it->first, it->second);
 }

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/04 13:51:48 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/17 14:52:06 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,7 @@ bool	Client::_checkHeader(void)	// Add IpPort (to check )
 
 bool	Client::_checkBody(void)	// Add IpPort (to check )
 {
-	std::cout  << "\e[1;37m"<< _extractedLine << "\e[0m" << std::endl;
+	// std::cout  << "\e[1;37m"<< _extractedLine << "\e[0m" << std::endl;
 	return (true);
 }
 

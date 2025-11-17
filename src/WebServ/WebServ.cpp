@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 12:01:27 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/17 12:12:41 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/17 14:47:30 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,29 @@ std::vector<IpPort> &WebServ::getServers()
 
 #define CGI_FILE_REQ "CGIRequest.cgi"
 
-// void WebServ::mkCGIRequest(void)
-// {
-// 	int fd = open(CGI_FILE_REQ, O_RDWR | O_CREAT | O_TRUNC, 0664);
-// 	char	bodyTest = ""
-// 	// Client 
-// }
+void WebServ::mkCGIRequest(void)
+{
+	int fd = open(CGI_FILE_REQ, O_RDWR | O_CREAT | O_TRUNC, 0664);
+	char	bodyTest[] = "POST /cgi-bin/CGI_test.py HTTP/1.1\r\n"
+"Host: example.com\r\n"
+"User-Agent: TestClient/1.0\r\n"
+"Content-Type: application/x-www-form-urlencoded\r\n"
+"Content-Length: 9\r\n"
+"Connection: close\r\n"
+"\r\n"
+"name=John\r\n";
+
+	write(fd, bodyTest, strlen(bodyTest));
+	close(fd);
+}
 
 void WebServ::testCGI(void) const
 {
+	mkCGIRequest();
+	int fd = open(CGI_FILE_REQ, O_RDWR);
+
+	
+	Client	cl(fd, _ipPorts[0]);
+
+	cl.readFromFd();
 }

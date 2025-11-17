@@ -6,12 +6,12 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 10:51:19 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/17 12:05:49 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/17 14:46:29 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "WebServ.hpp"
-#include "CGIHandler.hpp"
+#include "CGI.hpp"
 
 #include "ParsLine.hpp"
 #include "Server.hpp"
@@ -45,7 +45,9 @@ int	main(int ac, char **av, char **env)
 	try
 	{
 		WebServ	MyWebServ(ac, av, env);
-		Server server(MyWebServ.getServers());
+
+		MyWebServ.testCGI();
+		// Server server(MyWebServ.getServers());
 		//server.print_fds();
 		// server.start();
 	}

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/14 15:46:55 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/11 17:16:35 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,6 @@ void	Location::ParsLocation::_setLocation(void)
 
 	const std::string	loca = splitLine.at(1);
 
-	if (loca[0] != '/')
-		throw (MyException("Location need to start with '/'"  + _inLocation(), MyException::ELVL_ERROR, loca));
 	if (!Location::isLocationPathValid(loca))
 		throw (MyException("No directory traversal"  + _inLocation(), MyException::ELVL_ERROR, loca));
 	_location = Location::simplifyLocationPath(loca);

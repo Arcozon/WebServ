@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 11:39:47 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/26 11:21:13 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/14 15:34:04 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,12 @@ class MyException : public std::exception
 			ELVL_MAX = 3
 		};
 
-	protected:
+	private:
 		static const std::string	_colorLvl[ELVL_MAX];
 		static const std::string	_errLvl[ELVL_MAX];
 		static const enum eLevel	_lvlThrowDown;
-
+		
+	private:
 		const std::string	_err;
 		const std::string	_context;
 		const eLevel		_level;

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/10 19:40:45 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/14 15:32:56 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,9 @@ IpPort::IpPort(ParsLine &parsLine)
 	ParsIpPort	parsIpPort(parsLine);
 
 	if (!parsIpPort._isIpPortValid())
-		return ;
+	{
+		throw (MyException("Invalid Server", MyException::ELVL_ERROR, "server"));
+	}
 	_valid = true;
 	_fDefined = parsIpPort.getIpPortFlag();
 	_StrHost = parsIpPort.getStrHost();

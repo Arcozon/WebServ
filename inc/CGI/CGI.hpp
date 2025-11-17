@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 11:37:26 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/17 16:14:51 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/17 17:10:48 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,14 @@ class CGI
 
 	private:
 		const std::string	_binary;
-		const std::string	_script;
-		const std::string	_scriptPath;
 
-		const std::string	_method;
+		const std::string	_scriptPath;
+		const std::string	_script;
+
 		const std::string	_pathInfo;
 		const std::string	_queryString;
+
+		const std::string	_method;
 
 		const t_header	_header;
 
@@ -54,7 +56,7 @@ class CGI
 		
 		pid_t	_pid;
 	
-		// start time
+		// start time TODO
 		bool	_fail;
 		int		_statusCode;
 	
@@ -64,7 +66,13 @@ class CGI
 		void	_execCGI();
 
 	public:
-		CGI(const Location *loc, const Client *client, const std::string &URI);
+		CGI(const std::string &binary,
+			const std::string &dirScript,
+			const std::string &scriptName,
+			const std::string &pathInfo,
+			const std::string &queryString,
+			const std::string &method,
+			const t_header &header);
 		~CGI(void);
 
 		bool	fail(void) const;

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 11:36:22 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/17 16:15:46 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/17 17:10:58 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,17 +28,24 @@ void	CGI::_closeFd(t_fd _fds[2])
 	_closeFd(_fds[1]);
 }
 
-CGI::CGI(const Location *loc, const Client *client, const std::string &URI)
-:	_binary(loc->getCgiHandler(client->getTargetLocation())),
-	_script(URI),
-	_scriptPath(URI),
-	_method(),
-	_pathInfo(),
-	_queryString(),
-	_header(client->getHeader()),
+CGI::CGI(const std::string &binary,
+			const std::string &dirScript,
+			const std::string &scriptName,
+			const std::string &pathInfo,
+			const std::string &queryString,
+			const std::string &method,
+			const t_header &header)
+:	_binary(binary),
+	_scriptPath(dirScript),
+	_script(scriptName),
+	_pathInfo(pathInfo),
+	_queryString(queryString),
+	_method(method),
+	_header(header),
 	_pid(-1),
 	_fail(false),
 	_statusCode(200)
+	// TODO START TIME
 {
 	{
 		_pipeIn[0] = -1;

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/17 14:56:28 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/17 16:49:57 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ void	Location::ParsLocation::_addRootAlias(void)
 	else if (splitLine.front() == _keyAlias)
 		_root = splitLine.at(1);
 	_root = Location::simplifyLocationPath(_root);
-	std::cout << "Loc: " << _location << ", Root: " << _root << '\n';
+	// std::cout << "Loc: " << _location << ", Root: " << _root << '\n';
 	_addDefined(s_root);
 }
 

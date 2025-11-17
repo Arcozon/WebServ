@@ -79,7 +79,7 @@ fclean: clean
 	$(RM) $(NAME)
 
 re: fclean
-	make all
+	$(MAKE) all
 
 DEPS = $(OBJ:.o=.d)
 -include $(DEPS)

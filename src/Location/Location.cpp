@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:37:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/17 12:13:06 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/17 15:08:37 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,23 +84,31 @@ const std::string	&Location::getUploadLocation(void) const
 const std::map<std::string, std::string>	&Location::getCgiHandler(void) const
 {	return (_cgiHandler);	}
 
-const std::string	&Location::getCgiHandler(const std::string &path) const
+const std::string	&Location::getCgiHandler(const std::string &file) const
 {
 	typedef std::map<std::string, std::string>::const_iterator MapStrStrConstIt;
 	std::string	fExtension;
 
-	std::string::size_type	lastDot = path.rfind('.');
+	std::string::size_type	lastDot = file.rfind('.');
 	if (lastDot == std::string::npos)
 		lastDot = 0;
-	fExtension = path.substr(lastDot);
-	std::cout << "Ext: " << fExtension << '\n';
+	fExtension = file.substr(lastDot);
 	
 	MapStrStrConstIt itHandler = _cgiHandler.find(fExtension);
 
-	// if (itHandler == _cgiHandler.end())
-	// 	return ("");
-	std::cout << "Handler: " << itHandler->second << '\n';
 	return (itHandler->second);
+}
+
+bool	Location::_hasCGIHandler(const std::string &file) const
+{
+	std::string	fExtension;
+
+	std::string::size_type	lastDot = file.rfind('.');
+	if (lastDot == std::string::npos)
+		return (false);
+	fExtension = file.substr(lastDot);
+
+	return (_cgiHandler.find(fExtension) != _cgiHandler.end());
 }
 
 const Return		&Location::getReturn(void) const

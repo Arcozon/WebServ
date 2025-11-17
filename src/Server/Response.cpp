@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 16:29:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/17 14:59:39 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/17 15:01:15 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ Response::Response(Client *cl, const IpPort &ipPort)
 	_location(ipPort.getLocation(cl->getTargetLocation()))
 {
 	if (_location)
-		_URI = _location->getRoot() + _cl->getTargetLocation().substr(_location->getLocation().size());
+		_URI = _cl->getTargetLocation().substr(_location->getLocation().size());
 	_body = "<html><body><h1>";
 	_body += "Je suis ";
 	_body += _ipPort.getIpPortStr();

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 14:31:00 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/17 11:43:52 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/17 16:13:23 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	CGI::CGIEnv::_addVar(const std::string &vName, const std::string &vContent)
 		return ;
 	
 	std::string envVar = vName + "=" + vContent;
-
+	_unset(vName);
 	_strEnv.push_back(envVar);
 }
 
@@ -73,4 +73,24 @@ void	CGI::CGIEnv::printEnv(void)
 	for (int i = 0; cEnv[i]; ++i)
 		std::cout << cEnv[i] << "\n";
 	std::cout << std::endl;
+}
+
+void	CGI::CGIEnv::addHeader(const std::map<std::string, std::string> &header)
+{
+	typedef std::map<std::string, std::string>::const_iterator	MapStrStrConstIt;
+	std::string vName, vContent;
+
+	for (MapStrStrConstIt it = header.begin(); it != header.end(); ++it)
+	{
+		vName = it->first;
+		vContent = it->second;
+		for (int i = 0; vName[i]; ++i)
+		{
+			if (std::isupper(vName[i]))
+				vName[i] = std::toupper(vName[i]);
+			else if (vName[i] == '-')
+				vName[i] = '_';
+			_addVar(vName, vContent);
+		}
+	}
 }

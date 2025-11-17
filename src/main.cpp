@@ -6,44 +6,22 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 10:51:19 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/17 14:46:29 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/17 15:52:11 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "WebServ.hpp"
 #include "CGI.hpp"
+#include "CGIEnv.hpp"
 
 #include "ParsLine.hpp"
 #include "Server.hpp"
 
 int	main(int ac, char **av, char **env)
 {
-	// {
-	// 	CGIHandler::copyEnv(env);
-	// 	CGIHandler::printEnv();
-	// 	CGIHandler::addVar("Salut", "toi");
-	// 	CGIHandler::printEnv();
-	// }
-	// try
-	// {
-	// 	WebServ	MyWebServ(ac, av, env);
-	// }
-	// catch (const MyException &e)
-	// {
-	// 	std::cerr << e;
-	// 	return (e.getErrLvl() + 1);
-	// }
-	// try
-	// {
-	// 	WebServ	MyWebServ(ac, av, env);
-	// }
-	// catch (const MyException &e)
-	// {
-	// 	std::cerr << e;
-	// 	return (e.getErrLvl() + 1);
-	// }
 	try
 	{
+		CGI::CGIEnv::copyEnv(env);
 		WebServ	MyWebServ(ac, av, env);
 
 		MyWebServ.testCGI();

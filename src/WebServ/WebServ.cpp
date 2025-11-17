@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 12:01:27 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/17 14:47:30 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/17 17:03:51 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ std::vector<IpPort> &WebServ::getServers()
 void WebServ::mkCGIRequest(void)
 {
 	int fd = open(CGI_FILE_REQ, O_RDWR | O_CREAT | O_TRUNC, 0664);
-	char	bodyTest[] = "POST /cgi-bin/CGI_test.py HTTP/1.1\r\n"
+	char	bodyTest[] = "POST /cgi-bin/CGI_test.py/test?and=a&query=string HTTP/1.1\r\n"
 "Host: example.com\r\n"
 "User-Agent: TestClient/1.0\r\n"
 "Content-Type: application/x-www-form-urlencoded\r\n"

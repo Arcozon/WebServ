@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:18:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/17 11:58:01 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/17 15:04:03 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,10 +80,11 @@ class Location
 		const std::string	&getLocation(void) const;
 		const std::vector<std::string>	&getIndexs(void) const;
 		const std::string	&getUploadLocation(void) const;
+		const Return		&getReturn(void) const;
+		
+		bool	_hasCGIHandler(const std::string &file) const;	
 		const std::map<std::string, std::string>	&getCgiHandler(void) const;
 		const std::string	&getCgiHandler(const std::string &path) const;
-		const Return		&getReturn(void) const;
-
 
 		static std::string	simplifyLocationPath(const std::string &basePath);
 		static bool	isLocationPathValid(const std::string &path);

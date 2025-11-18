@@ -6,14 +6,13 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 14:31:00 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/17 20:05:11 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/18 15:16:43 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "CGIEnv.hpp"
 
 std::vector<std::string>	CGI::CGIEnv::_strEnv;
-std::vector<const char *>	CGI::CGIEnv::_cEnv;
 
 void	CGI::CGIEnv::copyEnv(char *env[])
 {
@@ -22,23 +21,14 @@ void	CGI::CGIEnv::copyEnv(char *env[])
 		_strEnv.push_back(std::string(env[i]));
 }
 
-const char **CGI::CGIEnv::getEnv(void)
-{
-	typedef std::vector<std::string>::const_iterator	VecStrConstIt;
-
-	_cEnv.clear();
-	for (VecStrConstIt it = _strEnv.begin(); it != _strEnv.end(); ++it)
-		_cEnv.push_back(it->c_str());
-	_cEnv.push_back(NULL);
-	return (_cEnv.data());
-}
-
 char **CGI::CGIEnv::getCEnv(void)
 {
-	// typedef std::vector<std::string>::const_iterator	VecStrConstIt;
+	const std::size_t	envSize = _strEnv.size();
+	char	**cEnv = new char *[envSize + 1];
 
-	char	**cEnv = new char *[_strEnv.size() + 1];
-	std::cerr << cEnv[0] << '\n';
+	for (std::size_t i = 0; i < envSize; ++i)
+		cEnv[i] = strdup(_strEnv[i].c_str());
+	cEnv[envSize] = NULL;
 	return (cEnv);
 }
 
@@ -81,11 +71,10 @@ void	CGI::CGIEnv::addVar(const std::string &vName, const std::string &vContent)
 
 void	CGI::CGIEnv::printEnv(void)
 {
-	const char	**cEnv = getEnv();
-
-	std::cout << "Env:\n";
-	for (int i = 0; cEnv[i]; ++i)
-		std::cout << cEnv[i] << "\n";
+	typedef std::vector<std::string>::const_iterator	VecStrConstIt;
+	
+	for (VecStrConstIt it = _strEnv.begin(); it != _strEnv.end(); ++it)
+		std::cout << *it << "\n";
 	std::cout << std::endl;
 }
 

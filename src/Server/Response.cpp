@@ -17,8 +17,10 @@ Response::Response(Client *cl): _response_code(200), _send_count(0), _fully_sent
 		_reason_phrases[403] = "Forbidden";
 		_reason_phrases[404] = "Not Found";
 		_reason_phrases[405] = "Method Not Allowed";
+		_reason_phrases[411] = "Length Required";
 		_reason_phrases[413] = "Payload Too Large";
 		_reason_phrases[414] = "URI Too Long";
+		_reason_phrases[431] = "Request Header Fields Too Large";
 
 		_reason_phrases[500] = "Internal Server Error";
 		_reason_phrases[501] = "Not Implemented";

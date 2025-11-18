@@ -10,6 +10,7 @@
 # include <algorithm>
 
 #define MAX_HEADER_SIZE 8192
+#define HEADERS_TOTAL_MAX 8192
 
 class IpPort;
 class Response;
@@ -71,6 +72,8 @@ private:
 	std::map<std::string, std::string> _cookies;
 	Sessions *_session_ptr;
 
+	size_t _headers_total_size;
+
 private:
 	static const std::vector<std::string>	_splitRequestLine(const std::string &reqLine);
 	static const std::pair<std::string, std::string>	_splitHeaderLine(const std::string &reqLine);
@@ -84,6 +87,11 @@ private:
 
 	bool validVerbSyntax(const std::string &method);
 	bool ValidURI(const std::string &uri);
+	bool validHeaderSyntax(const std::string &name);
+	bool validMinimalHeaders();
+	bool validContentLength(const std::string &value);
+	bool validDuplicateHeader(const std::string &name);
+	bool validHeader(const std::string &name, const std::string &value);
 
 
 

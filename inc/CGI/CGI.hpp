@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 11:37:26 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/17 20:01:15 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/18 15:45:53 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <map>
 
 # include <unistd.h>
+# include <sys/wait.h>
 
 # include "Location.hpp"
 # include "Client.hpp"
@@ -65,6 +66,7 @@ class CGI
 		// start time TODO
 		bool	_fail;
 		int		_statusCode;
+		int		_retVal;
 	
 	private:
 		void	_setup();

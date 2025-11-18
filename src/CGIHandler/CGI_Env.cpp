@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 14:31:00 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/18 15:16:43 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/18 15:35:02 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,41 @@ void	CGI::CGIEnv::copyEnv(char *env[])
 char **CGI::CGIEnv::getCEnv(void)
 {
 	const std::size_t	envSize = _strEnv.size();
-	char	**cEnv = new char *[envSize + 1];
-
-	for (std::size_t i = 0; i < envSize; ++i)
-		cEnv[i] = strdup(_strEnv[i].c_str());
-	cEnv[envSize] = NULL;
+	char	**cEnv;
+	try
+	{
+		cEnv = new char *[envSize + 1];
+		
+		bzero(cEnv, sizeof(cEnv) * envSize + 1);
+		for (std::size_t i = 0; i < envSize; ++i)
+		{
+			cEnv[i] = new char[_strEnv[i].size() + 1];
+			std::strcpy(cEnv[i], _strEnv[i].c_str());
+		}
+		cEnv[envSize] = NULL;
+	}
+	catch (...)
+	{
+		if (cEnv)
+		{
+			for (std::size_t i = 0; cEnv[i]; ++i)
+				delete[] cEnv[i];
+			delete[] cEnv;
+		}
+		cEnv = NULL;
+	}
 	return (cEnv);
+}
+
+void	CGI::CGIEnv::freeCEnv(char ** &cEnv)
+{
+	if (cEnv)
+	{
+		for (std::size_t i = 0; cEnv[i]; ++i)
+			delete[] cEnv[i];
+		delete[] cEnv;
+	}
+	cEnv = NULL;
 }
 
 void	CGI::CGIEnv::_unset(const std::string &toUnset)

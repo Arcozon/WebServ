@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 11:36:22 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/17 20:05:05 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/18 15:46:10 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,8 @@ CGI::CGI(const std::string &binary,
 	_body(body),
 	_pid(-1),
 	_fail(false),
-	_statusCode(200)
+	_statusCode(200),
+	_retVal(0)
 	// TODO START TIME
 {
 	{
@@ -70,7 +71,8 @@ CGI::CGI(const std::string &binary,
 	{
 		_closeFd(_pipeIn[0]);
 		_closeFd(_pipeOut[1]);
-		// Write body TODO
+		write(_pipeIn[1], _body.c_str(), _body.size());
+		std::cout << "asd";
 	}
 }
 
@@ -170,14 +172,31 @@ void	CGI::_execCGI()
 	_exportEnv();
 
 	{
-		char * cArgv[3] = {strdup(_binary.c_str()), strdup(_binary.c_str()), 0};
-		if (!cArgv[0] || !cArgv[1])
+		char	*cArgv[3] = {0};
+		char	**cEnv;
+
+		try
 		{
-			free(cArgv[0]);
-			free(cArgv[1]);
-			exit(_retValServErr);
+			cArgv[0] = new char[_binary.size() + 1];
+			std::strcpy(cArgv[0], _binary.c_str());
+			cArgv[1] = new char[_script.size() + 1];
+			std::strcpy(cArgv[1], _script.c_str());
+
+			cEnv = CGIEnv::getCEnv();
+			if (!cEnv)
+				throw ;
+			execve(_binary.c_str(), cArgv, cEnv);
 		}
-		execve(_binary.c_str(), cArgv, CGIEnv::getCEnv());
+		catch (...)
+		{
+			delete[] cArgv[0];
+			delete[] cArgv[1];
+		}
 	}
 	exit(_retValServErr);
+}
+
+bool	CGI::isDone(void)
+{
+	return (waitpid(_pid, &_retVal))
 }

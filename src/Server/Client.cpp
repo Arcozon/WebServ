@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/17 15:44:18 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/19 16:05:35 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,12 +61,30 @@ bool	Client::_makeExtractLine(void)
 	return (true);
 }
 
+static inline std::size_t _countBlock(const std::string &reqLine)
+{
+	static const char	setReqLine = ' ';	
+	std::size_t	count = 0;
+	std::size_t	firstSpace;
+
+	for (std::size_t i = 0; i < reqLine.size(); ++count)
+	{
+		firstSpace = reqLine.find(setReqLine, i);
+		if (firstSpace != std::string::npos)
+			i = reqLine.find_first_not_of(setReqLine, firstSpace);
+		else
+			i = std::string::npos;
+	}
+	// std::cout << '[' << count << "]:'" << reqLine << "'\n";
+	return (count); 
+}
+
 const std::vector<std::string>	Client::_splitRequestLine(const std::string &reqLine)
 {
 	static const char	setReqLine = ' ';	
 	std::vector<std::string>	splitReqLine;
 
-	if (std::count(reqLine.begin(), reqLine.end(), setReqLine) != 2)
+	if (_countBlock(reqLine) != 3)
 		return (splitReqLine);
 
 	std::size_t	firstSpace = reqLine.find_first_of(setReqLine);
@@ -100,13 +118,17 @@ bool	Client::_checkRequestLine(void)	// Add IpPort (to check )
 		return (false);
 		
 	_method = splitReqLine.at(0);
-	_requestTarget = Location::simplifyLocationPath(splitReqLine.at(1));
+	{
+		std::string URI = splitReqLine.at(1);
+		std::size_t	fristQuery = URI.find_first_of('?');
+		if (fristQuery != std::string::npos)
+			_queryString = URI.substr(fristQuery + 1);
+		_requestTarget = Location::simplifyLocationPath(URI.substr(0, fristQuery));
+	}
 	_HTTPVersion = splitReqLine.at(2);
 
 	if (!(_method == "GET" || _method == "POST" || _method == "DELETE"))
 		return (false);
-	// Check if method is in IpPort / location
-	// check if request target is in IoPort / if [Root]/[RequestTarget] is a dir
 	if (_HTTPVersion != _supportedHTTPVersion)
 		return (false);
 	std::cout << "\e[32m[" << _method << "]\e[33m[" << _requestTarget << "]\e[34m[" << _HTTPVersion << "]\e[0m" << std::endl;

@@ -48,6 +48,7 @@ private:
 	
 	std::string	_method;
 	std::string	_requestTarget;
+	std::string	_queryString;
 	std::string	_HTTPVersion;
 	std::map<std::string, std::string> _headers;
 	

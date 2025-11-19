@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 13:05:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/19 12:48:21 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/19 18:19:09 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ private:
 	void	catHeader(void);
 	void	catContentLenght(void);
 	void	catBody(void);
+	void	catCGI(void);
 	
 	bool	fileToBody(char const fName[]);
 

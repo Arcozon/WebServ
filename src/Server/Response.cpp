@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 16:29:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/19 16:39:26 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/19 18:21:10 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,13 +59,8 @@ void	Response::catBody(void)
 	{
 		catContentLenght();
 		catLine("");
-		catLine(_body);	// remplacer les \n par des \r\n ?
+		catLine(_body);
 	}
-	// {
-	// 	std::ostringstream oss;
-	// 	oss << _responseCode;
-	// 	catLine(oss.str() + " " + _reasonPhrase);
-	// }
 }
 
 void	Response::catHeader(void)
@@ -76,9 +71,19 @@ void	Response::catHeader(void)
 		this->catHeaderLine(it->first, it->second);
 }
 
+void	Response::catCGI(void)
+{
+	catStatusLine(_responseCode, _reasonPhrase);
+	catLine(_body);
+}
+
 void	Response::catResponse(void)
 {
-	if (_response_buffer.empty())
+	if (_isCGI)
+	{
+		catCGI();
+	}
+	else
 	{
 		catStatusLine(_responseCode, _reasonPhrase);
 		catHeader();

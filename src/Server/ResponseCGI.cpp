@@ -6,13 +6,12 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 16:22:44 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/19 18:15:48 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/19 18:17:50 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Response.hpp"
 #include "CGI.hpp"
-
 
 static void	_getContextCGI(const std::string &URI,
 				std::string &scriptName,
@@ -43,19 +42,24 @@ void	Response::_handleCGI(void)
 		// std::cout << "Handler: " << bin << '\n';
 		CGI	handler(bin, _location->getRoot(), scriptName, pathInfo, _cl->getQueryString(), _cl->getMethod(),
 			_cl->getHeader(), _ipPort, _location, _body);
-		while (!handler.isDone())
+		
+		if (!handler.fail())
 		{
-			;
+			while (!handler.isDone())
+			{
+				;
+			}
+			int fd = handler.getReadPipe();
+			int br;
+			char	buff[1];
+			_body.clear();
+			do
+			{
+				br = read(fd, buff, 1);
+				if (br > 0)
+				_body.append(buff, br);
+			}	while (br > 0);
 		}
-		int fd = handler.getReadPipe();
-		int br;
-		char	buff[1];
-		_response_buffer.clear();
-		do
-		{
-			br = read(fd, buff, 1);
-			if (br > 0)
-				_response_buffer.append(buff, br);
-		}	while (br > 0);
+		_responseCode = handler.getResponseCode();
 	}
 }

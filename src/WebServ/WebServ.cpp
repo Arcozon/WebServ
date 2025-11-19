@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 12:01:27 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/17 17:03:51 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/19 13:43:36 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,4 +64,5 @@ void WebServ::testCGI(void) const
 	Client	cl(fd, _ipPorts[0]);
 
 	cl.readFromFd();
+	cl.sendResponse();
 }

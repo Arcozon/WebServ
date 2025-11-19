@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 13:05:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/17 16:36:06 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/19 12:48:21 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ private:
 	std::map<std::string, std::string> _header;
 	std::string		_body;
 	bool			_isReturn;
+	bool			_isCGI;
 
 	std::string		_response_buffer;
 	unsigned int	_send_count;

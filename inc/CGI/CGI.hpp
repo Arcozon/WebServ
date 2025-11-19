@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 11:37:26 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/18 15:45:53 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/19 12:44:09 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,14 @@
 class CGI
 {
 	public:
-		typedef int	t_fd;
+		typedef int	fd_t;
 		class CGIEnv;
 
 		typedef std::map<std::string, std::string>	t_header;
 
 	private:
-		static void	_closeFd(t_fd &_fd);
-		static void	_closeFd(t_fd _fds[2]);
+		static void	_closeFd(fd_t &_fd);
+		static void	_closeFd(fd_t _fds[2]);
 
 
 		static const int	_retValServErr = 255;
@@ -58,13 +58,14 @@ class CGI
 
 		const std::string	&_body;
 
-		t_fd	_pipeIn[2];
-		t_fd	_pipeOut[2];
+		fd_t	_pipeIn[2];
+		fd_t	_pipeOut[2];
 		
 		pid_t	_pid;
 	
 		// start time TODO
 		bool	_fail;
+		bool	_done;
 		int		_statusCode;
 		int		_retVal;
 	
@@ -92,6 +93,7 @@ class CGI
 		int		getStatusCode(void) const;
 
 		bool	isDone(void);
+		fd_t	getReadPipe(void) const;
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 16:29:42 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/18 15:42:22 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/19 13:41:58 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,22 +44,37 @@ static void	_getContextCGI(const std::string &URI,
 
 void	Response::_handleCGI(void)
 {
-	std::cout << "URL: " << _cl->getTargetLocation() << '\n';
-	std::cout << "LOC: " << _location->getLocation() << '\n';
-	std::cout << "URI: " << this->_URI << '\n';
+	// std::cout << "URL: " << _cl->getTargetLocation() << '\n';
+	// std::cout << "LOC: " << _location->getLocation() << '\n';
+	// std::cout << "URI: " << this->_URI << '\n';
 
 	std::string scriptName, pathInfo, queryString;
 
 	_getContextCGI(_URI, scriptName, pathInfo, queryString);
-	std::cout << "Script: " << scriptName << '\n';
-	std::cout << "PathInfo: " << pathInfo << '\n';
-	std::cout << "QueryString: " << queryString << '\n';
+	// std::cout << "Script: " << scriptName << '\n';
+	// std::cout << "PathInfo: " << pathInfo << '\n';
+	// std::cout << "QueryString: " << queryString << '\n';
 	if (_location->_hasCGIHandler(scriptName))
 	{
+		_isCGI = true;
 		std::string	bin = _location->getCgiHandler(scriptName);
 		std::cout << "Handler: " << bin << '\n';
 		CGI	handler(bin, _location->getRoot(), scriptName, pathInfo, queryString, _cl->getMethod(),
 			_cl->getHeader(), _ipPort, _location, _body);
+		while (!handler.isDone())
+		{
+			;
+		}
+		int fd = handler.getReadPipe();
+		int br;
+		char	buff[1];
+		_response_buffer.clear();
+		do
+		{
+			br = read(fd, buff, 1);
+			if (br > 0)
+				_response_buffer.append(buff, br);
+		}	while (br > 0);
 	}
 }
 

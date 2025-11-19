@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 16:29:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/17 15:01:15 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/19 12:55:09 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ Response::Response(Client *cl, const IpPort &ipPort)
 :	_responseCode(200),
 	_reasonPhrase("OK"),
 	_isReturn(false),
+	_isCGI(false),
 	_send_count(0),
 	_fully_sent(false),
 	_cl(cl),
@@ -77,9 +78,12 @@ void	Response::catHeader(void)
 
 void	Response::catResponse(void)
 {
-	catStatusLine(_responseCode, _reasonPhrase);
-	catHeader();
-	catBody();
+	if (_response_buffer.empty())
+	{
+		catStatusLine(_responseCode, _reasonPhrase);
+		catHeader();
+		catBody();
+	}
 }
 
 void	Response::prepare(const std::string &body)

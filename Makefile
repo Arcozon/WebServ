@@ -1,6 +1,6 @@
 NAME =  webserv
 
-S_CGIHANDLER	=  CGI.cpp  CGI_Env.cpp
+S_CGIHANDLER	=  CGI.cpp  CGI_Child.cpp  CGI_Env.cpp
 D_CGIHANDLER	=  CGIHandler/
 SRC_CGIHANDLER	=  $(addprefix $(D_CGIHANDLER), $(S_CGIHANDLER))
 

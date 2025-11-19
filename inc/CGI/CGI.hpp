@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 11:37:26 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/19 12:44:09 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/19 17:39:58 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,8 @@ class CGI
 
 		bool	isDone(void);
 		fd_t	getReadPipe(void) const;
+		unsigned short	getResponseCode(void) const;
+
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:37:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/17 15:08:37 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/19 16:35:06 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,13 +102,24 @@ const std::string	&Location::getCgiHandler(const std::string &file) const
 bool	Location::_hasCGIHandler(const std::string &file) const
 {
 	std::string	fExtension;
+	std::size_t	iDot = 0;
 
-	std::string::size_type	lastDot = file.rfind('.');
-	if (lastDot == std::string::npos)
-		return (false);
-	fExtension = file.substr(lastDot);
-
-	return (_cgiHandler.find(fExtension) != _cgiHandler.end());
+	for (std::size_t iSlash = 0; iSlash < file.size(); )
+	{
+		iDot = file.find('.', iSlash);
+		if (iDot != std::string::npos)
+		{
+			iSlash = file.find('/', iDot);
+			fExtension = file.substr(iDot, iSlash - iDot);
+			if (fExtension.size() == 1)
+				continue ;
+			else if (_cgiHandler.find(fExtension) != _cgiHandler.end())
+				return (true); 
+		}
+		else
+			break;
+	}
+	return (false);	
 }
 
 const Return		&Location::getReturn(void) const

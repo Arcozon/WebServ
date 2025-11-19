@@ -26,7 +26,7 @@ SRC_IPPORT =  $(addprefix $(D_IPPORT), $(S_IPPORT))
 
 S_SERVER   =  Server.cpp Client.cpp
 S_SERVER  +=  Response.cpp  ResponseGet.cpp  ResponsePost.cpp  ResponseDelete.cpp
-S_SERVER  +=  ResponseAutoIndex.cpp  ResponseError.cpp  ResponseReturn.cpp
+S_SERVER  +=  ResponseAutoIndex.cpp  ResponseError.cpp  ResponseReturn.cpp  ResponseCGI.cpp
 D_SERVER   =  Server/
 SRC_SERVER =  $(addprefix $(D_SERVER), $(S_SERVER))
 

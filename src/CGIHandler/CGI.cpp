@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 11:36:22 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/19 13:13:15 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/19 18:02:42 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,19 +64,22 @@ CGI::CGI(const std::string &binary,
 		_pipeOut[1] = -1;
 	}
 	_setup();
-	if (_fail)
-		return ;
-	if (_pid == 0)
+	if (!_fail)
 	{
-		_execCGI();
+		if (_pid == 0)
+			_execCGI();
+		else
+		{
+			_closeFd(_pipeIn[0]);
+			_closeFd(_pipeOut[1]);
+			write(_pipeIn[1], _body.c_str(), _body.size());
+			_closeFd(_pipeIn[1]);
+		}
 	}
 	else
 	{
-		_closeFd(_pipeIn[0]);
-		_closeFd(_pipeOut[1]);
-		write(_pipeIn[1], _body.c_str(), _body.size());
-		_closeFd(_pipeIn[1]);
-		std::cout << "asd";
+		_closeFd(_pipeIn);
+		_closeFd(_pipeOut);
 	}
 }
 
@@ -126,6 +129,8 @@ bool	CGI::isDone(void)
 			_retVal = WEXITSTATUS(_retVal);
 		else if (WIFSIGNALED(_retVal))
 			_retVal = WTERMSIG(_retVal);
+		if (_retVal)
+			_statusCode = 500;
 	}
 	return (_done);
 }
@@ -133,4 +138,9 @@ bool	CGI::isDone(void)
 CGI::fd_t	CGI::getReadPipe(void) const
 {
 	return (_pipeOut[0]);
+}
+
+unsigned short	CGI::getResponseCode(void) const
+{
+	return (_statusCode);
 }

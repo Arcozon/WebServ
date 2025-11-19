@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 12:57:45 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/19 13:32:04 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/19 18:01:50 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,13 +71,10 @@ void	CGI::_execCGI()
 			cEnv = CGIEnv::getCEnv();
 			if (!cEnv)
 				throw 'a';
-			std::cerr << "Executing: " << _binary << ' ' << _script << '\n';
-			std::cerr << "In: " <<  _scriptPath << '\n';
 			execve(_binary.c_str(), cArgv, cEnv);
 		}
 		catch (...)
 		{}
-		std::cerr << "Fck\n";
 		delete[] cArgv[0];
 		delete[] cArgv[1];
 	}

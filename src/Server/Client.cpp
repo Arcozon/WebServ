@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/19 16:05:35 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/19 18:04:27 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,6 +262,11 @@ const std::string	&Client::getMethod(void) const
 const std::string	&Client::getTargetLocation(void) const
 {
 	return (_requestTarget);
+}
+
+const std::string	&Client::getQueryString(void) const
+{
+	return (_queryString);
 }
 
 const std::map<std::string, std::string>	&Client::getHeader(void)const

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 16:22:44 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/19 18:17:50 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/20 12:28:33 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,10 @@ void	Response::_handleCGI(void)
 	std::string scriptName, pathInfo, queryString;
 
 	_getContextCGI(_URI, scriptName, pathInfo);
-	// std::cout << "Script: " << scriptName << '\n';
-	// std::cout << "PathInfo: " << pathInfo << '\n';
 	if (_location->_hasCGIHandler(scriptName))
 	{
 		_isCGI = true;
 		std::string	bin = _location->getCgiHandler(scriptName);
-		// std::cout << "Handler: " << bin << '\n';
 		CGI	handler(bin, _location->getRoot(), scriptName, pathInfo, _cl->getQueryString(), _cl->getMethod(),
 			_cl->getHeader(), _ipPort, _location, _body);
 		
@@ -51,15 +48,18 @@ void	Response::_handleCGI(void)
 			}
 			int fd = handler.getReadPipe();
 			int br;
-			char	buff[1];
+			char	buff[1024];
 			_body.clear();
 			do
 			{
-				br = read(fd, buff, 1);
+				br = read(fd, buff, sizeof(1024));
 				if (br > 0)
 				_body.append(buff, br);
 			}	while (br > 0);
 		}
 		_responseCode = handler.getResponseCode();
+		if (isErrorCode(_responseCode))
+			_isCGI = false;
+		std::cout << "Err: " << _responseCode << '\n';
 	}
 }

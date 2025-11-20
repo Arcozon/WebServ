@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 16:29:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/19 18:21:10 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/20 12:28:04 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ const std::string	Response::sepNameContent = ": ";
 Response::Response(Client *cl, const IpPort &ipPort)
 :	_responseCode(200),
 	_reasonPhrase("OK"),
-	_isReturn(false),
 	_isCGI(false),
 	_send_count(0),
 	_fully_sent(false),
@@ -194,8 +193,13 @@ void	Response::makeRep(void)
 		_handleReturn(_ipPort.getReturn());
 	else
 		_responseCode = 404;
-	if (_responseCode != 200 && !_isReturn)
+	if (isErrorCode(_responseCode))
 	{
 		_handleError();
 	}
+}
+
+bool	Response::isErrorCode(const unsigned short errCode)
+{
+	return (errCode >= 400);
 }

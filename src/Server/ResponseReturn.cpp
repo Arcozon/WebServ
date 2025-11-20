@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:57:54 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/10 19:21:41 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/20 12:27:21 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 void	Response::_handleReturn(const Return &ret)
 {
-	_isReturn = true;
 	_responseCode = ret.getCode();
 	if (ret.isCode())
 	{

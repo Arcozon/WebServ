@@ -112,6 +112,8 @@ public:
 	bool timedOut();
 	std::string getCookie(const std::string &name) const;
 	const std::map<std::string, std::string> &getCookies() const;
+	void putHandler();
+
 
 };
 

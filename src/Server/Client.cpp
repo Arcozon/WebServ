@@ -724,8 +724,9 @@ void Client::checkStep()
 			}
 			_response->prepare();
 		}
-
-		if (_is_upload)
+		if(_method == "PUT")
+			putHandler();
+		else if (_is_upload)
 			fileHandler();
 		else
 		{
@@ -817,6 +818,56 @@ bool Client::checkTimers()
 bool Client::timedOut()
 {
 	return checkTimers();
+}
+
+void Client::putHandler()
+{
+	const Location *loc = _config->getLocation(_target_uri);
+	if (!loc)
+	{
+		_response->setStartLine(404);
+		_response->prepare();
+		return ;
+	}
+	std::string upload_dir = loc->getUploadLocation();
+	if (upload_dir.empty())
+	{
+		_response->setStartLine(403);
+		_response->prepare();
+		return ;
+	}
+	std::string filename = _target_uri.substr(_target_uri.find_last_of('/') + 1);
+	if (filename.empty())
+	{
+		_response->setStartLine(400);
+		_response->prepare();
+		return ;
+	}
+	std::string full_dir = upload_dir;
+	if (full_dir[full_dir.length() - 1] != '/')
+		full_dir += '/';
+	full_dir += filename;
+
+	std::ifstream check_file(full_dir.c_str());
+	bool prev_in_use = check_file.good();
+	check_file.close();
+
+	std::ofstream file(full_dir.c_str(), std::ios::binary | std::ios::trunc);
+	if (!file.is_open())
+	{
+		_response->setStartLine(500);
+		_response->prepare();
+		return ;
+	}
+	file.write(_body_data.c_str(), _body_data.size());
+	file.close();
+
+	if (prev_in_use)
+		_response->setStartLine(204);
+	else
+		_response->setStartLine(201);
+	_response->prepare();
+	std::cout << "\033[1;32m PUT: File " << full_dir << " " << (prev_in_use ? "updated" : "created") << "\033[0m" << std::endl;
 }
 
 // void Client::checkStep()

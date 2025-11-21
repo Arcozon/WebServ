@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:31 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/21 14:50:21 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/21 14:58:28 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include "Server.hpp"
 
 # include "ParsLine.hpp"
+# define DOT_CONFIG ".config"
 
 class Server::ParsWebServ
 {

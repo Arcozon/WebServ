@@ -6,11 +6,10 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 10:51:19 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/21 14:53:13 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/21 14:58:37 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "WebServ.hpp"
 #include "CGI.hpp"
 #include "CGIEnv.hpp"
 

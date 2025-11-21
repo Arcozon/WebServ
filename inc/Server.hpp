@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 12:03:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/21 14:52:31 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/21 14:58:04 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 #include <signal.h>
 #include <csignal>
 #include "Client.hpp"
-#include "WebServ.hpp"
+#include "IpPort.hpp"
 
 #define EVENT_SIZE 100
 

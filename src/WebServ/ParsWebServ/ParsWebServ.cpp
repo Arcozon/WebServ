@@ -6,11 +6,12 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:08:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/21 14:54:29 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/21 14:58:19 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ParsWebServ.hpp"
+
 
 const std::string	Server::ParsWebServ::_keyServer("server");
 

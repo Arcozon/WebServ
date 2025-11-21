@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/01 16:29:43 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/21 13:46:47 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,18 @@ void Server::sigHandler(int signum)
 	{
 		std::cout << std::endl << "Recieved " << (signum == SIGINT ? "SIGINT" : "SIGTERM") << std::endl;
 		_stop_signal = 1;
+		// execve("/usr/bin/ls", (char *[]){(char *)0}, (char *[]){(char *)0});
 	}
 }
 
 void Server::initSockets(IpPort *config)
 {
 	
-	int fd = socket(AF_INET, SOCK_STREAM, 0); // necessaire pour recevoir et envoyer des informations (par la que tout arrive)
+	int fd = socket(AF_INET, SOCK_STREAM | SOCK_CLOEXEC | SOCK_NONBLOCK, 0); // necessaire pour recevoir et envoyer des informations (par la que tout arrive)
 	if (fd == -1)
 		throw std::runtime_error("socket() syscall failed");
 	int flags = fcntl(fd, F_GETFL, 0); // rends les sockets non bloquants, doit être appelé pour chaque fd (potentiellement à enlever selon le sujet)
-	fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+	fcntl(fd, F_SETFL, flags | O_NONBLOCK | O_CLOEXEC);
 	int opt = 1;
 	if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1) // https://stackoverflow.com/a/69923308
 		throw std::runtime_error("setsockopt() syscall failed");
@@ -60,10 +61,12 @@ void Server::initSockets(IpPort *config)
 
 void Server::initEpoll()
 {
-	_epoll_instance = epoll_create1(0);
+	// _epoll_instance = epoll_create1(0);
+	_epoll_instance = epoll_create1(EPOLL_CLOEXEC);
 	if (_epoll_instance == -1)
 		throw std::runtime_error("Failed to create epoll instance (epoll_create1)");
-	
+	int flags = fcntl(_epoll_instance, F_GETFL, 0); // rends les sockets non bloquants, doit être appelé pour chaque fd (potentiellement à enlever selon le sujet)
+	fcntl(_epoll_instance, F_SETFL, flags | O_NONBLOCK | O_CLOEXEC);
 	for(size_t i = 0; i < _epoll_fds.size(); i++)
 	{
 		epoll_event ev;
@@ -107,7 +110,7 @@ void Server::registerNewClient(int server_fd)
 		}
 
 		int flags = fcntl(client_fd, F_GETFL, 0);
-		fcntl(client_fd, F_SETFL, flags | O_NONBLOCK);
+		fcntl(client_fd, F_SETFL, flags | O_NONBLOCK | O_CLOEXEC);
 
 		struct epoll_event accept_event;
 		std::memset(&accept_event, 0, sizeof(accept_event));
@@ -218,6 +221,7 @@ Server::~Server(void)
 	for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
 		delete it->second;
 	_clients.clear();
+	std::cout << "asdkfjbsadfgasdkfjbsadfgasdkfjbsadfgasdkfjbsadfgasdkfjbsadfg\n";
 }
 
 IpPort *Server::getConfig(int fd)

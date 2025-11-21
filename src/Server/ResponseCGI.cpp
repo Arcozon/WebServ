@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 16:22:44 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/20 12:28:33 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/20 14:51:38 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,5 @@ void	Response::_handleCGI(void)
 		_responseCode = handler.getResponseCode();
 		if (isErrorCode(_responseCode))
 			_isCGI = false;
-		std::cout << "Err: " << _responseCode << '\n';
 	}
 }

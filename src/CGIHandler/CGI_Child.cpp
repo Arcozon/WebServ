@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 12:57:45 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/19 18:01:50 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/21 13:06:52 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ void	CGI::_execCGI()
 		{}
 		delete[] cArgv[0];
 		delete[] cArgv[1];
+		CGIEnv::freeCEnv(cEnv);
 	}
-	exit(_retValServErr);
+	_exit(_retValServErr);
 }

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 11:36:22 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/20 14:32:31 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/20 14:33:53 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,6 @@ void	CGI::_setup()
 	if (access(scriptLoc.c_str(), R_OK) != 0
 		|| access(_binary.c_str(), X_OK) != 0)
 	{
-		std::cout << "pipi\n";
 		_statusCode = 404;
 		_fail = true;
 		return ;

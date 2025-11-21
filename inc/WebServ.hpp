@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 10:44:46 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/17 12:12:56 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/21 14:46:02 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,22 +32,17 @@ class WebServ
 		class ParsWebServ;
 
 	private:
-		std::vector<IpPort>	_ipPorts;
+		static std::vector<IpPort>	_ipPorts;
 
-		std::string			_pname;
-		char				**_env;
-		bool				_init;
+		static std::string			_pname;
+		static bool				_init;
 
 	private:
 		
 	public:
-		WebServ(const int ac, char *av[], char *env[]);
-		~WebServ(void);
-		std::vector<IpPort> &getServers();
-
-		
-		static void	mkCGIRequest(void);
-		void testCGI(void) const;
+		static void	initWebServ(const int ac, char *av[]);
+		static void closeWebServ(void);
+		static std::vector<IpPort> &getServers();
 };
 
 #endif

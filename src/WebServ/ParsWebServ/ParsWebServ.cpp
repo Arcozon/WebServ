@@ -6,13 +6,13 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:08:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/30 11:26:16 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/21 14:54:29 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ParsWebServ.hpp"
 
-const std::string	WebServ::ParsWebServ::_keyServer("server");
+const std::string	Server::ParsWebServ::_keyServer("server");
 
 static inline bool	_is_dot_config(const std::string fname)
 {
@@ -30,7 +30,7 @@ static const std::string	ft_basename(const std::string av0)
 	return (av0);
 }
 
-inline void	WebServ::ParsWebServ::_openConfigFile(const int ac, char *av[])
+inline void	Server::ParsWebServ::_openConfigFile(const int ac, char *av[])
 {
 	if (ac == 0)
 		throw (MyException("Argc == 0", MyException::ELVL_FATAL));
@@ -46,7 +46,7 @@ inline void	WebServ::ParsWebServ::_openConfigFile(const int ac, char *av[])
 		throw (MyException("Can't open config file", MyException::ELVL_FATAL, av[1]));
 }
 
-void	WebServ::ParsWebServ::_readConfigFile(void)
+void	Server::ParsWebServ::_readConfigFile(void)
 {
 	while (_parsLine.readLine())
 	{
@@ -58,7 +58,7 @@ void	WebServ::ParsWebServ::_readConfigFile(void)
 	}
 }
 
-void	WebServ::ParsWebServ::_addServer(void)
+void	Server::ParsWebServ::_addServer(void)
 {
 	try
 	{
@@ -73,16 +73,16 @@ void	WebServ::ParsWebServ::_addServer(void)
 	}
 }
 
-WebServ::ParsWebServ::ParsWebServ(const int ac, char *av[])
+Server::ParsWebServ::ParsWebServ(const int ac, char *av[])
 {
 	_openConfigFile(ac, av);
 	_readConfigFile();
 }
 
-WebServ::ParsWebServ::~ParsWebServ(void)
+Server::ParsWebServ::~ParsWebServ(void)
 {}
 
-const std::vector<IpPort>	WebServ::ParsWebServ::getIpPorts(void) const
+const std::vector<IpPort>	Server::ParsWebServ::getIpPorts(void) const
 {
 	return (_ipPorts);
 }

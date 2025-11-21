@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 12:03:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/21 13:05:01 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/21 14:52:31 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,12 @@ class Client;
 class Server
 {
 	private:
+		class ParsWebServ;
+
+	private:
 		std::vector<int> _epoll_fds;
 		std::map<int, Client *> _clients;
-		std::vector<IpPort> &_server_configs;
+		std::vector<IpPort>	_server_configs;
 		std::map<int, IpPort*>	_fd_config;
 		int	_epoll_instance;
 		static int _stop_signal;
@@ -57,15 +60,18 @@ class Server
 
 
 		Server(void);
+		static Server *_serv;
 
 	public:
 		
-		Server(std::vector<IpPort> &servers);
+		// Server(std::vector<IpPort> &servers);
+		Server(int ac, char *av[]);
 		~Server(void);
 		void start(); // démarre l'event loop du serveur
 		void stop(); // arrête l'event loop du serveur
+	
+		static void linkServer(Server *serv);
+		static void closeServer(void);
 };
-
-
 
 #endif

@@ -6,12 +6,14 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/21 13:46:47 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/21 14:52:18 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+#include "ParsWebServ.hpp"
 
+Server *Server::_serv = NULL;
 int Server::_stop_signal = 0;
 
 void Server::sigHandler(int signum)
@@ -20,7 +22,6 @@ void Server::sigHandler(int signum)
 	{
 		std::cout << std::endl << "Recieved " << (signum == SIGINT ? "SIGINT" : "SIGTERM") << std::endl;
 		_stop_signal = 1;
-		// execve("/usr/bin/ls", (char *[]){(char *)0}, (char *[]){(char *)0});
 	}
 }
 
@@ -39,8 +40,7 @@ void Server::initSockets(IpPort *config)
 	sockaddr_in addr;
 	std::memset(&addr, 0, sizeof(addr));
 	addr.sin_family = AF_INET; // IPv4
-	addr.sin_addr.s_addr = INADDR_ANY;
-	//std::cout << "SERVER: " << config->getHost() << ":" << config->getPort() << std::endl;
+	addr.sin_addr.s_addr = htonl(config->getHost());
 	addr.sin_port = htons(config->getPort());
 	if (bind(fd, (struct sockaddr *)&addr, sizeof(addr)) == -1)
 	{
@@ -61,12 +61,11 @@ void Server::initSockets(IpPort *config)
 
 void Server::initEpoll()
 {
-	// _epoll_instance = epoll_create1(0);
 	_epoll_instance = epoll_create1(EPOLL_CLOEXEC);
 	if (_epoll_instance == -1)
 		throw std::runtime_error("Failed to create epoll instance (epoll_create1)");
-	int flags = fcntl(_epoll_instance, F_GETFL, 0); // rends les sockets non bloquants, doit être appelé pour chaque fd (potentiellement à enlever selon le sujet)
-	fcntl(_epoll_instance, F_SETFL, flags | O_NONBLOCK | O_CLOEXEC);
+	// int flags = fcntl(_epoll_instance, F_GETFL, 0); // rends les sockets non bloquants, doit être appelé pour chaque fd (potentiellement à enlever selon le sujet)
+	// fcntl(_epoll_instance, F_SETFL, flags | O_NONBLOCK | O_CLOEXEC);
 	for(size_t i = 0; i < _epoll_fds.size(); i++)
 	{
 		epoll_event ev;
@@ -148,6 +147,7 @@ void Server::readFromClient(int client_fd)
 
 void Server::start()
 {
+	linkServer(this);
 	struct epoll_event events[4096];
 	int n_fds;
 	std::cout << "Webserv started, awaiting for incoming connections" << std::endl;
@@ -192,24 +192,36 @@ void Server::start()
 			}
 		}
 	}
+	_serv = NULL;
 	std::cout << "Bonne nuit!" << std::endl;
 }
 
 
-Server::Server(std::vector<IpPort> &servers): _server_configs(servers)
+// Server::Server(std::vector<IpPort> &servers)
+// : _server_configs(servers)
+// {
+// 	for(size_t i = 0; i < _server_configs.size(); i++)
+// 	{
+// 		initSockets(&_server_configs[i]);
+// 	}
+// 	initEpoll();
+// 	signal(SIGINT, Server::sigHandler);
+// 	signal(SIGTERM, Server::sigHandler);
+// }
+
+Server::Server(int ac, char *av[])
 {
-	// _ports.push_back(8080);
-	// _ports.push_back(8181);
-	// _ports.push_back(8083);
+	ParsWebServ	parsIpPorts(ac, av);
+	
+	_server_configs = parsIpPorts.getIpPorts();
 	for(size_t i = 0; i < _server_configs.size(); i++)
 	{
-		// std::cout << "test" << std::endl;
+		std::cout << i << ": " << _server_configs[i].getIpPortStr() << '\n';
 		initSockets(&_server_configs[i]);
 	}
 	initEpoll();
 	signal(SIGINT, Server::sigHandler);
 	signal(SIGTERM, Server::sigHandler);
-
 }
 
 Server::~Server(void)
@@ -221,7 +233,6 @@ Server::~Server(void)
 	for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
 		delete it->second;
 	_clients.clear();
-	std::cout << "asdkfjbsadfgasdkfjbsadfgasdkfjbsadfgasdkfjbsadfgasdkfjbsadfg\n";
 }
 
 IpPort *Server::getConfig(int fd)
@@ -250,4 +261,18 @@ void Server::removeClient(int client_fd)
 		_clients.erase(it);
 	}
 	std::cout << "\e[1;33mClient " << client_fd << " removed from epoll events\e[0m" << std::endl;
+}
+
+void	Server::linkServer(Server *serv)
+{
+	_serv = serv;
+}
+
+void	Server::closeServer(void)
+{
+	if (_serv)
+	{
+		_serv->~Server();
+		_serv = NULL;
+	}
 }

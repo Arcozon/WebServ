@@ -6,12 +6,13 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 12:57:45 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/21 13:06:52 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/21 14:37:28 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CGI.hpp"
 #include "CGIEnv.hpp"
+#include "Server.hpp"
 
 void	CGI::_exportEnv(void) const
 {
@@ -47,6 +48,7 @@ void	CGI::_exportEnv(void) const
 
 void	CGI::_execCGI()
 {
+
 	// clean memory and fds of webserv (Clients fd and malloceds response ..) TODO
 	_closeFd(_pipeIn[1]);
 	_closeFd(_pipeOut[0]);
@@ -71,13 +73,15 @@ void	CGI::_execCGI()
 			cEnv = CGIEnv::getCEnv();
 			if (!cEnv)
 				throw 'a';
+			throw 'a';
 			execve(_binary.c_str(), cArgv, cEnv);
 		}
 		catch (...)
 		{}
+		Server::closeServer();
 		delete[] cArgv[0];
 		delete[] cArgv[1];
 		CGIEnv::freeCEnv(cEnv);
 	}
-	_exit(_retValServErr);
+	exit(_retValServErr);
 }

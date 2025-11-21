@@ -34,7 +34,7 @@ S_PARSWEBSERV	=  ParsWebServ.cpp
 D_PARSWEBSERV	=  ParsWebServ/
 SRC_PARSWEBSERV =  $(addprefix $(D_PARSWEBSERV), $(S_PARSWEBSERV))
 
-S_WEBSERV	=  $(SRC_PARSWEBSERV)  WebServ.cpp
+S_WEBSERV	=  $(SRC_PARSWEBSERV)
 D_WEBSERV	=  WebServ/
 SRC_WEBSERV =  $(addprefix $(D_WEBSERV), $(S_WEBSERV))
 

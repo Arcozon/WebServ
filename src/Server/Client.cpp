@@ -725,8 +725,11 @@ void Client::checkStep()
 			_response->prepare();
 		}
 		if(_method == "PUT")
+		{
+			std::cout << "\033[1;34m\t-- PUT HANDLER CALLED --\033[0m" << std::endl;
 			putHandler();
-		else if (_is_upload)
+		}
+		if (_is_upload)
 			fileHandler();
 		else
 		{
@@ -836,7 +839,9 @@ void Client::putHandler()
 		_response->prepare();
 		return ;
 	}
+	//if(_target_uri.substr(_target_uri.find_last_of('/') + 1) != )
 	std::string filename = _target_uri.substr(_target_uri.find_last_of('/') + 1);
+	std::cout << "\033[1;32m FILENAME: " << filename << "\033[0m" << std::endl;
 	if (filename.empty())
 	{
 		_response->setStartLine(400);
@@ -866,8 +871,8 @@ void Client::putHandler()
 		_response->setStartLine(204);
 	else
 		_response->setStartLine(201);
-	_response->prepare();
 	std::cout << "\033[1;32m PUT: File " << full_dir << " " << (prev_in_use ? "updated" : "created") << "\033[0m" << std::endl;
+	_response->prepare();
 }
 
 // void Client::checkStep()

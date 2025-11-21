@@ -8,7 +8,7 @@
 #include <sstream>
 #include <vector>
 
-#define HTTP_VERSION "HTTP/1.0"
+#define HTTP_VERSION "HTTP/1.1"
 #define SERVER_HEADER "TURBOINTGAEUDES 1.0 (Unix)"
 
 class Client;

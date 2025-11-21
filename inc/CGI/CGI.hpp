@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 11:37:26 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/19 17:39:58 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/21 17:43:49 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,17 +41,17 @@ class CGI
 		static const int	_retValServErr = 255;
 
 	private:
-		const std::string	_binary;
+		const std::string	&_binary;
 
-		const std::string	_scriptPath;
+		const std::string	&_scriptPath;
 		const std::string	_script;
 
 		const std::string	_pathInfo;
-		const std::string	_queryString;
+		const std::string	&_queryString;
 
-		const std::string	_method;
+		const std::string	&_method;
 
-		const t_header	_header;
+		const t_header	&_header;
 
 		const IpPort	&_ipPort;
 		const Location	*_location;
@@ -70,8 +70,6 @@ class CGI
 		int		_retVal;
 	
 	private:
-		void	_setup();
-
 		void	_exportEnv(void) const;
 
 		void	_execCGI();
@@ -87,7 +85,19 @@ class CGI
 			const IpPort &ipPort,
 			const Location *location,
 			const std::string &body);
+
+		CGI(const std::string &binary,
+			const std::string &dirScript,
+			const std::string &URI,
+			const std::string &queryString,
+			const std::string &method,
+			const t_header &header,
+			const IpPort &ipPort,
+			const Location *location,
+			const std::string &body);
 		~CGI(void);
+
+		void	forkCGI(void);
 
 		bool	fail(void) const;
 		int		getStatusCode(void) const;

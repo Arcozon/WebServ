@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 11:36:22 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/20 14:33:53 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/21 17:37:38 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,24 +63,86 @@ CGI::CGI(const std::string &binary,
 		_pipeOut[0] = -1;
 		_pipeOut[1] = -1;
 	}
-	_setup();
-	if (!_fail)
+	if (pipe(_pipeIn) < 0 || pipe(_pipeOut) < 0)\
 	{
-		if (_pid == 0)
-			_execCGI();
-		else
-		{
-			_closeFd(_pipeIn[0]);
-			_closeFd(_pipeOut[1]);
-			write(_pipeIn[1], _body.c_str(), _body.size());
-			_closeFd(_pipeIn[1]);
-		}
+		_statusCode = 500;
+		_fail = true;
 	}
-	else
+	else if (access(std::string(_scriptPath + '/' + _script).c_str(), R_OK) != 0
+			|| access(_binary.c_str(), X_OK) != 0)
 	{
-		_closeFd(_pipeIn);
-		_closeFd(_pipeOut);
+		_statusCode = 404;
+		_fail = true;
 	}
+
+}
+
+static std::string	_getScriptName(const std::string &URI)
+{
+	std::string::size_type	startScriptName = URI.find_first_not_of('/'); 
+	if (startScriptName == std::string::npos)
+		startScriptName = 0;
+	std::string::size_type	endScriptName = URI.find_first_of("/", startScriptName);
+	
+	return (URI.substr(startScriptName, endScriptName - startScriptName));
+}
+
+static std::string	_getPathInfo(const std::string &URI)
+{
+	std::string::size_type	startScriptName = URI.find_first_not_of('/'); 
+	if (startScriptName == std::string::npos)
+		startScriptName = 0;
+	std::string::size_type	endScriptName = URI.find_first_of("/", startScriptName);
+		
+	if (endScriptName != std::string::npos)
+		return (URI.substr(endScriptName));
+	return ("");
+}
+
+CGI::CGI(const std::string &binary,
+			const std::string &dirScript,
+			const std::string &URI,
+			const std::string &queryString,
+			const std::string &method,
+			const t_header &header,
+			const IpPort &ipPort,
+			const Location *location,
+			const std::string &body)
+:	_binary(binary),
+	_scriptPath(dirScript),
+	_script(_getScriptName(URI)),
+	_pathInfo(_getPathInfo(URI)),
+	_queryString(queryString),
+	_method(method),
+	_header(header),
+	_ipPort(ipPort),
+	_location(location),
+	_body(body),
+	_pid(-1),
+	_fail(false),
+	_done(false),
+	_statusCode(200),
+	_retVal(0)
+	// TODO START TIME
+{
+	{
+		_pipeIn[0] = -1;
+		_pipeIn[1] = -1;
+		_pipeOut[0] = -1;
+		_pipeOut[1] = -1;
+	}
+	if (pipe(_pipeIn) < 0 || pipe(_pipeOut) < 0)\
+	{
+		_statusCode = 500;
+		_fail = true;
+	}
+	else if (access(std::string(_scriptPath + '/' + _script).c_str(), R_OK) != 0
+			|| access(_binary.c_str(), X_OK) != 0)
+	{
+		_statusCode = 404;
+		_fail = true;
+	}
+
 }
 
 CGI::~CGI(void)
@@ -91,25 +153,23 @@ CGI::~CGI(void)
 	_closeFd(_pipeOut);
 }
 
-void	CGI::_setup()
+void	CGI::forkCGI(void)
 {
-	const std::string scriptLoc(_scriptPath + '/' + _script);
-	
-	if (access(scriptLoc.c_str(), R_OK) != 0
-		|| access(_binary.c_str(), X_OK) != 0)
-	{
-		_statusCode = 404;
-		_fail = true;
-		return ;
-	}
-	if (pipe(_pipeIn) < 0
-		|| pipe(_pipeOut) < 0
-		|| (_pid = fork()) < 0)
+	if ((_pid = fork()) < 0)
 	{
 		_statusCode = 500;
 		_fail = true;
 		return ;
 	}
+	if (_pid != 0)
+	{
+		_closeFd(_pipeIn[0]);
+		_closeFd(_pipeOut[1]);
+		write(_pipeIn[1], _body.c_str(), _body.size());
+		_closeFd(_pipeIn[1]);
+	}
+	else
+		_execCGI();
 }
 
 bool	CGI::fail(void) const

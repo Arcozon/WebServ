@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 13:05:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/20 12:28:07 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/21 17:42:24 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ private:
 	
 	Client			*_cl;
 	const IpPort	&_ipPort;
-	const Location	*_location;
+	const Location	* _location;
 	std::string		_URI;
 
 private:

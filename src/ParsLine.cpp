@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 12:28:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/11 15:39:45 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/22 18:15:46 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,5 @@ std::vector<std::string>	ParsLine::splitLine(const std::string &str,
 		split.push_back(str.substr(start, nextSpace - start));
 		start = str.find_first_not_of(sep, nextSpace);
 	}
-	if (nextSpace != std::string::npos)
-		split.push_back("");
 	return (split);
 }

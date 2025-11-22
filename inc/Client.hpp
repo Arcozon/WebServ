@@ -60,7 +60,6 @@ private:
 	Response *_response;
 
 	bool	_is_upload;
-	std::string _target_uri;
 	size_t _content_length;
 	size_t _body_rd_bytes;
 	std::string _body_data;

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 16:29:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/22 17:45:26 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/22 18:34:44 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,13 @@ const std::string	Response::sepNameContent = ": ";
 Response::Response(Client *cl, const IpPort &ipPort)
 :	_responseCode(200),
 	_isCGI(false),
+	_insideErr(true),
 	_send_count(0),
 	_fully_sent(false),
 	_cl(cl),
 	_ipPort(ipPort),
-	_location(ipPort.getLocation(cl->getTargetLocation()))
+	_location(NULL)
 {
-	_body = "";
 	if(_reason_phrases.empty())
 	{
 		_reason_phrases[200] = "OK";
@@ -52,19 +52,9 @@ Response::Response(Client *cl, const IpPort &ipPort)
 		_reason_phrases[505] = "HTTP Version Not Supported";
 		
 	}
-	if (_location)
-		_URI = _cl->getTargetLocation().substr(_location->getLocation().size());
 	setHeader("Server", SERVER_HEADER);
 	setHeader("Connection", "close");
 	setHeader("Content-Type", "text/html; charset=UTF-8");
-}
-
-void Response::setStartLine(int code)
-{
-	_responseCode = code;
-	std::ostringstream res;
-	res << HTTP_VERSION << " " << code << " " << getReasonPhrase(code) << "\r\n";
-	_status_line = res.str();
 }
 
 void Response::setHeader(const std::string &key, const std::string &val)
@@ -75,6 +65,17 @@ void Response::setHeader(const std::string &key, const std::string &val)
 void Response::setBody(const std::string &body)
 {
 	_body += body;
+}
+
+void Response::setLocation(void)
+{
+	_location = _ipPort.getLocation(_cl->getTargetLocation());
+	if (_location)
+		std::cout << "Loca:[" << _location->getLocation() << "]\n"; 
+	else
+		std::cout << "Loca:[NONE]\n"; 
+	if (_location)
+		_URI = _cl->getTargetLocation().substr(_location->getLocation().size());
 }
 
 void	Response::catContentLenght(void)
@@ -100,6 +101,9 @@ void	Response::catHeader(void)
 
 	for (MapStrStrConstIt it = _header.begin(); it != _header.end(); ++it)
 		this->catHeaderLine(it->first, it->second);
+	for (size_t i = 0; i < _cookies.size(); i++)
+		this->catHeaderLine("Set-Cookie: ", _cookies[i].setCookieHeader());
+
 }
 
 void	Response::catCGI(void)
@@ -122,65 +126,13 @@ void	Response::catResponse(void)
 	}
 }
 
-void	Response::prepare(const std::string &body)
-{
-	_body = body;
-	_body += "<html><body><h2>";
-	if (_location)
-	{
-		_body += "Location: "+ _location->getLocation() + endOfLine;
-		_body +=  "URI: " + _URI + endOfLine; 
-
-	}
-	else
-		_body += "Unknown Location [" + _cl->getTargetLocation() + "]" + endOfLine;
-	_body += "</h2></body></html>";
-	makeRep();
-	{
-		if (_responseCode == 200)
-			_reasonPhrase = "OK";
-		else if (_responseCode == 201)
-			_reasonPhrase = "Created";
-		else if (_responseCode == 204)
-			_reasonPhrase = "No Content";
-		else if (_responseCode == 301)
-			_reasonPhrase = "Moved Permanently";
-		else if (_responseCode == 400)
-			_reasonPhrase = "Bad Request";
-		else if (_responseCode == 403)
-			_reasonPhrase = "Forbiden Access";
-		else if (_responseCode == 404)
-			_reasonPhrase = "Not Found";
-		else if (_responseCode == 405)
-			_reasonPhrase = "Method Not Allowed";
-		else if (_responseCode == 500)
-			_reasonPhrase = "Internal Server Error";
-		else
-			_reasonPhrase = "Unknown Error";
-	}
-	catResponse();
-}
-
 void Response::prepare()
 {
-	std::ostringstream len, headers;
-	if (_header.find("Content-Length") == _header.end()  && !_body.empty())
-	{
-		len << _body.length();
-		setHeader("Content-Length", len.str());
-	}
 
-	for (std::map<std::string, std::string>::iterator it = _header.begin(); it != _header.end(); ++it)
-		headers << it->first << ": " << it->second << "\r\n";
-
-	for (size_t i = 0; i < _cookies.size(); i++)
-		headers << "Set-Cookie: " << _cookies[i].setCookieHeader() << "\r\n";
-
-	headers << "\r\n";
-	setStartLine(_responseCode);
-	_response_buffer += _status_line;
-	_response_buffer += headers.str();
-	_response_buffer += _body;
+	if (_insideErr)
+		makeRep();
+	
+	catResponse();
 }
 
 void Response::send(int fd)
@@ -261,6 +213,12 @@ std::string Response::getReasonPhrase(int code) const
 		return it->second;
 	else
 		return "GAEUDES";
+}
+
+void Response::setStartLine(int code)
+{
+	_responseCode = code;
+	_insideErr = false;
 }
 
 void Response::addCookie(const Cookies &cookie)

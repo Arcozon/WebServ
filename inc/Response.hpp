@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 13:05:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/22 17:45:32 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/22 18:33:03 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ private:
 	std::string		_body;
 	
 	bool			_isCGI;
+	bool			_insideErr;
 	
 	std::string		_response_buffer;
 	unsigned int	_send_count;
@@ -114,11 +115,10 @@ public:
 
 	void	send(int fd);
 	void	prepare();
-	void	prepare(const std::string &body);
 	bool	isResponseFullySent()	const;
 
+	void setLocation(void);
 	void setStartLine(int code);
-	// void setReasonPhrases();
 	void setBody(const std::string &body);
 
 	std::string getReasonPhrase(int code) const;

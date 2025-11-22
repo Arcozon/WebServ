@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/22 17:07:35 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/22 18:17:33 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,8 @@ void	Location::ParsLocation::_addLocationLine(void)
 
 void	Location::ParsLocation::_setLocation(void)
 {
-	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine());
-	
+	const std::vector<std::string>	&splitLine(_parsLine.getSplitLine());
+
 	if (splitLine.size() != 2)
 		throw (MyException("Needs one argument", MyException::ELVL_WARNING, splitLine.front()));
 

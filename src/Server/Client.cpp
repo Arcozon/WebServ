@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/22 17:28:57 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/22 18:26:41 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ Client::Client(int fd, const IpPort &config, Sessions *instance)
 	  _session_ptr(instance),
 	  _headers_total_size(0)
 {
-	// _response = new Response(this, config);
+	_response = new Response(this, config);
 }
 
 Client::~Client()
@@ -82,6 +82,7 @@ bool Client::_makeExtractLine(void)
 	else
 		return (false);
 }
+
 static inline std::size_t _countBlock(const std::string &reqLine)
 {
 	static const char	setReqLine = ' ';	
@@ -96,7 +97,6 @@ static inline std::size_t _countBlock(const std::string &reqLine)
 		else
 			i = std::string::npos;
 	}
-	// std::cout << '[' << count << "]:'" << reqLine << "'\n";
 	return (count); 
 }
 
@@ -135,13 +135,6 @@ bool Client::_checkRequestLine(void) // Add IpPort (to check )
 {
 	std::vector<std::string>	splitReqLine = _splitRequestLine(_extractedLine);
 
-	if (splitReqLine.empty())
-	{
-		_response->setStartLine(400);
-		_response->prepare();
-		_requestStep = ERROR;
-		return (false);
-	}
 	if (_extractedLine.length() > MAX_HEADER_SIZE) // 8kb
 	{
 		_response->setStartLine(414);
@@ -158,7 +151,7 @@ bool Client::_checkRequestLine(void) // Add IpPort (to check )
 	}
 
 	_method = splitReqLine.at(0);
-	_target_uri = splitReqLine.at(1);
+	_requestTarget = splitReqLine.at(1);
 	std::string HTTPVersion = splitReqLine.at(2);
 
 	if (!validVerbSyntax(_method))
@@ -171,13 +164,13 @@ bool Client::_checkRequestLine(void) // Add IpPort (to check )
 
 	if (!(_method == "GET" || _method == "POST" || _method == "DELETE" || _method == "PUT"))
 	{
-		_response->setStartLine(400); // or 501
+		_response->setStartLine(405);
 		_response->prepare();
 		_requestStep = ERROR;
 		return (false);
 	}
 
-	if (_target_uri.length() > 1024)
+	if (_requestTarget.length() > 1024)
 	{
 		_response->setStartLine(414);
 		_response->prepare();
@@ -197,7 +190,7 @@ bool Client::_checkRequestLine(void) // Add IpPort (to check )
 		return (false);
 	}
 
-	if (!ValidURI(_target_uri))
+	if (!ValidURI(_requestTarget))
 	{
 		_response->setStartLine(400);
 		_response->prepare();
@@ -205,7 +198,7 @@ bool Client::_checkRequestLine(void) // Add IpPort (to check )
 		return false;
 	}
 
-	if (_target_uri.find('\0') != std::string::npos)
+	if (_requestTarget.find('\0') != std::string::npos)
 	{
 		_response->setStartLine(400);
 		_response->prepare();
@@ -213,9 +206,8 @@ bool Client::_checkRequestLine(void) // Add IpPort (to check )
 		return false;
 	}
 
-	std::cout << "\e[32m[" << _method << "]\e[33m[" << _target_uri << "]\e[34m[" << HTTPVersion << "]\e[0m" << std::endl;
+	std::cout << "\e[32m[" << _method << "]\e[33m[" << _requestTarget << "]\e[34m[" << HTTPVersion << "]\e[0m" << std::endl;
 	return (true);
-	(void)_target_uri;
 }
 
 bool Client::validVerbSyntax(const std::string &method)
@@ -280,7 +272,7 @@ bool Client::_checkHeader(void)
 			}
 			if ((_method == "POST"))
 			{
-				const Location *loc = _config.getLocation(_target_uri);
+				const Location *loc = _config.getLocation(_requestTarget);
 				if (loc && !loc->getUploadLocation().empty())
 				{
 					_upload_dir = loc->getUploadLocation();
@@ -565,46 +557,6 @@ bool Client::_checkCurrentLine(const Client::REQUEST_STEP &reqSection)
 	}
 }
 
-// void Client::checkStep()
-// {
-// 	if (!_checkCurrentLine(REQUEST_LINE))
-// 	{
-// 		_requestStep = ERROR;
-// 		return ;
-// 	}
-// 	std::cout  << "\e[1:31m"<< "	-- Start Of Header --" << "\e[0m" << std::endl;
-// 	_requestStep = HEADERS;
-// 	while (_requestStep == HEADERS)
-// 	{
-// 		if (!_checkCurrentLine(HEADERS))
-// 		{
-// 			_requestStep = ERROR;
-// 			return ;
-// 		}
-// 	}
-// 	if (_requestStep == BODY)
-// 	{
-// 		if (!_checkBody())
-// 		{
-// 			_requestStep = ERROR;
-// 			return ;
-// 		}
-// 	}
-// 	if (_requestStep == FIN)
-// 	{
-// 		std::cout << "\e[1;31m" << "	-- End Of Body --" << "\e[0m" << std::endl;
-// 		if (_is_upload)
-// 			fileHandler();
-// 		else
-// 		{
-// 			_response->setBody("");
-// 			_response->prepare();
-// 		}
-// 		_done = true;
-// 		std::cout << "\033[1;34m" << "\t-- Response ready to be sent --" << "\033[0m" << std::endl;
-// 	}
-// }
-
 void Client::checkStep()
 {
 	if (_requestStep == REQUEST_LINE)
@@ -615,11 +567,6 @@ void Client::checkStep()
 		std::cout << "\e[1;31m\t-- Start Of Header --\e[0m" << std::endl;
 	}
 
-	// if (_requestStep == HEADERS)
-	// {
-	// 	if (!_checkCurrentLine(HEADERS))
-	// 		return ;
-	// }
 	if (_requestStep == HEADERS)
 	{
 		while (_makeExtractLine())
@@ -644,7 +591,7 @@ void Client::checkStep()
 	{
 		std::cout << "\e[1;31m\t-- End Of Body --\e[0m" << std::endl;
 
-		if (_target_uri == "/session_new" && _method == "GET")
+		if (_requestTarget == "/session_new" && _method == "GET")
 		{
 			std::map<std::string, std::string>::iterator it = _cookies.find("session_id");
 
@@ -670,7 +617,7 @@ void Client::checkStep()
 				_response->prepare();
 			}
 		}
-		else if (_target_uri == "/session_destroy" && _method == "GET")
+		else if (_requestTarget == "/session_destroy" && _method == "GET")
 		{
 			std::map<std::string, std::string>::iterator it = _cookies.find("session_id");
 			if (it != _cookies.end())
@@ -692,7 +639,7 @@ void Client::checkStep()
 				_response->prepare();
 			}
 		}
-		else if (_target_uri == "/session_info" && _method == "GET")
+		else if (_requestTarget == "/session_info" && _method == "GET")
 		{
 			std::map<std::string, std::string>::iterator it = _cookies.find("session_id");
 			if (it == _cookies.end())
@@ -737,7 +684,7 @@ void Client::checkStep()
 			fileHandler();
 		else
 		{
-			_response->setBody("");
+			_response->setLocation();
 			_response->prepare();
 		}
 		_done = true;
@@ -769,8 +716,8 @@ bool Client::finishedReading()	const
 void Client::fileHandler()
 {
 	std::string dir = _upload_dir;
-	// std::string filename = _target_uri.substr(_target_uri.find_last_of('/'));
-	std::string path = dir + _target_uri.substr(_target_uri.find_last_of('/'));
+	// std::string filename = _requestTarget.substr(_requestTarget.find_last_of('/'));
+	std::string path = dir + _requestTarget.substr(_requestTarget.find_last_of('/'));
 
 	std::ofstream file(path.c_str(), std::ios::binary);
 	if (!file.is_open())
@@ -829,7 +776,7 @@ bool Client::timedOut()
 
 void Client::putHandler()
 {
-	const Location *loc = _config.getLocation(_target_uri);
+	const Location *loc = _config.getLocation(_requestTarget);
 	if (!loc)
 	{
 		_response->setStartLine(404);
@@ -843,8 +790,8 @@ void Client::putHandler()
 		_response->prepare();
 		return ;
 	}
-	//if(_target_uri.substr(_target_uri.find_last_of('/') + 1) != )
-	std::string filename = _target_uri.substr(_target_uri.find_last_of('/') + 1);
+	//if(_requestTarget.substr(_requestTarget.find_last_of('/') + 1) != )
+	std::string filename = _requestTarget.substr(_requestTarget.find_last_of('/') + 1);
 	std::cout << "\033[1;32m FILENAME: " << filename << "\033[0m" << std::endl;
 	if (filename.empty())
 	{

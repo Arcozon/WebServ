@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/22 17:12:20 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/22 17:26:56 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,12 @@ const std::string Client::_sepLine = "\r\n";
 const std::size_t Client::_sepLineLen = _sepLine.size();
 const std::size_t Client::_bufferSize = 1024;
 
-Client::Client(int fd, IpPort *config, Sessions *instance)
+Client::Client(int fd, const IpPort &config, Sessions *instance)
 	: _fd(fd),
 	  _config(config),
 	  _request_len(0),
+	  _requestStep(REQUEST_LINE),
 	  _last_pos(0),
-	  _request_step(REQUEST_LINE),
 	  _done(false),
 	  _response(NULL),
 	  _is_upload(0),
@@ -48,37 +48,24 @@ Client::~Client()
 
 bool Client::_makeExtractLine(void)
 {
-	// _pos = _str_buffer.find(_sepLine, _last_pos);
-	// if(_pos == std::string::npos)
-	// 	return (false);
-	// else
-	// {
-	// 	//std::cout << "Got full request line" << std::endl << _str_buffer.substr(_last_pos, _pos + 2) << std::endl;
-	// 	_extract_line = _str_buffer.substr(_last_pos, _pos - _last_pos);
-	// 	// std::cout << "Full line recieved: " << _extract_line << std::endl;
-	// 	// std::cout  << "\e[34m"<< _extract_line << "\e[0m" << std::endl;
-	// 	_last_pos = _pos + _sepLineLen;
-	// 	return (true);
-	// }
-
 	char buffer[_bufferSize];
 	int rd;
 
-	_pos = _str_buffer.find(_sepLine, _last_pos);
+	_pos = _strBuffer.find(_sepLine, _last_pos);
 	if (_pos != std::string::npos)
 	{
-		_extract_line = _str_buffer.substr(_last_pos, _pos - _last_pos);
+		_extractedLine = _strBuffer.substr(_last_pos, _pos - _last_pos);
 		_last_pos = _pos + _sepLineLen;
-		// std::cout << "line: " << _extract_line << '\n';
+		// std::cout << "line: " << _extractedLine << '\n';
 		return (true);
 	}
 	rd = read(_fd, buffer, _bufferSize);
 	if (rd > 0)
 	{
 		updateTimer();
-		_str_buffer.append(buffer, rd);
+		_strBuffer.append(buffer, rd);
 		_request_len += rd;
-		_pos = _str_buffer.find(_sepLine, _last_pos);
+		_pos = _strBuffer.find(_sepLine, _last_pos);
 		if (_pos != std::string::npos)
 		{
 			_extractedLine = _strBuffer.substr(0, _pos);
@@ -135,21 +122,21 @@ bool Client::_checkRequestLine(void) // Add IpPort (to check )
 	{
 		_response->setStartLine(400);
 		_response->prepare();
-		_request_step = ERROR;
+		_requestStep = ERROR;
 		return (false);
 	}
-	if (_extract_line.length() > MAX_HEADER_SIZE) // 8kb
+	if (_extractedLine.length() > MAX_HEADER_SIZE) // 8kb
 	{
 		_response->setStartLine(414);
 		_response->prepare();
-		_request_step = ERROR;
+		_requestStep = ERROR;
 		return false;
 	}
 	if (splitReqLine.size() != 3)
 	{
 		_response->setStartLine(400);
 		_response->prepare();
-		_request_step = ERROR;
+		_requestStep = ERROR;
 		return false;
 	}
 
@@ -161,7 +148,7 @@ bool Client::_checkRequestLine(void) // Add IpPort (to check )
 	{
 		_response->setStartLine(400);
 		_response->prepare();
-		_request_step = ERROR;
+		_requestStep = ERROR;
 		return false;
 	}
 
@@ -169,7 +156,7 @@ bool Client::_checkRequestLine(void) // Add IpPort (to check )
 	{
 		_response->setStartLine(400); // or 501
 		_response->prepare();
-		_request_step = ERROR;
+		_requestStep = ERROR;
 		return (false);
 	}
 
@@ -177,7 +164,7 @@ bool Client::_checkRequestLine(void) // Add IpPort (to check )
 	{
 		_response->setStartLine(414);
 		_response->prepare();
-		_request_step = ERROR;
+		_requestStep = ERROR;
 		return false;
 	}
 
@@ -197,7 +184,7 @@ bool Client::_checkRequestLine(void) // Add IpPort (to check )
 	{
 		_response->setStartLine(400);
 		_response->prepare();
-		_request_step = ERROR;
+		_requestStep = ERROR;
 		return false;
 	}
 
@@ -205,7 +192,7 @@ bool Client::_checkRequestLine(void) // Add IpPort (to check )
 	{
 		_response->setStartLine(400);
 		_response->prepare();
-		_request_step = ERROR;
+		_requestStep = ERROR;
 		return false;
 	}
 
@@ -252,7 +239,7 @@ bool Client::_checkHeader(void)
 		std::cout << "\e[1;31m" << "	-- End Of Header --" << "\e[0m" << std::endl;
 		if (!validMinimalHeaders())
 		{
-			_request_step = ERROR;
+			_requestStep = ERROR;
 			return false;
 		}
 		std::map<std::string, std::string>::iterator it = _headers.find("Content-Length");
@@ -263,7 +250,7 @@ bool Client::_checkHeader(void)
 		{
 			if (!validContentLength(it->second))
 			{
-				_request_step = ERROR;
+				_requestStep = ERROR;
 				return false;
 			}
 
@@ -271,7 +258,7 @@ bool Client::_checkHeader(void)
 			if (_content_length > _config->getClientMaxBodySize())
 			{
 				_response->setStartLine(413);
-				_request_step = ERROR;
+				_requestStep = ERROR;
 				return false;
 			}
 			if ((_method == "POST"))
@@ -287,7 +274,7 @@ bool Client::_checkHeader(void)
 				{
 					_response->setStartLine(403);
 					_response->prepare();
-					_request_step = ERROR;
+					_requestStep = ERROR;
 					return false;
 				}
 			}
@@ -295,13 +282,13 @@ bool Client::_checkHeader(void)
 			{
 				;
 			}
-			_request_step = BODY;
+			_requestStep = BODY;
 		}
 		else if (_headers.find("Transfer-Encoding") != _headers.end())
 		{
 			_response->setStartLine(501);
 			_response->prepare();
-			_request_step = ERROR;
+			_requestStep = ERROR;
 			return false;
 		}
 		else
@@ -316,51 +303,51 @@ bool Client::_checkHeader(void)
 	{
 		_response->setStartLine(431);
 		_response->prepare();
-		_request_step = ERROR;
+		_requestStep = ERROR;
 		return false;
 	}
 
-	if (_extract_line.length() > 8192)
+	if (_extractedLine.length() > 8192)
 	{
 		_response->setStartLine(431);
 		_response->prepare();
-		_request_step = ERROR;
+		_requestStep = ERROR;
 		return false;
 	}
 
-	_headers_total_size += _extract_line.length() + 2;
+	_headers_total_size += _extractedLine.length() + 2;
 	if (_headers_total_size > HEADERS_TOTAL_MAX)
 	{
 		_response->setStartLine(431);
 		_response->prepare();
-		_request_step = ERROR;
+		_requestStep = ERROR;
 		return false;
 	}
 
-	std::pair<std::string, std::string> _nameVal = _splitHeaderLine(_extract_line);
+	std::pair<std::string, std::string> _nameVal = _splitHeaderLine(_extractedLine);
 	if (_nameVal.first.empty())
 	{
 		_response->setStartLine(400);
 		_response->prepare();
-		_request_step = ERROR;
+		_requestStep = ERROR;
 		return false;
 	}
 	if (!validHeaderSyntax(_nameVal.first))
 	{
 		_response->setStartLine(400);
 		_response->prepare();
-		_request_step = ERROR;
+		_requestStep = ERROR;
 		return false;
 	}
 
-	size_t colon_pos = _extract_line.find(':');
+	size_t colon_pos = _extractedLine.find(':');
 	if (colon_pos != std::string::npos && colon_pos > 0)
 	{
-		if (std::isspace(_extract_line[colon_pos - 1]))
+		if (std::isspace(_extractedLine[colon_pos - 1]))
 		{
 			_response->setStartLine(400);
 			_response->prepare();
-			_request_step = ERROR;
+			_requestStep = ERROR;
 			return false;
 		}
 	}
@@ -369,13 +356,13 @@ bool Client::_checkHeader(void)
 	{
 		_response->setStartLine(400);
 		_response->prepare();
-		_request_step = ERROR;
+		_requestStep = ERROR;
 		return false;
 	}
 
 	if (!validHeader(_nameVal.first, _nameVal.second))
 	{
-		_request_step = ERROR;
+		_requestStep = ERROR;
 		return false;
 	}
 
@@ -495,19 +482,19 @@ bool Client::_checkBody(void) // IpPort + setting correct StatusLine on error
 {
 	char buffer[_bufferSize];
 	int rd;
-	size_t curr_data = _str_buffer.length() - _last_pos;
+	size_t curr_data = _strBuffer.length() - _last_pos;
 	if (curr_data > 0)
 	{
 		size_t left_to_read = _content_length - _body_rd_bytes;
 		size_t to_copy = (curr_data < left_to_read) ? curr_data : left_to_read;
 
-		_body_data.append(_str_buffer, _last_pos, to_copy);
+		_body_data.append(_strBuffer, _last_pos, to_copy);
 		_body_rd_bytes += to_copy;
 		_last_pos += to_copy;
 
 		if (_body_rd_bytes == _content_length)
 		{
-			_request_step = FIN;
+			_requestStep = FIN;
 			std::cout << "\e[1;37m-- Received body payload (" << _body_rd_bytes << " bytes) --\e[0m" << std::endl;
 			return true;
 		}
@@ -516,18 +503,18 @@ bool Client::_checkBody(void) // IpPort + setting correct StatusLine on error
 	if (rd > 0)
 	{
 		updateTimer();
-		_str_buffer.append(buffer, rd);
+		_strBuffer.append(buffer, rd);
 		_request_len += rd;
-		size_t curr_data = _str_buffer.length() - _last_pos;
+		size_t curr_data = _strBuffer.length() - _last_pos;
 		size_t left_to_read = _content_length - _body_rd_bytes;
 		size_t to_copy = (curr_data < left_to_read) ? curr_data : left_to_read;
 
-		_body_data.append(_str_buffer, _last_pos, to_copy);
+		_body_data.append(_strBuffer, _last_pos, to_copy);
 		_body_rd_bytes += to_copy;
 		_last_pos += to_copy;
 		if (_body_rd_bytes == _content_length)
 		{
-			_request_step = FIN;
+			_requestStep = FIN;
 			std::cout << "\e[1;37m-- Received body payload (" << _body_rd_bytes << " bytes) --\e[0m" << std::endl;
 			return true;
 		}
@@ -565,28 +552,28 @@ bool Client::_checkCurrentLine(const Client::REQUEST_STEP &reqSection)
 // {
 // 	if (!_checkCurrentLine(REQUEST_LINE))
 // 	{
-// 		_request_step = ERROR;
+// 		_requestStep = ERROR;
 // 		return ;
 // 	}
 // 	std::cout  << "\e[1:31m"<< "	-- Start Of Header --" << "\e[0m" << std::endl;
-// 	_request_step = HEADERS;
-// 	while (_request_step == HEADERS)
+// 	_requestStep = HEADERS;
+// 	while (_requestStep == HEADERS)
 // 	{
 // 		if (!_checkCurrentLine(HEADERS))
 // 		{
-// 			_request_step = ERROR;
+// 			_requestStep = ERROR;
 // 			return ;
 // 		}
 // 	}
-// 	if (_request_step == BODY)
+// 	if (_requestStep == BODY)
 // 	{
 // 		if (!_checkBody())
 // 		{
-// 			_request_step = ERROR;
+// 			_requestStep = ERROR;
 // 			return ;
 // 		}
 // 	}
-// 	if (_request_step == FIN)
+// 	if (_requestStep == FIN)
 // 	{
 // 		std::cout << "\e[1;31m" << "	-- End Of Body --" << "\e[0m" << std::endl;
 // 		if (_is_upload)
@@ -603,40 +590,40 @@ bool Client::_checkCurrentLine(const Client::REQUEST_STEP &reqSection)
 
 void Client::checkStep()
 {
-	if (_request_step == REQUEST_LINE)
+	if (_requestStep == REQUEST_LINE)
 	{
 		if (!_checkCurrentLine(REQUEST_LINE))
 			return;
-		_request_step = HEADERS;
+		_requestStep = HEADERS;
 		std::cout << "\e[1;31m\t-- Start Of Header --\e[0m" << std::endl;
 	}
 
-	// if (_request_step == HEADERS)
+	// if (_requestStep == HEADERS)
 	// {
 	// 	if (!_checkCurrentLine(HEADERS))
 	// 		return ;
 	// }
-	if (_request_step == HEADERS)
+	if (_requestStep == HEADERS)
 	{
 		while (_makeExtractLine())
 		{
 			if (!_checkHeader())
 			{
-				_request_step = ERROR;
+				_requestStep = ERROR;
 				return ;
 			}
-			if (_request_step != HEADERS)
+			if (_requestStep != HEADERS)
 				break ;
 		}
 	}
 
-	if (_request_step == BODY)
+	if (_requestStep == BODY)
 	{
 		if (!_checkBody())
 			return;
 	}
 
-	if (_request_step == FIN)
+	if (_requestStep == FIN)
 	{
 		std::cout << "\e[1;31m\t-- End Of Body --\e[0m" << std::endl;
 
@@ -743,7 +730,7 @@ void Client::checkStep()
 
 void Client::readFromFd()
 {
-	if (!_done && (_request_step != ERROR))
+	if (!_done && (_requestStep != ERROR))
 		checkStep();
 }
 
@@ -794,7 +781,7 @@ bool Client::checkTimers()
 {
 	time_t diff = time(0) - _last_activity;
 	time_t elapsed = time(0) - _client_spawn;
-	if (_request_step == REQUEST_LINE || _request_step == HEADERS || _request_step == BODY)
+	if (_requestStep == REQUEST_LINE || _requestStep == HEADERS || _requestStep == BODY)
 	{
 		if (diff > _read_timer)
 		{
@@ -877,32 +864,32 @@ void Client::putHandler()
 
 // void Client::checkStep()
 // {
-// 	while (_request_step != FIN && _request_step != ERROR)
+// 	while (_requestStep != FIN && _requestStep != ERROR)
 // 	{
-// 		if(_request_step == REQUEST_LINE)
+// 		if(_requestStep == REQUEST_LINE)
 // 		{
 // 			if(!checkCurrentLine())
 // 				return ;
 // 			else
-// 				_request_step = HEADERS;
+// 				_requestStep = HEADERS;
 // 		}
-// 		else if(_request_step == HEADERS)
+// 		else if(_requestStep == HEADERS)
 // 		{
 // 			if(!checkCurrentLine())
 // 				return ;
-// 			if(_extract_line.empty())
+// 			if(_extractedLine.empty())
 // 			{
 // 				std::cout << "End of headers found" << std::endl;
-// 				_request_step = BODY;
+// 				_requestStep = BODY;
 // 			}
 // 		}
-// 		else if(_request_step == BODY)
+// 		else if(_requestStep == BODY)
 // 		{
 // 			if(!checkCurrentLine())
 // 				return ;
 // 			else
 // 			{
-// 				_request_step = FIN;
+// 				_requestStep = FIN;
 // 				break;
 // 			}
 // 		}

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 12:03:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/22 17:03:33 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/22 17:23:36 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ class Server
 		void readFromClient(int client_fd);
 		void writeToClient(int client_fd);
 		static void sigHandler(int signum);
-		IpPort *getConfig(int fd);
+		const IpPort &getConfig(int fd);
 		void removeClient(int client_fd);
 		void checkTimeouts();
 

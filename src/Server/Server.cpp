@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/22 17:17:51 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/22 17:24:25 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,19 +196,6 @@ void Server::start()
 	std::cout << "Bonne nuit!" << std::endl;
 }
 
-
-// Server::Server(std::vector<IpPort> &servers)
-// : _server_configs(servers)
-// {
-// 	for(size_t i = 0; i < _server_configs.size(); i++)
-// 	{
-// 		initSockets(&_server_configs[i]);
-// 	}
-// 	initEpoll();
-// 	signal(SIGINT, Server::sigHandler);
-// 	signal(SIGTERM, Server::sigHandler);
-// }
-
 Server::Server(int ac, char *av[])
 {
 	ParsWebServ	parsIpPorts(ac, av);
@@ -235,12 +222,10 @@ Server::~Server(void)
 	_clients.clear();
 }
 
-IpPort *Server::getConfig(int fd)
+const IpPort &Server::getConfig(int fd)
 {
 	std::map<int, IpPort*>::iterator it = _fd_config.find(fd);
-	if(it != _fd_config.end())
-		return it->second;
-	return NULL;
+	return *(it->second);
 }
 
 void Server::writeToClient(int client_fd)

@@ -38,9 +38,6 @@ private:
 	
 	
 private:
-	// struct epoll_event _s_client_event;
-	// struct sockaddr_in _s_client_addr;
-	// struct epoll_event _s_epoll_event;
 
 	int				_fd;
 	const IpPort	&_config;
@@ -50,6 +47,8 @@ private:
 	size_t		_pos;
 	std::string	_extractedLine;
 	REQUEST_STEP	_requestStep;
+	std::size_t		_last_pos;
+	bool			_done;
 	
 	std::string	_method;
 	std::string	_requestTarget;
@@ -61,7 +60,6 @@ private:
 	Response *_response;
 
 	bool	_is_upload;
-	std::string _method;
 	std::string _target_uri;
 	size_t _content_length;
 	size_t _body_rd_bytes;
@@ -101,9 +99,7 @@ private:
 
 
 public:
-	// Client(int fd, IpPort *config);
-	Client(int fd, const IpPort &config);
-	Client(int fd, IpPort *config, Sessions *instance);
+	Client(int fd, const IpPort &config, Sessions *instance);
 	~Client();
 
 	void readFromFd();

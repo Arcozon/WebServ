@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 16:29:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/22 17:15:40 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/22 17:45:26 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,21 @@
 #include "Client.hpp"
 #include "Cookies.hpp"
 
+#include "FStat.hpp"
+#include "ReadDir.hpp"
+
 std::map<int, std::string> Response::_reason_phrases;
 const std::string	Response::endOfLine = "\r\n";
 const std::string	Response::sepNameContent = ": ";
 
-#include "Client.hpp"
-#include "FStat.hpp"
-#include "ReadDir.hpp"
-Response::Response(Client *cl)
-: _response_code(200), _send_count(0), _fully_sent(0), _cl(cl)
+Response::Response(Client *cl, const IpPort &ipPort)
+:	_responseCode(200),
+	_isCGI(false),
+	_send_count(0),
+	_fully_sent(false),
+	_cl(cl),
+	_ipPort(ipPort),
+	_location(ipPort.getLocation(cl->getTargetLocation()))
 {
 	_body = "";
 	if(_reason_phrases.empty())
@@ -46,33 +52,16 @@ Response::Response(Client *cl)
 		_reason_phrases[505] = "HTTP Version Not Supported";
 		
 	}
+	if (_location)
+		_URI = _cl->getTargetLocation().substr(_location->getLocation().size());
 	setHeader("Server", SERVER_HEADER);
 	setHeader("Connection", "close");
 	setHeader("Content-Type", "text/html; charset=UTF-8");
 }
 
-
-Response::Response(Client *cl, const IpPort &ipPort)
-:	_responseCode(200),
-	_reasonPhrase("OK"),
-	_isCGI(false),
-	_send_count(0),
-	_fully_sent(false),
-	_cl(cl),
-	_ipPort(ipPort),
-	_location(ipPort.getLocation(cl->getTargetLocation()))
-{
-	if (_location)
-		_URI = _cl->getTargetLocation().substr(_location->getLocation().size());
-	_body = "<html><body><h1>";
-	_body += "Je suis ";
-	_body += _ipPort.getIpPortStr();
-	_body += "</h1></body></html>";
-}
-
 void Response::setStartLine(int code)
 {
-	_response_code = code;
+	_responseCode = code;
 	std::ostringstream res;
 	res << HTTP_VERSION << " " << code << " " << getReasonPhrase(code) << "\r\n";
 	_status_line = res.str();
@@ -80,7 +69,12 @@ void Response::setStartLine(int code)
 
 void Response::setHeader(const std::string &key, const std::string &val)
 {
-	_headers[key] = val;
+	_header[key] = val;
+}
+
+void Response::setBody(const std::string &body)
+{
+	_body += body;
 }
 
 void	Response::catContentLenght(void)
@@ -170,20 +164,20 @@ void	Response::prepare(const std::string &body)
 void Response::prepare()
 {
 	std::ostringstream len, headers;
-	if (_headers.find("Content-Length") == _headers.end()  && !_body.empty())
+	if (_header.find("Content-Length") == _header.end()  && !_body.empty())
 	{
 		len << _body.length();
 		setHeader("Content-Length", len.str());
 	}
 
-	for (std::map<std::string, std::string>::iterator it = _headers.begin(); it != _headers.end(); ++it)
+	for (std::map<std::string, std::string>::iterator it = _header.begin(); it != _header.end(); ++it)
 		headers << it->first << ": " << it->second << "\r\n";
 
 	for (size_t i = 0; i < _cookies.size(); i++)
 		headers << "Set-Cookie: " << _cookies[i].setCookieHeader() << "\r\n";
 
 	headers << "\r\n";
-	setStartLine(_response_code);
+	setStartLine(_responseCode);
 	_response_buffer += _status_line;
 	_response_buffer += headers.str();
 	_response_buffer += _body;
@@ -235,7 +229,7 @@ void	Response::makeRep(void)
 		{
 			if (_location->_hasCGIHandler(_cl->getTargetLocation()))
 				_handleCGI();
-			else if (_location->hasReturn())
+			else if (_location->isReturnDefined())
 				_handleReturn(_location->getReturn());
 			else if (methodCode == Location::s_GET)
 				_handleGET();

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/22 17:26:56 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/22 17:28:57 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,23 @@ bool Client::_makeExtractLine(void)
 	}
 	else
 		return (false);
+}
+static inline std::size_t _countBlock(const std::string &reqLine)
+{
+	static const char	setReqLine = ' ';	
+	std::size_t	count = 0;
+	std::size_t	firstSpace;
+
+	for (std::size_t i = 0; i < reqLine.size(); ++count)
+	{
+		firstSpace = reqLine.find(setReqLine, i);
+		if (firstSpace != std::string::npos)
+			i = reqLine.find_first_not_of(setReqLine, firstSpace);
+		else
+			i = std::string::npos;
+	}
+	// std::cout << '[' << count << "]:'" << reqLine << "'\n";
+	return (count); 
 }
 
 const std::vector<std::string> Client::_splitRequestLine(const std::string &reqLine)
@@ -255,7 +272,7 @@ bool Client::_checkHeader(void)
 			}
 
 			_content_length = std::atol(it->second.c_str());
-			if (_content_length > _config->getClientMaxBodySize())
+			if (_content_length > _config.getClientMaxBodySize())
 			{
 				_response->setStartLine(413);
 				_requestStep = ERROR;
@@ -263,7 +280,7 @@ bool Client::_checkHeader(void)
 			}
 			if ((_method == "POST"))
 			{
-				const Location *loc = _config->getLocation(_target_uri);
+				const Location *loc = _config.getLocation(_target_uri);
 				if (loc && !loc->getUploadLocation().empty())
 				{
 					_upload_dir = loc->getUploadLocation();
@@ -812,7 +829,7 @@ bool Client::timedOut()
 
 void Client::putHandler()
 {
-	const Location *loc = _config->getLocation(_target_uri);
+	const Location *loc = _config.getLocation(_target_uri);
 	if (!loc)
 	{
 		_response->setStartLine(404);

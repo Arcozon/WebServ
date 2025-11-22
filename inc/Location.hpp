@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:18:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/22 17:20:25 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/22 17:40:49 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ class Location
 
 		bool	isValid(void) const;
 
+		static Location::sAllowedMethods	getMethodCode(const std::string &method);
 		bool	isMethodAllowed(const sAllowedMethods &method) const;
 		bool	isMethodAllowed(const std::string &method) const;
 		

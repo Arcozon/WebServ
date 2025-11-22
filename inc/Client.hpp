@@ -105,8 +105,8 @@ public:
 	void readFromFd();
 	void checkStep();
 	void sendResponse();
-	bool responseSent();
-	bool finishedReading();
+	bool responseSent() const;
+	bool finishedReading() const;
 	void fileHandler();
 	void updateTimer();
 	bool checkTimers();
@@ -115,6 +115,11 @@ public:
 	const std::map<std::string, std::string> &getCookies() const;
 	void putHandler();
 
+	const IpPort	&getConfig(void) const;
+	const std::string	&getMethod(void) const;
+	const std::string	&getTargetLocation(void) const;
+	const std::string	&getQueryString(void) const;
+	const std::map<std::string, std::string>	&getHeader(void)const;
 
 };
 

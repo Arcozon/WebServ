@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 13:05:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/22 17:03:00 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/22 17:45:32 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 # include "FStat.hpp"
 
 #define HTTP_VERSION "HTTP/1.1"
-#define SERVER_HEADER "TURBOINTGAEUDES 1.0 (Unix)"
+#define SERVER_HEADER "TURBOINTGAEUDESSAAL-KUR 5.7.12 (MacOS)"
 
 class Client;
 class IpPort;
@@ -101,13 +101,14 @@ private:
 	void	_handleError(void);
 	void	_handleReturn(const Return &ret);
 
+	void	setHeader(const std::string &key, const std::string &val);
+	
 public:
 	static bool	isErrorCode(const unsigned short errCode);
 	
 	Response(Client *cl, const IpPort &ipPort);
 	~Response();
 
-	void	setHeaders(const std::map<std::string, std::string> &map);
 	void	catResponse(void);
 	void	makeRep(void);
 
@@ -116,9 +117,9 @@ public:
 	void	prepare(const std::string &body);
 	bool	isResponseFullySent()	const;
 
-	void setBody(const std::string &body);
 	void setStartLine(int code);
-	void setReasonPhrases();
+	// void setReasonPhrases();
+	void setBody(const std::string &body);
 
 	std::string getReasonPhrase(int code) const;
 	void addCookie(const Cookies &cookie);

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/22 18:26:41 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/22 19:02:30 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ bool Client::_makeExtractLine(void)
 	{
 		_extractedLine = _strBuffer.substr(_last_pos, _pos - _last_pos);
 		_last_pos = _pos + _sepLineLen;
-		// std::cout << "line: " << _extractedLine << '\n';
 		return (true);
 	}
 	rd = read(_fd, buffer, _bufferSize);
@@ -83,12 +82,14 @@ bool Client::_makeExtractLine(void)
 		return (false);
 }
 
-static inline std::size_t _countBlock(const std::string &reqLine)
+// static inline std::size_t _countBlock(const std::string &reqLine)
+inline std::size_t _countBlock(const std::string &reqLine)
 {
 	static const char	setReqLine = ' ';	
 	std::size_t	count = 0;
 	std::size_t	firstSpace;
 
+	std::cout << "reqline[" << reqLine <<"]\n";
 	for (std::size_t i = 0; i < reqLine.size(); ++count)
 	{
 		firstSpace = reqLine.find(setReqLine, i);
@@ -96,25 +97,28 @@ static inline std::size_t _countBlock(const std::string &reqLine)
 			i = reqLine.find_first_not_of(setReqLine, firstSpace);
 		else
 			i = std::string::npos;
+		std::cout << "count[" << count <<"]\n";
 	}
+	std::cout << "FINALcount[" << count <<"]\n";
 	return (count); 
 }
 
 const std::vector<std::string> Client::_splitRequestLine(const std::string &reqLine)
 {
-	static const char setReqLine = ' ';
-	std::vector<std::string> splitReqLine;
+	// static const char setReqLine = ' ';
+	// std::vector<std::string> splitReqLine;
 
-	if (_countBlock(reqLine) != 3)
-		return (splitReqLine);
+	// if (_countBlock(reqLine) != 3)
+	// 	return (splitReqLine);
 
-	std::size_t firstSpace = reqLine.find_first_of(setReqLine);
-	std::size_t secondSpace = reqLine.find_first_of(setReqLine, firstSpace + 1);
+	// std::size_t firstSpace = reqLine.find_first_of(setReqLine);
+	// std::size_t secondSpace = reqLine.find_first_of(setReqLine, firstSpace + 1);
 
-	splitReqLine.push_back(reqLine.substr(0, firstSpace));
-	splitReqLine.push_back(reqLine.substr(firstSpace + 1, secondSpace - (firstSpace + 1)));
-	splitReqLine.push_back(reqLine.substr(secondSpace + 1));
-	return (splitReqLine);
+	// splitReqLine.push_back(reqLine.substr(0, firstSpace));
+	// splitReqLine.push_back(reqLine.substr(firstSpace + 1, secondSpace - (firstSpace + 1)));
+	// splitReqLine.push_back(reqLine.substr(secondSpace + 1));
+	// return (splitReqLine);
+	return (ParsLine::splitLine(reqLine, ' ', false));
 }
 
 const std::pair<std::string, std::string> Client::_splitHeaderLine(const std::string &reqLine)
@@ -135,6 +139,7 @@ bool Client::_checkRequestLine(void) // Add IpPort (to check )
 {
 	std::vector<std::string>	splitReqLine = _splitRequestLine(_extractedLine);
 
+	// std::cout << "Sise: " << splitReqLine.size() << std::endl;
 	if (_extractedLine.length() > MAX_HEADER_SIZE) // 8kb
 	{
 		_response->setStartLine(414);
@@ -153,6 +158,8 @@ bool Client::_checkRequestLine(void) // Add IpPort (to check )
 	_method = splitReqLine.at(0);
 	_requestTarget = splitReqLine.at(1);
 	std::string HTTPVersion = splitReqLine.at(2);
+	// std::cout << _extractedLine << '\n';
+	// std::cout << _method << "|"<< _requestTarget << "|"<< _HTTPVersion << '\n'; // TODO
 
 	if (!validVerbSyntax(_method))
 	{
@@ -696,6 +703,11 @@ void Client::readFromFd()
 {
 	if (!_done && (_requestStep != ERROR))
 		checkStep();
+	if (_requestStep != ERROR)
+	{
+		_response->setStartLine(5800);
+		_response->prepare();
+	}
 }
 
 void Client::sendResponse()
@@ -710,7 +722,7 @@ bool Client::responseSent()	const
 
 bool Client::finishedReading()	const
 {
-	return (_requestStep == FIN);
+	return (_requestStep == FIN || _requestStep == ERROR);
 }
 
 void Client::fileHandler()
@@ -825,40 +837,6 @@ void Client::putHandler()
 	std::cout << "\033[1;32m PUT: File " << full_dir << " " << (prev_in_use ? "updated" : "created") << "\033[0m" << std::endl;
 	_response->prepare();
 }
-
-// void Client::checkStep()
-// {
-// 	while (_requestStep != FIN && _requestStep != ERROR)
-// 	{
-// 		if(_requestStep == REQUEST_LINE)
-// 		{
-// 			if(!checkCurrentLine())
-// 				return ;
-// 			else
-// 				_requestStep = HEADERS;
-// 		}
-// 		else if(_requestStep == HEADERS)
-// 		{
-// 			if(!checkCurrentLine())
-// 				return ;
-// 			if(_extractedLine.empty())
-// 			{
-// 				std::cout << "End of headers found" << std::endl;
-// 				_requestStep = BODY;
-// 			}
-// 		}
-// 		else if(_requestStep == BODY)
-// 		{
-// 			if(!checkCurrentLine())
-// 				return ;
-// 			else
-// 			{
-// 				_requestStep = FIN;
-// 				break;
-// 			}
-// 		}
-// 	}
-// }
 
 const IpPort	&Client::getConfig(void) const
 {

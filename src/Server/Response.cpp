@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 16:29:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/22 18:34:44 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/22 19:00:25 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ Response::Response(Client *cl, const IpPort &ipPort)
 		_reason_phrases[501] = "Not Implemented";
 		_reason_phrases[503] = "Service Unavailable";
 		_reason_phrases[505] = "HTTP Version Not Supported";
-		
 	}
 	setHeader("Server", SERVER_HEADER);
 	setHeader("Connection", "close");
@@ -131,6 +130,10 @@ void Response::prepare()
 
 	if (_insideErr)
 		makeRep();
+	else if (isErrorCode(_responseCode))
+	{
+		_handleError();
+	}
 	
 	catResponse();
 }

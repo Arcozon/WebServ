@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 10:55:15 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/10 19:35:10 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/22 19:01:58 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,26 +23,7 @@ void	Response::_makeErrPage()
 
 	maker.addMarkup("html");
 	{
-		if (_responseCode == 200)
-			errMsg = "OK";
-		else if (_responseCode == 201)
-			errMsg = "Created";
-		else if (_responseCode == 204)
-			errMsg = "No Content";
-		else if (_responseCode == 301)
-			errMsg = "Moved Permanently";
-		else if (_responseCode == 400)
-			errMsg = "Bad Request";
-		else if (_responseCode == 403)
-			errMsg = "Forbiden Access";
-		else if (_responseCode == 404)
-			errMsg = "Not Found";
-		else if (_responseCode == 405)
-			errMsg = "Method Not Allowed";
-		else if (_responseCode == 500)
-			errMsg = "Internal Server Error";
-		else
-			errMsg = "WTF";
+		errMsg = getReasonPhrase(_responseCode);
 		maker.addMarkupWithText("title", "Error: " + errMsg);
 	}
 	maker.addMarkup("body");

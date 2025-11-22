@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 12:03:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/21 14:58:04 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/22 17:03:33 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,15 @@
 #include <map>
 #include <signal.h>
 #include <csignal>
+
 #include "Client.hpp"
 #include "IpPort.hpp"
+#include "Sessions.hpp"
 
 #define EVENT_SIZE 100
 
 class Client;
+class Sessions;
 
 class Server
 {
@@ -47,6 +50,7 @@ class Server
 		std::map<int, IpPort*>	_fd_config;
 		int	_epoll_instance;
 		static int _stop_signal;
+		Sessions _sessions;
 
 		void initSockets(IpPort *config);
 		void initEpoll();
@@ -57,14 +61,13 @@ class Server
 		static void sigHandler(int signum);
 		IpPort *getConfig(int fd);
 		void removeClient(int client_fd);
-
+		void checkTimeouts();
 
 		Server(void);
 		static Server *_serv;
 
 	public:
 		
-		// Server(std::vector<IpPort> &servers);
 		Server(int ac, char *av[]);
 		~Server(void);
 		void start(); // démarre l'event loop du serveur

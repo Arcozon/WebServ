@@ -68,6 +68,8 @@ class IpPort
 		const std::string &getPortStr(void) const;
 		const unsigned long &getHost(void) const;
 		const unsigned short &getPort(void) const;
+		const Location	*getLocation(const std::string &cPath)	const;
+		size_t getClientMaxBodySize(void) const;
 
 		bool errorPageDefined(const std::string &errCode) const;
 		bool errorPageDefined(const std::size_t &errCode) const;

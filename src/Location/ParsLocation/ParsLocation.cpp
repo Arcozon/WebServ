@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/17 16:49:57 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/22 17:07:35 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ void	Location::ParsLocation::_addIndex(void)
 	typedef std::vector<std::string>::const_iterator	VecStrConstIt;
 	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
 
-	if (splitLine.size() == 1)
+	if (splitLine.size() == 1)// TODO CHECK REVERSE TRAVERSAL
 		throw (MyException("Needs arguments", MyException::ELVL_WARNING, splitLine.front()));
 	for (VecStrConstIt it = splitLine.begin() + 1; it != splitLine.end(); ++it)
 	{

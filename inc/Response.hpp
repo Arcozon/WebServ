@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 13:05:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/21 17:42:24 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/22 17:03:00 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,17 @@
 # include <string>
 # include <map>
 # include <sstream>
-
+#include <vector>
 # include <unistd.h>
 
 # include "FStat.hpp"
 
+#define HTTP_VERSION "HTTP/1.1"
+#define SERVER_HEADER "TURBOINTGAEUDES 1.0 (Unix)"
+
 class Client;
 class IpPort;
+class Cookies;
 class Location;
 class Return;
 class ReadDir;
@@ -31,23 +35,25 @@ class ReadDir;
 class Response
 {
 private:
+	class	MakeHTML;
 	static const std::string	endOfLine;
 	static const std::string	sepNameContent;
-
-	class	MakeHTML;
+	static std::map<int, std::string> _reason_phrases;
 
 private:
 	unsigned short	_responseCode;
 	std::string		_reasonPhrase;
 	std::map<std::string, std::string> _header;
+	std::string _status_line;
 	std::string		_body;
-
+	
 	bool			_isCGI;
-
+	
 	std::string		_response_buffer;
 	unsigned int	_send_count;
 	bool			_fully_sent;
 	
+	std::vector<Cookies> _cookies;
 	Client			*_cl;
 	const IpPort	&_ipPort;
 	const Location	* _location;
@@ -96,8 +102,9 @@ private:
 	void	_handleReturn(const Return &ret);
 
 public:
+	static bool	isErrorCode(const unsigned short errCode);
+	
 	Response(Client *cl, const IpPort &ipPort);
-	// Response(Client *cl);
 	~Response();
 
 	void	setHeaders(const std::map<std::string, std::string> &map);
@@ -109,7 +116,12 @@ public:
 	void	prepare(const std::string &body);
 	bool	isResponseFullySent()	const;
 
-	static bool	isErrorCode(const unsigned short errCode);
+	void setBody(const std::string &body);
+	void setStartLine(int code);
+	void setReasonPhrases();
+
+	std::string getReasonPhrase(int code) const;
+	void addCookie(const Cookies &cookie);
 };
 
 #endif

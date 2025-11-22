@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:37:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/19 16:35:06 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/22 17:06:52 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ bool	Location::isIndexDefined(void)	const	{	return (_index.size() != 0);	}
 bool	Location::isAutoIndexOn(void)	const	{	return (_flags & GET_MASK(s_autoindex));	}
 bool	Location::isUploadDefined(void)	const	{	return (_flags & GET_MASK(s_upload_store));	}
 bool	Location::isCGIDefined(void)	const	{	return (_cgiHandler.size() != 0);	}
-bool	Location::hasReturn(void)	const	{	return (_return.isDefined());	}
+bool	Location::isReturnDefined(void)	const	{	return (_flags & GET_MASK(s_return));	}
 
 const std::string	&Location::getLocation(void) const
 {	return (_location);	}

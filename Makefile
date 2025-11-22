@@ -27,6 +27,7 @@ SRC_IPPORT =  $(addprefix $(D_IPPORT), $(S_IPPORT))
 S_SERVER   =  Server.cpp Client.cpp
 S_SERVER  +=  Response.cpp  ResponseGet.cpp  ResponsePost.cpp  ResponseDelete.cpp
 S_SERVER  +=  ResponseAutoIndex.cpp  ResponseError.cpp  ResponseReturn.cpp  ResponseCGI.cpp
+S_SERVER  +=  Cookies.cpp Sessions.cpp
 D_SERVER   =  Server/
 SRC_SERVER =  $(addprefix $(D_SERVER), $(S_SERVER))
 
@@ -50,12 +51,12 @@ S_INC =  . Pars  CGI
 INC	  =  $(addprefix $(D_INC), $(S_INC))
 
 CPP		=  c++
-FLAGS	=  -Wall -Wextra -Werror -MMD -g -std=c++98
+FLAGS	=  -Wall -Wextra -Werror -MMD -g3 -std=c++98
 IFLAGS	=  $(addprefix "-I", $(INC)) 
 
 RM =  rm -rf
 
-VAL = valgrind --leak-check=full --show-leak-kinds=all -q
+VAL = valgrind --track-origins=yes --leak-check=full --show-leak-kinds=all -q
 MAKE += --no-print-directory
 .DEFAULT_GOAL := test
 

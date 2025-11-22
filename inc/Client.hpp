@@ -8,9 +8,14 @@
 # include <vector>
 # include <algorithm>
 
+#define MAX_HEADER_SIZE 8192
+#define HEADERS_TOTAL_MAX 8192
+
 class IpPort;
 class Response;
 class Location;
+class Cookies;
+class Sessions;
 
 class Client
 {
@@ -54,7 +59,26 @@ private:
 	
 	Location *_location;
 	Response *_response;
-	
+
+	bool	_is_upload;
+	std::string _method;
+	std::string _target_uri;
+	size_t _content_length;
+	size_t _body_rd_bytes;
+	std::string _body_data;
+	std::string _upload_dir;
+
+	time_t _last_activity;
+	time_t _read_timer;
+    time_t _write_timer;
+	time_t _client_spawn;
+	time_t _max_req_duration;
+
+	std::map<std::string, std::string> _cookies;
+	Sessions *_session_ptr;
+
+	size_t _headers_total_size;
+
 private:
 	static const std::vector<std::string>	_splitRequestLine(const std::string &reqLine);
 	static const std::pair<std::string, std::string>	_splitHeaderLine(const std::string &reqLine);
@@ -65,22 +89,37 @@ private:
 	bool	_checkBody(void);	// Add IoPort (to check )
 	bool	_checkCurrentLine(const Client::REQUEST_STEP &reqSection);
 	
+
+	bool validVerbSyntax(const std::string &method);
+	bool ValidURI(const std::string &uri);
+	bool validHeaderSyntax(const std::string &name);
+	bool validMinimalHeaders();
+	bool validContentLength(const std::string &value);
+	bool validDuplicateHeader(const std::string &name);
+	bool validHeader(const std::string &name, const std::string &value);
+
+
+
 public:
 	// Client(int fd, IpPort *config);
 	Client(int fd, const IpPort &config);
+	Client(int fd, IpPort *config, Sessions *instance);
 	~Client();
 
 	void readFromFd();
 	void checkStep();
 	void sendResponse();
-	bool responseSent() const;
-	bool finishedReading() const;
+	bool responseSent();
+	bool finishedReading();
+	void fileHandler();
+	void updateTimer();
+	bool checkTimers();
+	bool timedOut();
+	std::string getCookie(const std::string &name) const;
+	const std::map<std::string, std::string> &getCookies() const;
+	void putHandler();
 
-	const IpPort		&getConfig(void)	const;
-	const std::string	&getMethod(void)	const;
-	const std::string	&getTargetLocation(void)	const;
-	const std::string	&getQueryString(void)	const;
-	const std::map<std::string, std::string>	&getHeader(void)	const;
+
 };
 
 

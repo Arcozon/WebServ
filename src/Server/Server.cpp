@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/21 15:54:00 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/22 17:17:51 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,8 +116,7 @@ void Server::registerNewClient(int server_fd)
 		accept_event.events = EPOLLIN | EPOLLET;
 		accept_event.data.fd = client_fd;
 
-		// Client *client = new Client(client_fd, getConfig(server_fd));
-		Client *client = new Client(client_fd, *getConfig(server_fd));
+		Client *client = new Client(client_fd, getConfig(server_fd), &_sessions);
 		_clients[client_fd] = client;
 
 		if(epoll_ctl(_epoll_instance, EPOLL_CTL_ADD, client_fd, &accept_event) == -1)
@@ -135,7 +134,7 @@ void Server::readFromClient(int client_fd)
 	cl->readFromFd();
 	if(cl->finishedReading())
 	{
-		std::cout << "\033[1;34m" << "\t-- IN EPOLLOUT SWITCH CONDITION --" << "\033[0m" << std::endl;
+		//std::cout << "\033[1;34m" << "\t-- IN EPOLLOUT SWITCH CONDITION --" << "\033[0m" << std::endl;
 		epoll_event ev;
 		std::memset(&ev, 0, sizeof(ev));
 		ev.events = EPOLLOUT | EPOLLET;
@@ -157,7 +156,7 @@ void Server::start()
 		if (n_fds == -1)
 		{
 			if (errno == EINTR)
-				continue ;
+			continue ;
 			throw std::runtime_error("Failed to register epoll events (epoll_wait");
 		}
 		for (int i = 0; i < n_fds; i++)
@@ -191,6 +190,7 @@ void Server::start()
 				writeToClient(ev_fd);
 			}
 		}
+		checkTimeouts();
 	}
 	_serv = NULL;
 	std::cout << "Bonne nuit!" << std::endl;
@@ -275,4 +275,19 @@ void	Server::closeServer(void)
 		_serv->~Server();
 		_serv = NULL;
 	}
+}
+
+void Server::checkTimeouts()
+{
+	std::vector<int> timeout_list;
+	for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if (it->second && it->second->timedOut())
+		{
+			std::cout << "\033[1;31mClient " << it->first << " timed out and was added to the timeout list\033[0m" << std::endl;
+			timeout_list.push_back(it->first);
+		}
+	}
+	for (size_t i = 0; i < timeout_list.size(); i++)
+		removeClient(timeout_list[i]);
 }

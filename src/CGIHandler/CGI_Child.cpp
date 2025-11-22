@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 12:57:45 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/21 16:58:28 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/22 16:48:32 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,6 @@ void	CGI::_execCGI()
 			cEnv = CGIEnv::getCEnv();
 			if (!cEnv)
 				throw 'a';
-			throw 'a';
 			execve(_binary.c_str(), cArgv, cEnv);
 		}
 		catch (...)

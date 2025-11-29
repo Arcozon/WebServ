@@ -118,7 +118,8 @@ public:
 	const std::string	&getMethod(void) const;
 	const std::string	&getTargetLocation(void) const;
 	const std::string	&getQueryString(void) const;
-	const std::map<std::string, std::string>	&getHeader(void)const;
+	const std::map<std::string, std::string>	&getHeader(void) const;
+	const std::string	&getBody(void) const;
 
 };
 

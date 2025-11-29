@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 16:22:44 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/21 17:39:06 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/29 15:42:55 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	Response::_handleCGI(void)
 		// CGI	handler(bin, _location->getRoot(), scriptName, pathInfo, _cl->getQueryString(), _cl->getMethod(),
 		// 	_cl->getHeader(), _ipPort, _location, _body);
 		CGI	handler(bin, _location->getRoot(), _URI, _cl->getQueryString(), _cl->getMethod(),
-			_cl->getHeader(), _ipPort, _location, _body);
+			_cl->getHeader(), _ipPort, _location, _cl->getBody());
 		
 		handler.forkCGI();
 		if (!handler.fail())

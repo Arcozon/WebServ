@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 12:57:45 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/22 16:48:32 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/29 16:10:25 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,12 @@ void	CGI::_exportEnv(void) const
 	CGIEnv::addVar("SERVER_PROTOCOL", "HTTP/1.1");
 	CGIEnv::addVar("SERVER_PORT", _ipPort.getPortStr());
 	CGIEnv::addVar("REQUEST_METHOD", _method);
-	CGIEnv::addVar("PATH_INFO", _pathInfo);
+	if (!_pathInfo.empty())
+		CGIEnv::addVar("PATH_INFO", _pathInfo);
 	CGIEnv::addVar("PATH_TRANSLATED",
 		Location::simplifyLocationPath(_location->getLocation() + '/' + _pathInfo));
-	CGIEnv::addVar("SCRIPT_NAME",
-		Location::simplifyLocationPath(_scriptPath + '/' + _script));
+	// CGIEnv::addVar("SCRIPT_NAME",
+	// 	Location::simplifyLocationPath(_scriptPath + '/' + _script));
 	// CGIEnv::addVar("REMOTE_HOST", "HTTP/1.1");
 	// CGIEnv::addVar("AUTH_TYPE", "HTTP/1.1");
 	// CGIEnv::addVar("REMOTE_USER", "HTTP/1.1");
@@ -34,14 +35,17 @@ void	CGI::_exportEnv(void) const
 	{// CGIEnv::addVar("CONTENT_TYPE", "HTTP/1.1");
 		t_header::const_iterator itContType = _header.find("Content-Type");
 		if (itContType != _header.end())
+		{
 			CGIEnv::addVar("CONTENT_TYPE", itContType->second);
+			// CGIEnv::addVar("Content-Type", itContType->second);
+		}
 	}
 	{// CGIEnv::addVar("CONTENT_LENGTH", "HTTP/1.1");
-		t_header::const_iterator itContLen = _header.find("Content-Lenght");
+		t_header::const_iterator itContLen = _header.find("Content-Length");
 		if (itContLen != _header.end())
-			CGIEnv::addVar("CONTENT_LENGHT", itContLen->second);
+			CGIEnv::addVar("CONTENT_LENGTH", itContLen->second);
 		else
-			CGIEnv::addVar("CONTENT_LENGHT", "");
+			CGIEnv::addVar("CONTENT_LENGTH", "");
 	}
 	CGI::CGIEnv::addHeader(_header);
 }
@@ -55,7 +59,11 @@ void	CGI::_execCGI()
 	if (dup2(_pipeIn[0], STDIN_FILENO) < 0
 		|| dup2(_pipeOut[1], STDOUT_FILENO) < 0
 		|| chdir(_scriptPath.c_str()))
+	{
+		_closeFd(_pipeIn[0]);
+		_closeFd(_pipeOut[1]);
 		exit(_retValServErr);
+	}
 	_closeFd(_pipeIn[0]);
 	_closeFd(_pipeOut[1]);
 	_exportEnv();
@@ -82,5 +90,6 @@ void	CGI::_execCGI()
 		delete[] cArgv[1];
 		CGIEnv::freeCEnv(cEnv);
 	}
+	std::cerr << "Here\n";
 	exit(_retValServErr);
 }

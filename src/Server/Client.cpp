@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/22 19:02:30 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/29 15:44:32 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,7 @@ bool Client::_checkRequestLine(void) // Add IpPort (to check )
 	_requestTarget = splitReqLine.at(1);
 	std::string HTTPVersion = splitReqLine.at(2);
 	// std::cout << _extractedLine << '\n';
-	// std::cout << _method << "|"<< _requestTarget << "|"<< _HTTPVersion << '\n'; // TODO
+	std::cout << _method << "|"<< _requestTarget << "|"<< _HTTPVersion << '\n'; // TODO
 
 	if (!validVerbSyntax(_method))
 	{
@@ -286,13 +286,13 @@ bool Client::_checkHeader(void)
 					_is_upload = true;
 					std::cout << "\033[1;36m[Upload of size: " << _content_length << " bytes]\033[0m" << std::endl;
 				}
-				else
-				{
-					_response->setStartLine(403);
-					_response->prepare();
-					_requestStep = ERROR;
-					return false;
-				}
+				// else
+				// {
+				// 	_response->setStartLine(403);
+				// 	_response->prepare();
+				// 	_requestStep = ERROR;
+				// 	return false;
+				// }
 			}
 			else
 			{
@@ -703,11 +703,10 @@ void Client::readFromFd()
 {
 	if (!_done && (_requestStep != ERROR))
 		checkStep();
-	if (_requestStep != ERROR)
-	{
-		_response->setStartLine(5800);
-		_response->prepare();
-	}
+	// if (_requestStep != ERROR)
+	// {
+	// 	_response->prepare();
+	// }
 }
 
 void Client::sendResponse()
@@ -862,4 +861,9 @@ const std::string	&Client::getQueryString(void) const
 const std::map<std::string, std::string>	&Client::getHeader(void)const
 {
 	return (_headers);
+}
+
+const std::string	&Client::getBody(void) const
+{
+	return (_body_data);
 }

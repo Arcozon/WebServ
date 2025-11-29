@@ -1,0 +1,58 @@
+server
+	host 127.0.0.1
+	port 3001
+	error_page 400 .pageHTLM/error_pages/400.html
+	error_page 404 .pageHTLM/error_pages/404.html
+	error_page 500 .pageHTLM/error_pages/500.html
+	client_max_body_size 1073741824
+
+	location /
+		allow GET
+		root ./.pageHTLM
+		autoindex on
+		index index.plop index.html index.flute
+	location /noGet
+		allow POST
+	location /testing
+		index index.html
+	location /testredirect_txt
+		allow GET
+		return 403
+
+	location /redir403
+		allow GET
+		return 403
+
+	location /redir403/
+		allow GET
+		return 405 erreur a l aide !
+
+	location /site
+		allow GET POST DELETE
+		autoindex off
+		index index.html
+		root ./static_pages/site
+	location /uploads
+		allow POST GET
+		autoindex on
+		upload_store ./static_pages/upload
+	location /files
+		allow POST
+		upload_store upload/
+	location /cgi-bin/
+		allow POST GET
+		alias .pageHTLM/cgi-bin/
+		cgi_handler .py /usr/bin/python
+		cgi_handler .php /usr/bin/php-cgi
+
+server
+	host 127.0.0.1
+	port 8080
+	return 302 http://localhost:3001
+	error_page 400 ./static_pages/error_pages/400.html
+	error_page 404 ./static_pages/error_pages/404.html
+	error_page 500 ./static_pages/error_pages/500.html
+	client_max_body_size 1073741824
+	location  /
+		return 302 http://localhost:3001
+	return 1

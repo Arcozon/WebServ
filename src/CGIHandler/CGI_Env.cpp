@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 14:31:00 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/18 15:35:02 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/29 15:51:55 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ void	CGI::CGIEnv::_addVar(std::string vName, const std::string &vContent)
 	}
 	_unset(vName);
 	_strEnv.push_back(vName + "=" + vContent);
+	std::cerr << "[" << vName + "=" + vContent << "]\n";
 }
 
 void	CGI::CGIEnv::addVar(const std::string &vName, const std::string &vContent)

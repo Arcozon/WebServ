@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 11:36:22 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/21 17:37:38 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/29 15:39:30 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,6 +166,7 @@ void	CGI::forkCGI(void)
 		_closeFd(_pipeIn[0]);
 		_closeFd(_pipeOut[1]);
 		write(_pipeIn[1], _body.c_str(), _body.size());
+		std::cout << "CGIBoddy[" << _body.c_str() << "]\n";
 		_closeFd(_pipeIn[1]);
 	}
 	else

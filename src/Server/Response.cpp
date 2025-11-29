@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 16:29:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/22 19:00:25 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/29 15:36:05 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ const std::string	Response::sepNameContent = ": ";
 Response::Response(Client *cl, const IpPort &ipPort)
 :	_responseCode(200),
 	_isCGI(false),
+	_isReturn(false),
 	_insideErr(true),
 	_send_count(0),
 	_fully_sent(false),
@@ -36,6 +37,9 @@ Response::Response(Client *cl, const IpPort &ipPort)
 		_reason_phrases[200] = "OK";
 		_reason_phrases[201] = "Created";
 		_reason_phrases[204] = "No Content";
+
+		_reason_phrases[301] = "Moved Permanently";
+		_reason_phrases[302] = "Found";
 
 		_reason_phrases[400] = "Bad Request";
 		_reason_phrases[403] = "Forbidden";
@@ -102,7 +106,6 @@ void	Response::catHeader(void)
 		this->catHeaderLine(it->first, it->second);
 	for (size_t i = 0; i < _cookies.size(); i++)
 		this->catHeaderLine("Set-Cookie: ", _cookies[i].setCookieHeader());
-
 }
 
 void	Response::catCGI(void)
@@ -127,14 +130,13 @@ void	Response::catResponse(void)
 
 void Response::prepare()
 {
-
+	// std::cout << "Preping\n";
 	if (_insideErr)
 		makeRep();
 	else if (isErrorCode(_responseCode))
 	{
 		_handleError();
 	}
-	
 	catResponse();
 }
 
@@ -144,6 +146,7 @@ void Response::send(int fd)
 	{
 		size_t to_send = _response_buffer.length() - _send_count;
 		int sent = write(fd, _response_buffer.c_str() + _send_count, to_send);
+		// std::cout << _response_buffer.substr(_send_count, to_send) << "\n";
 		if (sent > 0)
 		{
 			_send_count += sent;
@@ -157,7 +160,7 @@ void Response::send(int fd)
 			return ;
 		}
 	}
-	if(_send_count ==_response_buffer.length())
+	if(_send_count == _response_buffer.length())
 		_fully_sent = true;
 	std::cout << "\e[1;32mResponse sent to client\e[0m" << std::endl;
 }
@@ -174,6 +177,7 @@ void	Response::makeRep(void)
 {
 	Location::sAllowedMethods	methodCode = Location::getMethodCode(_cl->getMethod());
 	
+	std::cout << "met[" << _cl->getMethod() << "]\n";
 	if (methodCode == Location::s_METHODS_MAX)
 		_responseCode = 405;
 	else if (_location)
@@ -182,10 +186,13 @@ void	Response::makeRep(void)
 			_responseCode = 405;
 		else
 		{
-			if (_location->_hasCGIHandler(_cl->getTargetLocation()))
-				_handleCGI();
-			else if (_location->isReturnDefined())
+			if (_location->isReturnDefined())
+			{
+				std::cerr << "Ici\n";
 				_handleReturn(_location->getReturn());
+			}
+			else if (_location->_hasCGIHandler(_cl->getTargetLocation()))
+				_handleCGI();
 			else if (methodCode == Location::s_GET)
 				_handleGET();
 			else if (methodCode == Location::s_POST)

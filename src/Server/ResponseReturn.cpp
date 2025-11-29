@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:57:54 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/20 12:27:21 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/29 14:59:38 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 void	Response::_handleReturn(const Return &ret)
 {
+	_isReturn = true;
 	_responseCode = ret.getCode();
 	if (ret.isCode())
 	{
@@ -26,5 +27,6 @@ void	Response::_handleReturn(const Return &ret)
 	{
 		_header["Location"] = ret.getArgTwo();
 		_body.clear();
+		std::cerr << "la\n";
 	}
 }

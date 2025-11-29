@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 13:05:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/22 18:33:03 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/11/29 14:59:04 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ private:
 	std::string		_body;
 	
 	bool			_isCGI;
+	bool			_isReturn;
 	bool			_insideErr;
 	
 	std::string		_response_buffer;

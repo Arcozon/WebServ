@@ -21,13 +21,13 @@
 class FStat
 {
 	public:
-		typedef enum FILETYPE
+		enum FILETYPE
 		{
 			DIRECTORY,
 			REG_FILE,
 			UNKNOWN,
 			ERR_STAT
-		}	FILETYPE;
+		};
 
 	private:
 		std::string		_path;		

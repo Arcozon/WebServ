@@ -169,7 +169,7 @@ bool Client::_checkRequestLine(void) // Add IpPort (to check )
 		return false;
 	}
 
-	if (!(_method == "GET" || _method == "POST" || _method == "DELETE" || _method == "PUT"))
+	if (!(_method == "GET" || _method == "POST" || _method == "DELETE"))
 	{
 		_response->setStartLine(405);
 		_response->prepare();
@@ -687,6 +687,8 @@ void Client::checkStep()
 			std::cout << "\033[1;34m\t-- PUT HANDLER CALLED --\033[0m" << std::endl;
 			putHandler();
 		}
+		if(_method == "DELETE")
+			deleteHandler();
 		if (_is_upload)
 			fileHandler();
 		else
@@ -703,9 +705,10 @@ void Client::readFromFd()
 {
 	if (!_done && (_requestStep != ERROR))
 		checkStep();
-	// if (_requestStep != ERROR)
+	// if (_requestStep == ERROR)
 	// {
 	// 	_response->prepare();
+	// 	return;
 	// }
 }
 
@@ -866,4 +869,89 @@ const std::map<std::string, std::string>	&Client::getHeader(void)const
 const std::string	&Client::getBody(void) const
 {
 	return (_body_data);
+}
+
+void Client::deleteHandler()
+{
+	const Location *loc = _config.getLocation(_requestTarget);
+
+	if (!loc)
+	{
+		_response->setStartLine(404);
+		_response->setBody("");
+		_response->prepare();
+		return;
+	}
+	if (!loc->isMethodAllowed("DELETE"))
+	{
+		_response->setStartLine(405);
+		_response->setBody("");
+		_response->prepare();
+		return;
+	}
+	std::string root = loc->getRoot();
+	std::cout << "root: " << root << std::endl;
+	std::string request_path = _requestTarget;
+	std::string loc_path = loc->getLocation();
+
+	if (request_path.find(loc_path) == 0)
+		request_path = request_path.substr(loc_path.length());
+
+	std::string full_path = root;
+	if (!root.empty() && root[root.length() - 1] != '/' &&
+		!request_path.empty() && request_path[0] != '/')
+		full_path += '/';
+	full_path += request_path;
+
+	if (!Location::isLocationPathValid(full_path))
+	{
+		_response->setStartLine(403);
+		_response->setBody("");
+		_response->prepare();
+		return;
+	}
+	if (full_path.find("..") != std::string::npos)
+	{
+		_response->setStartLine(403);
+		_response->setBody("");
+		_response->prepare();
+		return;
+	}
+	std::cout << full_path << std::endl;
+	struct stat file_stat;
+	if (stat(full_path.c_str(), &file_stat) != 0)
+	{
+		_response->setStartLine(404);
+		_response->setBody("");
+		_response->prepare();
+		return;
+	}
+	if (S_ISDIR(file_stat.st_mode))
+	{
+		_response->setStartLine(403);
+		_response->setBody("");
+		_response->prepare();
+		return;
+	}
+	if (access(full_path.c_str(), W_OK) != 0)
+	{
+		_response->setStartLine(403);
+		_response->setBody("");
+		_response->prepare();
+		return;
+	}
+	if (unlink(full_path.c_str()) == 0)
+	{
+		_response->setStartLine(204);
+		_response->setBody("");
+		_response->prepare();
+		std::cout << "\033[1;32mDELETE: " << full_path << " deleted\033[0m" << std::endl;
+	}
+	else
+	{
+		_response->setStartLine(500);
+		_response->setBody("");
+		_response->prepare();
+		std::cout << "\033[1;31mDELETE: Failed to delete " << full_path << "\033[0m" << std::endl;
+	}
 }

@@ -113,6 +113,7 @@ public:
 	std::string getCookie(const std::string &name) const;
 	const std::map<std::string, std::string> &getCookies() const;
 	void putHandler();
+	void deleteHandler();
 
 	const IpPort	&getConfig(void) const;
 	const std::string	&getMethod(void) const;

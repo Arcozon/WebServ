@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 11:44:19 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/10/16 16:03:38 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/12 17:43:24 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ MyException::~MyException(void)	throw()
 
 const char	*MyException::what(void) const throw()
 {
-	return (_err.c_str());
+	return (_err_msg.c_str());
 }
 
 const std::string	&MyException::getErrMsg(void) const throw()

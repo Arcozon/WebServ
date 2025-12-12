@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:31 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/21 14:58:28 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/12 17:35:38 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,11 @@ class Server::ParsWebServ
 
 	public:
 		ParsWebServ(const int ac, char *av[]);
-		const std::vector<IpPort>	getIpPorts(void) const;
 		~ParsWebServ(void);
+
+		const std::vector<IpPort>	getIpPorts(void) const;
+
+		bool	configValid(void) const;
 };
 
 #endif

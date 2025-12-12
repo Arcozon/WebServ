@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/22 17:24:25 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/12 17:47:20 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,10 +200,13 @@ Server::Server(int ac, char *av[])
 {
 	ParsWebServ	parsIpPorts(ac, av);
 	
+	if (!parsIpPorts.configValid())
+		throw (MyException("No valid server in " + std::string(av[1]), MyException::ELVL_FATAL));
 	_server_configs = parsIpPorts.getIpPorts();
 	for(size_t i = 0; i < _server_configs.size(); i++)
 	{
-		std::cout << i << ": " << _server_configs[i].getIpPortStr() << '\n';
+		// std::cout << i << ": " << _server_configs[i].getIpPortStr() << '\n';
+		std::cout << CGREEN << "Listening to: " << CBOLD << _server_configs[i].getIpPortStr() << CRESET << std::endl;
 		initSockets(&_server_configs[i]);
 	}
 	initEpoll();

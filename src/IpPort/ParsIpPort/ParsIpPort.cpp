@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:24 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/11 17:15:35 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/12 17:33:29 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -256,6 +256,8 @@ bool	IpPort::ParsIpPort::_isIpPortValid(void) const
 			if (it->getLocation() == it2->getLocation())
 				return (false);
 	}
+	if (_locations.empty() && !_isDefined(s_return))
+		return (false);
 	return (true);
 }
 

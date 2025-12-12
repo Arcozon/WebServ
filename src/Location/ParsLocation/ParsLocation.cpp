@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:33:11 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/22 18:17:33 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/12 17:28:22 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,11 +104,10 @@ void	Location::ParsLocation::_addRootAlias(void)
 	if (!Location::isLocationPathValid(splitLine.at(1)))
 		throw (MyException("No directory traversal"  + _inLocation(), MyException::ELVL_ERROR, splitLine.at(1)));
 	if (splitLine.front() == _keyRoot)
-		_root = splitLine.at(1) + '/' + _location;
+		_root = splitLine.at(1) + '/' + _location + '/';
 	else if (splitLine.front() == _keyAlias)
-		_root = splitLine.at(1);
+		_root = splitLine.at(1) + '/';
 	_root = Location::simplifyLocationPath(_root);
-	// std::cout << "Loc: " << _location << ", Root: " << _root << '\n';
 	_addDefined(s_root);
 }
 
@@ -117,13 +116,21 @@ void	Location::ParsLocation::_addIndex(void)
 	typedef std::vector<std::string>::const_iterator	VecStrConstIt;
 	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
 
-	if (splitLine.size() == 1)// TODO CHECK REVERSE TRAVERSAL
+	if (splitLine.size() == 1)
 		throw (MyException("Needs arguments", MyException::ELVL_WARNING, splitLine.front()));
 	for (VecStrConstIt it = splitLine.begin() + 1; it != splitLine.end(); ++it)
 	{
-		if (!Location::isLocationPathValid(*it))
-			throw (MyException("No directory traversal"  + _inLocation(), MyException::ELVL_ERROR, *it));
-		_index.push_back(*it);
+		try
+		{
+			if (!Location::isLocationPathValid(*it))
+				throw (MyException("No directory traversal"  + _inLocation(), MyException::ELVL_ERROR, *it));
+			else
+				_index.push_back(*it);
+		}
+		catch (const MyException &e)
+		{
+			std::cerr << e;
+		}
 	}
 }
 
@@ -176,7 +183,7 @@ void	Location::ParsLocation::_addUploadLocation(void)
 {
 	const std::vector<std::string>	&splitLine( _parsLine.getSplitLine() );
 
-	if (_isDefined(s_upload_store))// TODO CHECK REVERSE TRAVERSAL
+	if (_isDefined(s_upload_store))
 		throw (MyException("Already defined" + _inLocation(), MyException::ELVL_WARNING, splitLine.front()));
 	else if (splitLine.size() != 2)
 		throw (MyException("Needs one argument", MyException::ELVL_WARNING, splitLine.front()));
@@ -284,18 +291,7 @@ void	Location::ParsLocation::printfLocation(void) const
 
 bool	Location::ParsLocation::_checkRedirs(void) const
 {
-	int	count(0);
-
-	if (_cgiHandler.size() > 0)
-		++count;
-	if (_isDefined(s_upload_store))
-		++count;
-	if (_isDefined(s_return))
-		++count;
-	if (_isDefined(s_root))
-		++count;
-	return (true);
-	return (count == 1);
+	return (_isDefined(s_return) || _isDefined(s_root));
 }
 
 

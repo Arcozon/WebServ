@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/12/12 18:07:55 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/12 18:39:10 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -478,6 +478,7 @@ bool Client::validMinimalHeaders()
 // allowed: !#$%&'*+-.0-9A-Z^_`a-z|~
 bool Client::validHeaderSyntax(const std::string &name)
 {
+	static const std::string	forbidenChar("()<>@,;:\\\"/[]?={}");
 	if (name.empty())
 		return false;
 
@@ -485,10 +486,7 @@ bool Client::validHeaderSyntax(const std::string &name)
 	{
 		unsigned char c = name[i];
 		if (std::iscntrl(c) || std::isspace(c) ||
-			c == '(' || c == ')' || c == '<' || c == '>' || c == '@' ||
-			c == ',' || c == ';' || c == ':' || c == '\\' || c == '"' ||
-			c == '/' || c == '[' || c == ']' || c == '?' || c == '=' ||
-			c == '{' || c == '}')
+			forbidenChar.find(c) != std::string::npos)
 			return false;
 	}
 	return true;
@@ -687,8 +685,6 @@ void Client::checkStep()
 			std::cout << "\033[1;34m\t-- PUT HANDLER CALLED --\033[0m" << std::endl;
 			putHandler();
 		}
-		if(_method == "DELETE")
-			deleteHandler();
 		if (_is_upload)
 			fileHandler();
 		else
@@ -869,92 +865,4 @@ const std::map<std::string, std::string>	&Client::getHeader(void)const
 const std::string	&Client::getBody(void) const
 {
 	return (_body_data);
-}
-
-void Client::deleteHandler()
-{
-	_response->setLocation();
-	_response->prepare();
-	return ;
-	const Location *loc = _config.getLocation(_requestTarget);
-
-	if (!loc)
-	{
-		_response->setStartLine(404);
-		_response->setBody("");
-		_response->prepare();
-		return;
-	}
-	if (!loc->isMethodAllowed("DELETE"))
-	{
-		_response->setStartLine(405);
-		_response->setBody("");
-		_response->prepare();
-		return;
-	}
-	std::string root = loc->getRoot();
-	std::cout << "root: " << root << std::endl;
-	std::string request_path = _requestTarget;
-	std::string loc_path = loc->getLocation();
-
-	if (request_path.find(loc_path) == 0)
-		request_path = request_path.substr(loc_path.length());
-
-	std::string full_path = root;
-	if (!root.empty() && root[root.length() - 1] != '/' &&
-		!request_path.empty() && request_path[0] != '/')
-		full_path += '/';
-	full_path += request_path;
-
-	if (!Location::isLocationPathValid(full_path))
-	{
-		_response->setStartLine(403);
-		_response->setBody("");
-		_response->prepare();
-		return;
-	}
-	if (full_path.find("..") != std::string::npos)
-	{
-		_response->setStartLine(403);
-		_response->setBody("");
-		_response->prepare();
-		return;
-	}
-	std::cout << full_path << std::endl;
-	struct stat file_stat;
-	if (stat(full_path.c_str(), &file_stat) != 0)
-	{
-		_response->setStartLine(404);
-		_response->setBody("");
-		_response->prepare();
-		return;
-	}
-	if (S_ISDIR(file_stat.st_mode))
-	{
-		_response->setStartLine(403);
-		_response->setBody("");
-		_response->prepare();
-		return;
-	}
-	if (access(full_path.c_str(), W_OK) != 0)
-	{
-		_response->setStartLine(403);
-		_response->setBody("");
-		_response->prepare();
-		return;
-	}
-	if (unlink(full_path.c_str()) == 0)
-	{
-		_response->setStartLine(204);
-		_response->setBody("");
-		_response->prepare();
-		std::cout << "\033[1;32mDELETE: " << full_path << " deleted\033[0m" << std::endl;
-	}
-	else
-	{
-		_response->setStartLine(500);
-		_response->setBody("");
-		_response->prepare();
-		std::cout << "\033[1;31mDELETE: Failed to delete " << full_path << "\033[0m" << std::endl;
-	}
 }

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/12/12 19:48:26 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/12 19:57:25 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -280,8 +280,9 @@ bool Client::_checkHeader(void)
 			if ((_method == "POST"))
 			{
 				const Location *loc = _config.getLocation(_requestTarget);
-				if (loc && !loc->getUploadLocation().empty())
+				if (loc && loc->isUploadDefined())
 				{
+					std::cout << "ka" << std::endl;
 					_upload_dir = loc->getUploadLocation();
 					_is_upload = true;
 					std::cout << "\033[1;36m[Upload of size: " << _content_length << " bytes]\033[0m" << std::endl;
@@ -687,7 +688,10 @@ void Client::checkStep()
 			putHandler();
 		}
 		if (_is_upload)
+		{
 			fileHandler();
+			std::cout << "Upload is done" << std::endl;
+		}
 		else
 		{
 			_response->setLocation();
@@ -729,7 +733,7 @@ void Client::fileHandler()
 	
 	const Location *loc = _config.getLocation(_requestTarget);
 	std::string strLoc = loc->getUploadLocation();
-	std::string fname = strLoc.substr(_location->getLocation().size());
+	std::string fname = _requestTarget.substr(loc->getLocation().size());
 	std::string dir = loc->getUploadLocation();
 	std::string path = dir + fname;
 

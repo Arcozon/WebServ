@@ -15,12 +15,22 @@
 
 FStat::FStat(void)
 :	_fType(ERR_STAT),
-	_readable(false)
+	_readable(false),
+	_writable(false)
 {}
+
+FStat::FStat(const std::string &path)
+:	_fType(ERR_STAT),
+	_readable(false),
+	_writable(false)
+{
+	this->open(path);
+}
 
 FStat::FStat(const std::string &path, const std::string &URI)
 :	_fType(ERR_STAT),
-	_readable(false)
+	_readable(false),
+	_writable(false)
 {
 	this->open(path, URI);
 }
@@ -28,11 +38,33 @@ FStat::FStat(const std::string &path, const std::string &URI)
 FStat::~FStat(void)
 {}
 
+bool	FStat::open(const std::string &path)
+{
+	struct stat	buffStat = {};
+
+	_path = Location::simplifyLocationPath(path);
+	_readable = false;
+	_writable = false;
+	_fType = ERR_STAT;
+	if (stat(_path.c_str(), &buffStat) == 0)
+	{
+		_fType = UNKNOWN;
+		if (S_ISDIR(buffStat.st_mode))
+			_fType = DIRECTORY;
+		else if (S_ISREG(buffStat.st_mode))
+			_fType = REG_FILE;
+		if (access(_path.c_str(), R_OK) == 0)
+			_readable = true;
+		if (access(_path.c_str(), W_OK) == 0)
+			_writable = true;
+	}
+	return ( this->fail() );
+}
+
 bool	FStat::open(const std::string &path, const std::string &URI)
 {
-	struct stat	bufStat = {};
-
 	_readable = false;
+	_writable = false;
 	_fType = ERR_STAT;
 	{
 		std::string catPath = path;
@@ -42,18 +74,7 @@ bool	FStat::open(const std::string &path, const std::string &URI)
 		catPath = Location::simplifyLocationPath(catPath);
 		_path = catPath;
 	}
-	if (stat(_path.c_str(), &bufStat) == 0)
-	{
-		_fType = UNKNOWN;
-		mode_t	bufMode = bufStat.st_mode & S_IFMT;
-		if (bufMode == S_IFDIR)
-			_fType = DIRECTORY;
-		else if (bufMode == S_IFREG)
-			_fType = REG_FILE;
-		if (access(_path.c_str(), R_OK) == 0)
-			_readable = true;
-	}
-	return ( this->fail() );
+	return ( this->open(_path) );
 }
 
 bool	FStat::fail(void) const
@@ -74,6 +95,11 @@ bool	FStat::isFile(void) const
 bool	FStat::isReadable(void) const
 {
 	return (_readable);
+}
+
+bool	FStat::isWritable(void) const
+{
+	return (_writable);
 }
 
 const char	*FStat::getPathCStr(void) const

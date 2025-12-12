@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:50:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/22 17:05:16 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/12 18:34:45 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,7 @@ const Location	*IpPort::getLocation(const std::string &cPath)	const
 bool IpPort::errorPageDefined(const std::string &errCode) const
 {
 	typedef std::map<std::string, std::string>::const_iterator	mapStrStrCIt;
-
+	
 	mapStrStrCIt	itErr = _errPages.find(errCode);
 	return (itErr != _errPages.end());
 }

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 10:55:15 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/22 19:01:58 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/12 18:34:34 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ void	Response::_makeErrPage()
 
 void	Response::_handleError(void)
 {
-	// TODO: Check if code is an err ?
 	if (_ipPort.errorPageDefined(_responseCode))
 	{
 		std::string	errPageFile = _ipPort.getErrorPage(_responseCode);
@@ -45,7 +44,6 @@ void	Response::_handleError(void)
 
 		if (fileStat.isFile() && fileStat.isReadable())
 		{
-			// std::cout << fileStat.getPathCStr() << std::endl; 
 			fileToBody(fileStat.getPathCStr());
 		}
 		else

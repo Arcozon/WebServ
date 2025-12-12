@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/29 15:44:32 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/12 18:07:55 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -873,6 +873,9 @@ const std::string	&Client::getBody(void) const
 
 void Client::deleteHandler()
 {
+	_response->setLocation();
+	_response->prepare();
+	return ;
 	const Location *loc = _config.getLocation(_requestTarget);
 
 	if (!loc)

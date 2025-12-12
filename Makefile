@@ -9,11 +9,14 @@ D_CONFIG	=  Config/
 SRC_CONFIG	=  $(addprefix $(D_CONFIG), $(S_CONFIG))
 
 S_SERVER   =  Server.cpp Client.cpp
-S_SERVER  +=  Response.cpp  ResponseGet.cpp  ResponsePost.cpp  ResponseDelete.cpp
-S_SERVER  +=  ResponseAutoIndex.cpp  ResponseError.cpp  ResponseReturn.cpp  ResponseCGI.cpp
 S_SERVER  +=  Cookies.cpp Sessions.cpp
 D_SERVER   =  Server/
 SRC_SERVER =  $(addprefix $(D_SERVER), $(S_SERVER))
+
+S_RESPONSE   =  Response.cpp  ResponseGet.cpp  ResponsePost.cpp  ResponseDelete.cpp
+S_RESPONSE  +=  ResponseAutoIndex.cpp  ResponseError.cpp  ResponseReturn.cpp  ResponseCGI.cpp
+D_RESPONSE	 =  Response/
+SRC_RESPONSE =  $(addprefix $(D_RESPONSE), $(S_RESPONSE))
 
 S_PARS	=  ParsLine.cpp  ParsConfig.cpp  ParsLocation.cpp  ParsIpPort.cpp
 D_PARS	=  Parsing/
@@ -23,8 +26,7 @@ S_UTILS		=  FStat.cpp  MakeHTML.cpp  MyException.cpp  ReadDir.cpp  $(SRC_PARS)
 D_UTILS		=  Utils/
 SRC_UTILS	=  $(addprefix $(D_UTILS), $(S_UTILS))
 
-
-SRC   =  $(SRC_UTILS)  $(SRC_SERVER)  $(SRC_CONFIG)  $(SRC_CGIHANDLER) 
+SRC   =  $(SRC_UTILS)  $(SRC_SERVER)  $(SRC_RESPONSE)  $(SRC_CONFIG)  $(SRC_CGIHANDLER) 
 SRC  +=  main.cpp
 D_SRC =  src/
 

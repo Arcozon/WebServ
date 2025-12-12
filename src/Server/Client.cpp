@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/12/12 18:39:10 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/12 19:48:26 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -286,13 +286,14 @@ bool Client::_checkHeader(void)
 					_is_upload = true;
 					std::cout << "\033[1;36m[Upload of size: " << _content_length << " bytes]\033[0m" << std::endl;
 				}
-				// else
-				// {
-				// 	_response->setStartLine(403);
-				// 	_response->prepare();
-				// 	_requestStep = ERROR;
-				// 	return false;
-				// }
+				else
+				{
+					_response->setStartLine(403);
+					_response->prepare();
+					_requestStep = ERROR;
+					_done = true;
+					return false;
+				}
 			}
 			else
 			{
@@ -551,14 +552,14 @@ bool Client::_checkCurrentLine(const Client::REQUEST_STEP &reqSection)
 
 	switch (reqSection)
 	{
-	case (REQUEST_LINE):
-		return (_checkRequestLine());
-	case (HEADERS):
-		return (_checkHeader());
-	case (BODY):
-		return (_checkBody());
-	default:
-		return (false);
+		case (REQUEST_LINE):
+			return (_checkRequestLine());
+		case (HEADERS):
+			return (_checkHeader());
+		case (BODY):
+			return (_checkBody());
+		default:
+			return (false);
 	}
 }
 
@@ -725,10 +726,22 @@ bool Client::finishedReading()	const
 
 void Client::fileHandler()
 {
-	std::string dir = _upload_dir;
-	// std::string filename = _requestTarget.substr(_requestTarget.find_last_of('/'));
-	std::string path = dir + _requestTarget.substr(_requestTarget.find_last_of('/'));
+	
+	const Location *loc = _config.getLocation(_requestTarget);
+	std::string strLoc = loc->getUploadLocation();
+	std::string fname = strLoc.substr(_location->getLocation().size());
+	std::string dir = loc->getUploadLocation();
+	std::string path = dir + fname;
 
+	std::cout <<"Salut" << std::endl;
+	if (!Location::isLocationPathValid(path))
+	{
+		_response->setStartLine(403);
+		_response->setBody("");
+		_response->prepare();
+		return;
+	}
+	std::cout <<"wsh" << std::endl;
 	std::ofstream file(path.c_str(), std::ios::binary);
 	if (!file.is_open())
 	{
@@ -737,6 +750,7 @@ void Client::fileHandler()
 		_response->prepare();
 		return;
 	}
+	std::cout <<"bonjour" << std::endl;
 	file.write(_body_data.c_str(), _body_data.size());
 	file.close();
 

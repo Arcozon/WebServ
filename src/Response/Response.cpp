@@ -45,6 +45,7 @@ Response::Response(Client *cl, const IpPort &ipPort)
 		_reason_phrases[403] = "Forbidden";
 		_reason_phrases[404] = "Not Found";
 		_reason_phrases[405] = "Method Not Allowed";
+		_reason_phrases[409] = "Conflict";
 		_reason_phrases[411] = "Length Required";
 		_reason_phrases[413] = "Payload Too Large";
 		_reason_phrases[414] = "URI Too Long";

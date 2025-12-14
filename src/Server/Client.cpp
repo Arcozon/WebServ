@@ -82,6 +82,7 @@ bool Client::_makeExtractLine(void)
 		return (false);
 }
 
+
 // static inline std::size_t _countBlock(const std::string &reqLine)
 inline std::size_t _countBlock(const std::string &reqLine)
 {
@@ -697,6 +698,7 @@ void Client::checkStep()
 			_response->setLocation();
 			_response->prepare();
 		}
+
 		_done = true;
 		std::cout << "\033[1;34m\t-- Response ready to be sent --\033[0m" << std::endl;
 	}
@@ -704,8 +706,18 @@ void Client::checkStep()
 
 void Client::readFromFd()
 {
-	if (!_done && (_requestStep != ERROR))
+
+	// if (!_done && (_requestStep != ERROR))
+	// 	checkStep();
+
+	while (!_done && (_requestStep != ERROR))
+	{
+		REQUEST_STEP prev_step = _requestStep;
 		checkStep();
+		if (prev_step == _requestStep)
+			break;
+	}
+
 	// if (_requestStep == ERROR)
 	// {
 	// 	_response->prepare();

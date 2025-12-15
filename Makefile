@@ -45,10 +45,7 @@ RM =  rm -rf
 
 VAL = valgrind --track-origins=yes --leak-check=full --show-leak-kinds=all -q
 MAKE += --no-print-directory
-.DEFAULT_GOAL := test
-
-test:
-	@clear && $(MAKE) all && clear && echo '\t./$(NAME)' test.config && $(VAL) ./$(NAME) test.config
+.DEFAULT_GOAL := all
 
 all:	$(NAME)
 

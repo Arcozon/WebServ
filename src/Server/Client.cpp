@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/12/15 16:57:40 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/15 17:09:51 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,10 @@ Client::Client(int fd, const IpPort &config, Sessions *instance)
 	  _is_upload(0),
 	  _body_rd_bytes(0),
 	  _last_activity(time(0)),
-	  _read_timer(10),
-	  _write_timer(10),
+	  _read_timer(2),
+	  _write_timer(2),
 	  _client_spawn(time(0)),
-	  _max_req_duration(20),
+	  _max_req_duration(5),
 	  _session_ptr(instance),
 	  _headers_total_size(0)
 {
@@ -497,7 +497,6 @@ bool Client::_checkBody(void) // IpPort + setting correct StatusLine on error
 	char buffer[_bufferSize];
 	int rd;
 	size_t curr_data = _strBuffer.length() - _last_pos;
-	std::cout << "Reading body" << std::endl; // gag
 	if (curr_data > 0)
 	{
 		size_t left_to_read = _content_length - _body_rd_bytes;
@@ -533,7 +532,6 @@ bool Client::_checkBody(void) // IpPort + setting correct StatusLine on error
 			std::cout << "\e[1;37m-- Received body payload (" << _body_rd_bytes << " bytes) --\e[0m" << std::endl;
 			return true;
 		}
-		std::cout << "here body| " << _body_rd_bytes << " on " << _content_length << std::endl; // gag
 		return true;
 	}
 	else if (rd == 0)
@@ -542,7 +540,6 @@ bool Client::_checkBody(void) // IpPort + setting correct StatusLine on error
 		_done = true;
 		return false;
 	}
-	std::cout << "2 here body" << std::endl; // gag
 	return false;
 }
 
@@ -593,8 +590,6 @@ void Client::checkStep()
 		if (!_checkBody())
 			return;
 	}
-	std::cout << "\e[1;31m\t-- End Of gaeudes --\e[0m" << std::endl; //gag
-
 	if (_requestStep == FIN)
 	{
 		std::cout << "\e[1;31m\t-- End Of Body --\e[0m" << std::endl;
@@ -713,23 +708,13 @@ void Client::checkStep()
 
 void Client::readFromFd()
 {
-
-	// if (!_done && (_requestStep != ERROR))
-	// 	checkStep();
-
 	while (!_done && (_requestStep != ERROR))
 	{
 		REQUEST_STEP prev_step = _requestStep;
 		checkStep();
-		if (prev_step == _requestStep)
+		if (prev_step != BODY && prev_step == _requestStep)
 			break;
 	}
-
-	// if (_requestStep == ERROR)
-	// {
-	// 	_response->prepare();
-	// 	return;
-	// }
 }
 
 void Client::sendResponse()
@@ -749,7 +734,6 @@ bool Client::finishedReading()	const
 
 void Client::fileHandler()
 {
-	std::cout << "uploading" << std::endl;
 	const Location *loc = _config.getLocation(_requestTarget);
 	std::string strLoc = loc->getUploadLocation();
 	std::string fname = _requestTarget.substr(loc->getLocation().size());
@@ -778,7 +762,6 @@ void Client::fileHandler()
 	_response->setStartLine(201);
 	_response->setBody("");
 	_response->prepare();
-	std::cout << "done uploading" << std::endl;
 }
 
 void Client::updateTimer()

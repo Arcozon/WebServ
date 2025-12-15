@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/12/15 16:36:59 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/15 16:57:40 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 const std::string Client::_supportedHTTPVersion = "HTTP/1.1";
 const std::string Client::_sepLine = "\r\n";
 const std::size_t Client::_sepLineLen = _sepLine.size();
-const std::size_t Client::_bufferSize = 1024;
+const std::size_t Client::_bufferSize = 80192;
 
 Client::Client(int fd, const IpPort &config, Sessions *instance)
 	: _fd(fd),
@@ -268,13 +268,15 @@ bool Client::_checkHeader(void)
 			if (_content_length > _config.getClientMaxBodySize())
 			{
 				_response->setStartLine(413);
+				_response->prepare();
 				_requestStep = ERROR;
+				_done = true;
 				return false;
 			}
 			bool isCGI = false;
 			if (_config.getLocation(_requestTarget))
 				isCGI = _config.getLocation(_requestTarget)->_hasCGIHandler(this->getTargetLocation());
-			if (_method == "POST"&& !isCGI)
+			if (_method == "POST" && !isCGI)
 			{
 				const Location *loc = _config.getLocation(_requestTarget);
 				if (loc && loc->isUploadDefined())
@@ -495,6 +497,7 @@ bool Client::_checkBody(void) // IpPort + setting correct StatusLine on error
 	char buffer[_bufferSize];
 	int rd;
 	size_t curr_data = _strBuffer.length() - _last_pos;
+	std::cout << "Reading body" << std::endl; // gag
 	if (curr_data > 0)
 	{
 		size_t left_to_read = _content_length - _body_rd_bytes;
@@ -530,6 +533,7 @@ bool Client::_checkBody(void) // IpPort + setting correct StatusLine on error
 			std::cout << "\e[1;37m-- Received body payload (" << _body_rd_bytes << " bytes) --\e[0m" << std::endl;
 			return true;
 		}
+		std::cout << "here body| " << _body_rd_bytes << " on " << _content_length << std::endl; // gag
 		return true;
 	}
 	else if (rd == 0)
@@ -538,8 +542,8 @@ bool Client::_checkBody(void) // IpPort + setting correct StatusLine on error
 		_done = true;
 		return false;
 	}
-	else
-		return false;
+	std::cout << "2 here body" << std::endl; // gag
+	return false;
 }
 
 bool Client::_checkCurrentLine(const Client::REQUEST_STEP &reqSection)
@@ -589,6 +593,7 @@ void Client::checkStep()
 		if (!_checkBody())
 			return;
 	}
+	std::cout << "\e[1;31m\t-- End Of gaeudes --\e[0m" << std::endl; //gag
 
 	if (_requestStep == FIN)
 	{
@@ -744,13 +749,13 @@ bool Client::finishedReading()	const
 
 void Client::fileHandler()
 {
-	
+	std::cout << "uploading" << std::endl;
 	const Location *loc = _config.getLocation(_requestTarget);
 	std::string strLoc = loc->getUploadLocation();
 	std::string fname = _requestTarget.substr(loc->getLocation().size());
 	std::string dir = loc->getUploadLocation();
 	std::string path = dir + fname;
-
+	
 	if (!Location::isLocationPathValid(path))
 	{
 		_response->setStartLine(403);
@@ -768,11 +773,12 @@ void Client::fileHandler()
 	}
 	file.write(_body_data.c_str(), _body_data.size());
 	file.close();
-
+	
 	std::cout << "\033[1;32mFile " << path << " created\033[0m\n";
 	_response->setStartLine(201);
 	_response->setBody("");
 	_response->prepare();
+	std::cout << "done uploading" << std::endl;
 }
 
 void Client::updateTimer()

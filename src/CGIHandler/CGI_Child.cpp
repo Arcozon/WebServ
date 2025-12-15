@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 12:57:45 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/12/15 14:48:48 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/15 15:39:33 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	CGI::_exportEnv(void) const
 			CGIEnv::addVar("CONTENT_LENGTH", "");
 	}
 	CGI::CGIEnv::addHeader(_header);
-	std::cerr << "QString: " << _queryString << std::endl;
+	// std::cerr << "QString: " << _queryString << std::endl;
 	CGI::CGIEnv::addVar("QUERY_STRING", _queryString);
 }
 
@@ -92,6 +92,6 @@ void	CGI::_execCGI()
 		delete[] cArgv[1];
 		CGIEnv::freeCEnv(cEnv);
 	}
-	std::cerr << "Here\n";
+	// std::cerr << "Here\n";
 	exit(_retValServErr);
 }

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 16:29:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/12/15 15:30:38 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/15 15:38:21 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,9 +121,7 @@ void	Response::catCGI(void)
 void	Response::catResponse(void)
 {
 	if (_isCGI)
-	{
 		catCGI();
-	}
 	else
 	{
 		catStatusLine(_responseCode, _reasonPhrase);
@@ -138,9 +136,7 @@ void Response::prepare()
 	if (_insideErr)
 		makeRep();
 	else if (isErrorCode(_responseCode) && _body.empty())
-	{
 		_handleError();
-	}
 	catResponse();
 }
 
@@ -150,7 +146,6 @@ void Response::send(int fd)
 	{
 		size_t to_send = _response_buffer.length() - _send_count;
 		int sent = write(fd, _response_buffer.c_str() + _send_count, to_send);
-		// std::cout << _response_buffer.substr(_send_count, to_send) << "\n";
 		if (sent > 0)
 		{
 			_send_count += sent;
@@ -181,7 +176,7 @@ void	Response::makeRep(void)
 {
 	Location::sAllowedMethods	methodCode = Location::getMethodCode(_cl->getMethod());
 	
-	std::cout << "met[" << _cl->getMethod() << "]\n";
+	// std::cout << "met[" << _cl->getMethod() << "]\n";
 	if (methodCode == Location::s_METHODS_MAX)
 		_responseCode = 405;
 	else if (_location)
@@ -190,7 +185,6 @@ void	Response::makeRep(void)
 			_responseCode = 405;
 		else
 		{
-			std::cout << "laa " << std::endl;
 			std::cout << _URI << std::endl;
 			std::cout << _cl->getTargetLocation() << std::endl;
 			std::cout << _cl->getQueryString() << std::endl;

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/12/15 15:30:15 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/15 15:34:22 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -756,7 +756,6 @@ void Client::fileHandler()
 	std::string dir = loc->getUploadLocation();
 	std::string path = dir + fname;
 
-	// std::cout <<"Salut" << std::endl;
 	if (!Location::isLocationPathValid(path))
 	{
 		_response->setStartLine(403);
@@ -764,7 +763,6 @@ void Client::fileHandler()
 		_response->prepare();
 		return;
 	}
-	// std::cout <<"wsh" << std::endl;
 	std::ofstream file(path.c_str(), std::ios::binary);
 	if (!file.is_open())
 	{
@@ -773,7 +771,6 @@ void Client::fileHandler()
 		_response->prepare();
 		return;
 	}
-	// std::cout <<"bonjour" << std::endl;
 	file.write(_body_data.c_str(), _body_data.size());
 	file.close();
 

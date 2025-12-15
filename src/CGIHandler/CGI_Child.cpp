@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 12:57:45 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/29 16:10:25 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/15 14:48:48 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ void	CGI::_exportEnv(void) const
 	// CGIEnv::addVar("AUTH_TYPE", "HTTP/1.1");
 	// CGIEnv::addVar("REMOTE_USER", "HTTP/1.1");
 	// CGIEnv::addVar("REMOTE_IDENT", "HTTP/1.1");
+
 	{// CGIEnv::addVar("CONTENT_TYPE", "HTTP/1.1");
 		t_header::const_iterator itContType = _header.find("Content-Type");
 		if (itContType != _header.end())
@@ -48,11 +49,12 @@ void	CGI::_exportEnv(void) const
 			CGIEnv::addVar("CONTENT_LENGTH", "");
 	}
 	CGI::CGIEnv::addHeader(_header);
+	std::cerr << "QString: " << _queryString << std::endl;
+	CGI::CGIEnv::addVar("QUERY_STRING", _queryString);
 }
 
 void	CGI::_execCGI()
 {
-
 	// clean memory and fds of webserv (Clients fd and malloceds response ..) TODO
 	_closeFd(_pipeIn[1]);
 	_closeFd(_pipeOut[0]);

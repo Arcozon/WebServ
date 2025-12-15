@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 14:31:00 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/29 15:51:55 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/15 14:44:42 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,4 +115,9 @@ void	CGI::CGIEnv::addHeader(const std::map<std::string, std::string> &header)
 
 	for (MapStrStrConstIt it = header.begin(); it != header.end(); ++it)
 		_addVar("HTTP_" + it->first, it->second);
+}
+
+void	CGI::CGIEnv::addVar(const std::string& varNameContent)
+{
+	_strEnv.push_back(varNameContent);
 }

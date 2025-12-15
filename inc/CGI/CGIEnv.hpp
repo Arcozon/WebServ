@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 14:31:25 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/18 15:21:18 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/15 14:43:18 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ class CGI::CGIEnv
 		static void	copyEnv(char *env[]);
 		static void	printEnv(void);
 		static void	addVar(const std::string& vName, const std::string &vContent);
+		static void	addVar(const std::string& varNameContent);
 		static void	addHeader(const std::map<std::string, std::string>& header);
 		
 		static char	**getCEnv(void);

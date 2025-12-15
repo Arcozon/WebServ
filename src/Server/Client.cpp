@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/12/12 19:57:25 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/15 14:56:51 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,19 +106,6 @@ inline std::size_t _countBlock(const std::string &reqLine)
 
 const std::vector<std::string> Client::_splitRequestLine(const std::string &reqLine)
 {
-	// static const char setReqLine = ' ';
-	// std::vector<std::string> splitReqLine;
-
-	// if (_countBlock(reqLine) != 3)
-	// 	return (splitReqLine);
-
-	// std::size_t firstSpace = reqLine.find_first_of(setReqLine);
-	// std::size_t secondSpace = reqLine.find_first_of(setReqLine, firstSpace + 1);
-
-	// splitReqLine.push_back(reqLine.substr(0, firstSpace));
-	// splitReqLine.push_back(reqLine.substr(firstSpace + 1, secondSpace - (firstSpace + 1)));
-	// splitReqLine.push_back(reqLine.substr(secondSpace + 1));
-	// return (splitReqLine);
 	return (ParsLine::splitLine(reqLine, ' ', false));
 }
 
@@ -161,7 +148,13 @@ bool Client::_checkRequestLine(void) // Add IpPort (to check )
 	std::string HTTPVersion = splitReqLine.at(2);
 	// std::cout << _extractedLine << '\n';
 	std::cout << _method << "|"<< _requestTarget << "|"<< _HTTPVersion << '\n'; // TODO
-
+	std::size_t	firstQuery = _requestTarget.find_first_of('?');
+	if (firstQuery != std::string::npos)
+	{
+		_queryString = _requestTarget.substr(firstQuery + 1);
+		std::cout << "Query: " << _queryString << std::endl;
+		_requestTarget.resize(firstQuery);
+	}
 	if (!validVerbSyntax(_method))
 	{
 		_response->setStartLine(400);
@@ -278,7 +271,10 @@ bool Client::_checkHeader(void)
 				_requestStep = ERROR;
 				return false;
 			}
-			if ((_method == "POST"))
+			bool isCGI = false;
+			if (_config.getLocation(_requestTarget))
+				isCGI = _config.getLocation(_requestTarget)->_hasCGIHandler(this->getTargetLocation());
+			if (_method == "POST"&& !isCGI)
 			{
 				const Location *loc = _config.getLocation(_requestTarget);
 				if (loc && loc->isUploadDefined())
@@ -749,7 +745,7 @@ void Client::fileHandler()
 	std::string dir = loc->getUploadLocation();
 	std::string path = dir + fname;
 
-	std::cout <<"Salut" << std::endl;
+	// std::cout <<"Salut" << std::endl;
 	if (!Location::isLocationPathValid(path))
 	{
 		_response->setStartLine(403);
@@ -757,7 +753,7 @@ void Client::fileHandler()
 		_response->prepare();
 		return;
 	}
-	std::cout <<"wsh" << std::endl;
+	// std::cout <<"wsh" << std::endl;
 	std::ofstream file(path.c_str(), std::ios::binary);
 	if (!file.is_open())
 	{
@@ -766,7 +762,7 @@ void Client::fileHandler()
 		_response->prepare();
 		return;
 	}
-	std::cout <<"bonjour" << std::endl;
+	// std::cout <<"bonjour" << std::endl;
 	file.write(_body_data.c_str(), _body_data.size());
 	file.close();
 

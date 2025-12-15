@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 16:29:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/12/12 18:07:31 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/15 14:31:58 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,11 +187,12 @@ void	Response::makeRep(void)
 			_responseCode = 405;
 		else
 		{
+			std::cout << "laa " << std::endl;
+			std::cout << _URI << std::endl;
+			std::cout << _cl->getTargetLocation() << std::endl;
+			std::cout << _cl->getQueryString() << std::endl;
 			if (_location->isReturnDefined())
-			{
-				std::cerr << "Ici\n";
 				_handleReturn(_location->getReturn());
-			}
 			else if (_location->_hasCGIHandler(_cl->getTargetLocation()))
 				_handleCGI();
 			else if (methodCode == Location::s_GET)

@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 13:05:09 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/11/29 14:59:04 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/15 14:30:15 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ private:
 	unsigned short	_responseCode;
 	std::string		_reasonPhrase;
 	std::map<std::string, std::string> _header;
-	std::string _status_line;
+	std::string		_status_line;
 	std::string		_body;
 	
 	bool			_isCGI;

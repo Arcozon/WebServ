@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/12/15 16:12:36 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/15 16:36:59 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,12 +147,12 @@ bool Client::_checkRequestLine(void) // Add IpPort (to check )
 	_requestTarget = splitReqLine.at(1);
 	std::string HTTPVersion = splitReqLine.at(2);
 	// std::cout << _extractedLine << '\n';
-	std::cout << _method << "|"<< _requestTarget << "|"<< _HTTPVersion << '\n'; // TODO
+	// std::cout << _method << "|"<< _requestTarget << "|"<< _HTTPVersion << '\n'; // TODO
 	std::size_t	firstQuery = _requestTarget.find_first_of('?');
 	if (firstQuery != std::string::npos)
 	{
 		_queryString = _requestTarget.substr(firstQuery + 1);
-		std::cout << "Query: " << _queryString << std::endl;
+		// std::cout << "Query: " << _queryString << std::endl;
 		_requestTarget.resize(firstQuery);
 	}
 	if (!validVerbSyntax(_method))
@@ -596,12 +596,12 @@ void Client::checkStep()
 		if (_requestTarget == "/session_new" && _method == "GET")
 		{
 			std::map<std::string, std::string>::iterator it = _cookies.find("session_id");
-					std::cout << "SESSION: new" << std::endl;
+					// std::cout << "SESSION: new" << std::endl;
 
 			if (it == _cookies.end())
 			{
 				std::string session_id = _session_ptr->createSession();
-				std::cout << "Saal: [" << session_id << ']' << std::endl;
+				// std::cout << "Saal: [" << session_id << ']' << std::endl;
 				_session_ptr->set(session_id, "id", "gaeudes");
 				Cookies session_cookie("session_id", session_id);
 				session_cookie.setDuration(1200);
@@ -624,7 +624,7 @@ void Client::checkStep()
 		else if (_requestTarget == "/session_destroy" && _method == "GET")
 		{
 			std::map<std::string, std::string>::iterator it = _cookies.find("session_id");
-					std::cout << "SESSION: destroy" << std::endl;
+					// std::cout << "SESSION: destroy" << std::endl;
 
 			if (it != _cookies.end())
 			{
@@ -649,12 +649,11 @@ void Client::checkStep()
 		}
 		else if (_requestTarget == "/session_info" && _method == "GET")
 		{
-			std::cout << "SESSION: info" << std::endl;
+			// std::cout << "SESSION: info" << std::endl;
 
 			std::map<std::string, std::string>::iterator it = _cookies.find("session_id");
 			if (it == _cookies.end())
 			{
-				std::cout << "SESSION: ici" << std::endl;
 				_response->setStartLine(403);
 				_response->setBody("No cookie set, unauthorized\n");
 			}

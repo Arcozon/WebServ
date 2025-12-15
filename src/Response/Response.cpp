@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 16:29:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/12/15 15:38:21 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/15 16:33:07 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,10 +74,10 @@ void Response::setBody(const std::string &body)
 void Response::setLocation(void)
 {
 	_location = _ipPort.getLocation(_cl->getTargetLocation());
-	if (_location)
-		std::cout << "Loca:[" << _location->getLocation() << "]\n"; 
-	else
-		std::cout << "Loca:[NONE]\n"; 
+	// if (_location)
+	// 	std::cout << "Loca:[" << _location->getLocation() << "]\n"; 
+	// else
+	// 	std::cout << "Loca:[NONE]\n"; 
 	if (_location)
 		_URI = _cl->getTargetLocation().substr(_location->getLocation().size());
 }
@@ -107,7 +107,6 @@ void	Response::catHeader(void)
 		this->catHeaderLine(it->first, it->second);
 	for (size_t i = 0; i < _cookies.size(); i++)
 	{
-		std::cout << "FaasdSetCookie: [" << _cookies[i].setCookieHeader() << "]" << std::endl;
 		this->catHeaderLine("Set-Cookie", _cookies[i].setCookieHeader());
 	}
 }
@@ -132,7 +131,6 @@ void	Response::catResponse(void)
 
 void Response::prepare()
 {
-	// std::cout << "Preping\n";
 	if (_insideErr)
 		makeRep();
 	else if (isErrorCode(_responseCode) && _body.empty())
@@ -176,7 +174,6 @@ void	Response::makeRep(void)
 {
 	Location::sAllowedMethods	methodCode = Location::getMethodCode(_cl->getMethod());
 	
-	// std::cout << "met[" << _cl->getMethod() << "]\n";
 	if (methodCode == Location::s_METHODS_MAX)
 		_responseCode = 405;
 	else if (_location)
@@ -185,9 +182,9 @@ void	Response::makeRep(void)
 			_responseCode = 405;
 		else
 		{
-			std::cout << _URI << std::endl;
-			std::cout << _cl->getTargetLocation() << std::endl;
-			std::cout << _cl->getQueryString() << std::endl;
+			// std::cout << _URI << std::endl;
+			// std::cout << _cl->getTargetLocation() << std::endl;
+			// std::cout << _cl->getQueryString() << std::endl;
 			if (_location->isReturnDefined())
 				_handleReturn(_location->getReturn());
 			else if (_location->_hasCGIHandler(_cl->getTargetLocation()))

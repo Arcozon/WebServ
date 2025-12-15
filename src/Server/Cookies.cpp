@@ -2,7 +2,7 @@
 
 Cookies::Cookies(const std::string &name, const std::string &value): _name(name), _value(value), _path("/"), _duration(0)
 {
-	std::cout <<"Cookie: [" << _name << "]" << std::endl;
+	// std::cout <<"Cookie: [" << _name << "]" << std::endl;
 }
 
 Cookies::~Cookies(){}

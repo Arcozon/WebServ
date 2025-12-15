@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <input type="file" id="file">
+	<button onclick="upload()">Upload</button>
+
+		<script>
+		async function upload() {
+		const file = document.getElementById('file').files[0];
+		if (!file) return;
+
+		const url = `http://localhost:3001/test-upload/${encodeURIComponent(file.name)}`;
+
+		const res = await fetch(url, {
+			method: 'POST',
+			headers: {
+			'Content-Type': file.type || 'application/octet-stream'
+			},
+			body: file
+		});
+
+		alert(await res.text());
+		}
+		</script>
+</body>
+</html>

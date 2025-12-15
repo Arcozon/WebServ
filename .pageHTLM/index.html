@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>WebServ 3001</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
+.container { max-width: 700px; background: white; padding: 24px; border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
+nav a { display: inline-block; margin-right: 12px; text-decoration: none; color: #0366d6; }
+form { margin-top: 12px; }
+input, button { padding: 8px 10px; border-radius: 6px; border: 1px solid #ddd; }
+</style>
+</head>
+<body>
+<div class="container">
+<img src="831.png">
+<h1>Welcome!</h1>
+<p>This page demonstrates simple links to CGI handlers.</p>
+
+
+<nav>
+<!-- Links to CGI scripts (served from /cgi-bin/) -->
+<a href="/cgi-bin/CGI_test.py">Hello CGI</a>
+<a href="/cgi-bin/CGI_echo.sh">Echo CGI (Bash)</a>
+<a href="/cgi-bin/CGI_echo.py">Echo CGI (PY)</a>
+</nav>
+
+
+<section>
+<h2>Try the echo form (POST to CGI) Bash</h2>
+<form action="/cgi-bin/CGI_echo.sh" method="POST">
+<label for="msg">Message:</label>
+<input id="msg" name="message" placeholder="Type something" />
+<button type="submit">Send</button>
+</form>
+</section>
+<section>
+<h2>Try the echo form (GET to CGI) python</h2>
+<form action="/cgi-bin/CGI_echo.py" method="GET">
+<label for="msg">Message:</label>
+<input id="msg" name="message" placeholder="Type something" />
+<button type="submit">Send</button>
+</form>
+</section>
+<section>
+	<h2>Try the login page (creates a cookie from CGI using sessions) — Python</h2>
+	<a href="/cgi-bin/CGI_cookie.py">Try</a>
+</section>
+<section>
+	<h2>Upload</h2>
+	<a href="http://localhost:3001/upload">Upload Files</a>
+	<br>
+	<a href="http://localhost:3001/show-upload">See Uploaded Files</a>
+	<br>
+	<a href="http://localhost:3001/delete-upload">Delete A File</a>
+	<br>
+</section>
+<hr />
+</div>
+</body>
+</html>

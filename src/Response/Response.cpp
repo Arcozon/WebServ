@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/01 16:29:20 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/12/15 14:31:58 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/15 15:30:38 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,10 @@ void	Response::catHeader(void)
 	for (MapStrStrConstIt it = _header.begin(); it != _header.end(); ++it)
 		this->catHeaderLine(it->first, it->second);
 	for (size_t i = 0; i < _cookies.size(); i++)
-		this->catHeaderLine("Set-Cookie: ", _cookies[i].setCookieHeader());
+	{
+		std::cout << "FaasdSetCookie: [" << _cookies[i].setCookieHeader() << "]" << std::endl;
+		this->catHeaderLine("Set-Cookie", _cookies[i].setCookieHeader());
+	}
 }
 
 void	Response::catCGI(void)
@@ -134,7 +137,7 @@ void Response::prepare()
 	// std::cout << "Preping\n";
 	if (_insideErr)
 		makeRep();
-	else if (isErrorCode(_responseCode))
+	else if (isErrorCode(_responseCode) && _body.empty())
 	{
 		_handleError();
 	}

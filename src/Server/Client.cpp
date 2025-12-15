@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/12/15 14:56:51 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/15 15:30:15 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -594,15 +594,15 @@ void Client::checkStep()
 	if (_requestStep == FIN)
 	{
 		std::cout << "\e[1;31m\t-- End Of Body --\e[0m" << std::endl;
-
 		if (_requestTarget == "/session_new" && _method == "GET")
 		{
 			std::map<std::string, std::string>::iterator it = _cookies.find("session_id");
+					std::cout << "SESSION: new" << std::endl;
 
 			if (it == _cookies.end())
 			{
 				std::string session_id = _session_ptr->createSession();
-
+				std::cout << "Saal: [" << session_id << ']' << std::endl;
 				_session_ptr->set(session_id, "id", "gaeudes");
 				Cookies session_cookie("session_id", session_id);
 				session_cookie.setDuration(1200);
@@ -611,19 +611,22 @@ void Client::checkStep()
 				_response->setStartLine(200);
 				std::string res = "Session:" + session_id + " created\n";
 				_response->setBody(res);
-				_response->prepare();
 			}
 			else
 			{
 				_response->setStartLine(403);
 				std::string res = "Session:" + it->second + " already set\n";
 				_response->setBody(res);
-				_response->prepare();
 			}
+			_response->prepare();
+			_done = true;
+			return ;
 		}
 		else if (_requestTarget == "/session_destroy" && _method == "GET")
 		{
 			std::map<std::string, std::string>::iterator it = _cookies.find("session_id");
+					std::cout << "SESSION: destroy" << std::endl;
+
 			if (it != _cookies.end())
 			{
 				std::string session_id = it->second;
@@ -632,22 +635,27 @@ void Client::checkStep()
 				Cookies cookie("session_id", "");
 				cookie.setDuration(0);
 				_response->addCookie(cookie);
+
 				_response->setStartLine(200);
 				_response->setBody("Session destroyed\n");
-				_response->prepare();
 			}
 			else
 			{
 				_response->setStartLine(403);
 				_response->setBody("No cookie present to be destroyed\n");
-				_response->prepare();
 			}
+			_response->prepare();
+			_done = true;
+			return ;
 		}
 		else if (_requestTarget == "/session_info" && _method == "GET")
 		{
+			std::cout << "SESSION: info" << std::endl;
+
 			std::map<std::string, std::string>::iterator it = _cookies.find("session_id");
 			if (it == _cookies.end())
 			{
+				std::cout << "SESSION: ici" << std::endl;
 				_response->setStartLine(403);
 				_response->setBody("No cookie set, unauthorized\n");
 			}
@@ -678,6 +686,9 @@ void Client::checkStep()
 				}
 			}
 			_response->prepare();
+			std::cout << "SESSION: done" << std::endl;
+			_done = true;			
+			return ;
 		}
 		if(_method == "PUT")
 		{

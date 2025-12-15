@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Delete File</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; height: 100vh; }
+  .container { background: #fff; padding: 24px; border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); max-width: 400px; width: 100%; }
+  input, button { padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; margin-top: 8px; width: 100%; }
+  button { background-color: #d9534f; color: white; cursor: pointer; border: none; }
+  button:hover { background-color: #c9302c; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Delete a File</h2>
+  <input type="text" id="filename" placeholder="Enter file to delete" />
+  <button onclick="deleteFile()">Delete</button>
+  <p id="result"></p>
+</div>
+
+<script>
+  function deleteFile() {
+    const filename = document.getElementById('filename').value.trim();
+    if (!filename) {
+      alert('Please enter a file name');
+      return;
+    }
+
+    const customLink = 'http://localhost:3001/test-upload/';
+    const url = customLink + encodeURIComponent(filename);
+
+    fetch(url, {
+      method: 'DELETE'
+    })
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('result').textContent = data;
+    })
+    .catch(err => {
+      document.getElementById('result').textContent = 'Error: ' + err;
+    });
+  }
+</script>
+
+</body>
+</html>

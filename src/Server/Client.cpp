@@ -6,7 +6,7 @@
 /*   By: gaeudes <gaeudes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 14:59:48 by gaeudes           #+#    #+#             */
-/*   Updated: 2025/12/15 15:34:22 by gaeudes          ###   ########.fr       */
+/*   Updated: 2025/12/15 16:12:36 by gaeudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,10 @@ Client::Client(int fd, const IpPort &config, Sessions *instance)
 	  _is_upload(0),
 	  _body_rd_bytes(0),
 	  _last_activity(time(0)),
-	  _read_timer(3),
-	  _write_timer(3),
+	  _read_timer(10),
+	  _write_timer(10),
 	  _client_spawn(time(0)),
-	  _max_req_duration(5),
+	  _max_req_duration(20),
 	  _session_ptr(instance),
 	  _headers_total_size(0)
 {
@@ -279,7 +279,6 @@ bool Client::_checkHeader(void)
 				const Location *loc = _config.getLocation(_requestTarget);
 				if (loc && loc->isUploadDefined())
 				{
-					std::cout << "ka" << std::endl;
 					_upload_dir = loc->getUploadLocation();
 					_is_upload = true;
 					std::cout << "\033[1;36m[Upload of size: " << _content_length << " bytes]\033[0m" << std::endl;
@@ -696,10 +695,7 @@ void Client::checkStep()
 			putHandler();
 		}
 		if (_is_upload)
-		{
 			fileHandler();
-			std::cout << "Upload is done" << std::endl;
-		}
 		else
 		{
 			_response->setLocation();
